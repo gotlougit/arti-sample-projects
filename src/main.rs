@@ -1,7 +1,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 
-use hyper::{Body, Client, Request, Method, Uri};
+use hyper::{http::HeaderValue, Body, Client, Method, Request, Uri};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 
 use tls_api_native_tls::TlsConnector;
@@ -20,6 +20,21 @@ async fn get_new_connection(
     let connection = ArtiHttpConnector::new(tor_client, tls_connector);
     let http = hyper::Client::builder().build::<_, Body>(connection);
     http
+}
+
+async fn get_content_length(url: &'static str) -> u64 {
+    let http = get_new_connection().await;
+    let uri = Uri::from_static(url);
+    debug!("Requesting content length of {} via Tor...", url);
+    let req = Request::builder()
+        .method(Method::GET)
+        .uri(uri)
+        .body(Body::empty())
+        .unwrap();
+
+    let resp = http.request(req).await.unwrap();
+    let ans = resp.headers().get("Content-Length").unwrap();
+    ans.to_str().unwrap().parse::<u64>().unwrap()
 }
 
 async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
@@ -57,8 +72,10 @@ async fn main() {
         .create(true)
         .open("download")
         .unwrap();
-    let body = request("https://icanhazip.com", 0, 0).await;
-    fd.set_len(body.len() as u64).unwrap();
+    let url = "https://gotlou.srht.site/pubkey.pgp";
+    let length = get_content_length(url).await;
+    fd.set_len(length).unwrap();
+    let body = request(url, 0, 0).await;
     unsafe {
         let mut mmap = MmapMut::map_mut(&fd).unwrap();
         mmap.copy_from_slice(body.as_slice());
