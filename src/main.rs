@@ -1,7 +1,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 
-use hyper::{Body, Client, HeaderMap};
+use hyper::{Body, Client, Request, Method, Uri};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 
 use tls_api_native_tls::TlsConnector;
@@ -22,10 +22,17 @@ async fn get_new_connection(
     http
 }
 
-async fn request(url: &str, start: usize, end: usize) -> Vec<u8> {
+async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
+    let uri = Uri::from_static(url);
     debug!("Requesting {} via Tor...", url);
-    let mut resp = http.get(url.try_into().unwrap()).await.unwrap();
+    let req = Request::builder()
+        .method(Method::GET)
+        .uri(uri)
+        .header("Range", "bytes=0-")
+        .body(Body::default())
+        .unwrap();
+    let mut resp = http.request(req).await.unwrap();
 
     if resp.status() == 200 {
         debug!("Good request");
