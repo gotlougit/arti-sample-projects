@@ -72,7 +72,7 @@ async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     body
 }
 
-fn save_to_file(fd: &mut File, start: usize, end: usize, body: Vec<u8>) {
+fn save_to_file(fd: &mut File, start: usize, body: Vec<u8>) {
     fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
     fd.write_all(&body).unwrap();
 }
@@ -95,11 +95,11 @@ async fn main() {
     for _ in 0..steps {
         let end = start + (REQSIZE as usize) - 1;
         let body = request(url, start, end).await;
-        save_to_file(&mut fd, start, end, body);
+        save_to_file(&mut fd, start, body);
         start = end + 1;
     }
     if start < length as usize {
         let body = request(url, start, length as usize).await;
-        save_to_file(&mut fd, start, length as usize - 1, body);
+        save_to_file(&mut fd, start, body);
     }
 }
