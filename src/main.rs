@@ -2,7 +2,7 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use hyper::{Body, Client, Method, Request, Uri};
 use memmap2::MmapMut;
-use std::fs::OpenOptions;
+use std::fs::{File,OpenOptions};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
@@ -73,6 +73,13 @@ async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     body
 }
 
+fn save_to_file(fd: &File, start: usize, end: usize, body: Vec<u8>) {
+    unsafe {
+        let mut mmap = MmapMut::map_mut(fd).unwrap();
+        mmap[start..end + 1].copy_from_slice(&body[..]);
+    };
+}
+
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
@@ -92,17 +99,11 @@ async fn main() {
     for _ in 0..steps {
         let end = start + (REQSIZE as usize) - 1;
         let body = request(url, start, end).await;
-        unsafe {
-            let mut mmap = MmapMut::map_mut(&fd).unwrap();
-            mmap[start..end + 1].copy_from_slice(&body[..]);
-        };
+        save_to_file(&fd, start, end, body);
         start = end + 1;
     }
     if start < length as usize {
         let body = request(url, start, length as usize).await;
-        unsafe {
-            let mut mmap = MmapMut::map_mut(&fd).unwrap();
-            mmap[start..].copy_from_slice(&body[..]);
-        };
+        save_to_file(&fd, start, length as usize - 1, body);
     }
 }
