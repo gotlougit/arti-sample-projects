@@ -1,14 +1,14 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use hyper::{Body, Client, Method, Request, Uri};
-use memmap2::MmapMut;
 use std::fs::{File, OpenOptions};
+use std::io::{Seek, Write};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
-const REQSIZE: u64 = 1000;
+const REQSIZE: u64 = 1024;
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
 const TESTURL: &str = "https://gotlou.srht.site/pubkey.pgp";
@@ -73,19 +73,16 @@ async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     body
 }
 
-fn save_to_file(fd: &File, start: usize, end: usize, body: Vec<u8>) {
-    unsafe {
-        let mut mmap = MmapMut::map_mut(fd).unwrap();
-        mmap[start..end + 1].copy_from_slice(&body[..]);
-    };
+fn save_to_file(fd: &mut File, start: usize, end: usize, body: Vec<u8>) {
+    fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
+    fd.write_all(&body).unwrap();
 }
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
     warn!("Creating download file");
-    let fd = OpenOptions::new()
-        .read(true)
+    let mut fd = OpenOptions::new()
         .write(true)
         .create(true)
         .open("download")
@@ -99,11 +96,11 @@ async fn main() {
     for _ in 0..steps {
         let end = start + (REQSIZE as usize) - 1;
         let body = request(url, start, end).await;
-        save_to_file(&fd, start, end, body);
+        save_to_file(&mut fd, start, end, body);
         start = end + 1;
     }
     if start < length as usize {
         let body = request(url, start, length as usize).await;
-        save_to_file(&fd, start, length as usize - 1, body);
+        save_to_file(&mut fd, start, length as usize - 1, body);
     }
 }

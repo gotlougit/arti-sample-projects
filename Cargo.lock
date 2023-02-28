@@ -144,7 +144,6 @@ dependencies = [
  "arti-client",
  "arti-hyper",
  "hyper",
- "memmap2",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
