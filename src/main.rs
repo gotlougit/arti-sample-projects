@@ -33,8 +33,10 @@ async fn get_content_length(url: &'static str) -> u64 {
         .unwrap();
 
     let resp = http.request(req).await.unwrap();
-    let ans = resp.headers().get("Content-Length").unwrap();
-    ans.to_str().unwrap().parse::<u64>().unwrap()
+    let raw_length = resp.headers().get("Content-Length").unwrap();
+    let length = raw_length.to_str().unwrap().parse::<u64>().unwrap();
+    debug!("Content-Length of resource: {}", length);
+    length
 }
 
 async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
