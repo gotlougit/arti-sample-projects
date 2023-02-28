@@ -8,6 +8,8 @@ use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
+const REQSIZE : u64 = 1000;
+
 // TODO: Handle all unwrap() effectively
 // TODO: get rid of memmap2 and unsafe usage
 
@@ -44,19 +46,20 @@ async fn get_content_length(url: &'static str) -> u64 {
 async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
     let uri = Uri::from_static(url);
+    let partial_req_value = String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
     warn!("Requesting {} via Tor...", url);
     let req = Request::builder()
         .method(Method::GET)
         .uri(uri)
-        //.header("Range", "bytes=0-")
+        .header("Range", partial_req_value)
         .body(Body::default())
         .unwrap();
     let mut resp = http.request(req).await.unwrap();
 
-    if resp.status() == 200 {
-        warn!("Good request");
+    if resp.status() == 206 {
+        warn!("Good request, getting partial content...");
     } else {
-        warn!("Non 200 Status code: {}", resp.status());
+        warn!("Non 206 Status code: {}", resp.status());
     }
 
     let body = hyper::body::to_bytes(resp.body_mut())
@@ -79,9 +82,23 @@ async fn main() {
     let url = "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
     let length = get_content_length(url).await;
     fd.set_len(length).unwrap();
-    let body = request(url, 0, 0).await;
-    unsafe {
-        let mut mmap = MmapMut::map_mut(&fd).unwrap();
-        mmap.copy_from_slice(body.as_slice());
-    };
+    let steps = length / REQSIZE;
+    let mut start = 0;
+    for _ in 0..steps {
+        let end = start + (REQSIZE as usize) - 1;
+        let body = request(url, start, end).await;
+        unsafe {
+            let mut mmap = MmapMut::map_mut(&fd).unwrap();
+            mmap[start..end+1].copy_from_slice(&body[..]);
+        };
+        start = end + 1;
+    }
+    if start < length as usize {
+        let body = request(url, start, length as usize).await;
+        unsafe {
+            let mut mmap = MmapMut::map_mut(&fd).unwrap();
+            mmap[start..].copy_from_slice(&body[..]);
+        };
+
+    }
 }
