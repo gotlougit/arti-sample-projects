@@ -1,7 +1,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 
-use hyper::{http::HeaderValue, Body, Client, Method, Request, Uri};
+use hyper::{Body, Client, Method, Request, Uri};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 
 use tls_api_native_tls::TlsConnector;
@@ -74,7 +74,7 @@ async fn main() {
         .create(true)
         .open("download")
         .unwrap();
-    let url = "https://gotlou.srht.site/pubkey.pgp";
+    let url = "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
     let length = get_content_length(url).await;
     fd.set_len(length).unwrap();
     let body = request(url, 0, 0).await;
