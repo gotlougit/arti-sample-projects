@@ -1,18 +1,14 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
-
 use hyper::{Body, Client, Method, Request, Uri};
-use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
-
-use tls_api_native_tls::TlsConnector;
-use tor_rtcompat;
-
 use memmap2::MmapMut;
 use std::fs::OpenOptions;
+use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
+use tls_api_native_tls::TlsConnector;
+use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
-async fn get_new_connection(
-) -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>> {
+async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
