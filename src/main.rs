@@ -1,5 +1,5 @@
-use arti_hyper::*;
 use arti_client::{TorClient, TorClientConfig};
+use arti_hyper::*;
 
 use hyper::{Body, Client};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
@@ -15,7 +15,8 @@ use tls_api_native_tls::TlsConnector;
 #[cfg(target_vendor = "apple")]
 use tls_api_openssl::TlsConnector;
 
-async fn get_new_connection() -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>>{
+async fn get_new_connection(
+) -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>> {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
@@ -29,7 +30,10 @@ async fn get_new_connection() -> Client<ArtiHttpConnector<tor_rtcompat::Preferre
 async fn get_ip_hyper() {
     let http = get_new_connection().await;
     eprintln!("requesting IP via Tor...");
-    let mut resp = http.get("https://icanhazip.com".try_into().unwrap()).await.unwrap();
+    let mut resp = http
+        .get("https://icanhazip.com".try_into().unwrap())
+        .await
+        .unwrap();
 
     eprintln!("status: {}", resp.status());
 
@@ -42,4 +46,3 @@ async fn main() {
     println!("Hello, world!");
     get_ip_hyper().await;
 }
-
