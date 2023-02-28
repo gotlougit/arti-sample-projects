@@ -9,7 +9,7 @@ use tor_rtcompat;
 
 use memmap2::MmapMut;
 use std::fs::OpenOptions;
-use tracing::{debug, warn};
+use tracing::warn;
 
 async fn get_new_connection(
 ) -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>> {
@@ -25,7 +25,7 @@ async fn get_new_connection(
 async fn get_content_length(url: &'static str) -> u64 {
     let http = get_new_connection().await;
     let uri = Uri::from_static(url);
-    debug!("Requesting content length of {} via Tor...", url);
+    warn!("Requesting content length of {} via Tor...", url);
     let req = Request::builder()
         .method(Method::GET)
         .uri(uri)
@@ -35,24 +35,24 @@ async fn get_content_length(url: &'static str) -> u64 {
     let resp = http.request(req).await.unwrap();
     let raw_length = resp.headers().get("Content-Length").unwrap();
     let length = raw_length.to_str().unwrap().parse::<u64>().unwrap();
-    debug!("Content-Length of resource: {}", length);
+    warn!("Content-Length of resource: {}", length);
     length
 }
 
 async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
     let uri = Uri::from_static(url);
-    debug!("Requesting {} via Tor...", url);
+    warn!("Requesting {} via Tor...", url);
     let req = Request::builder()
         .method(Method::GET)
         .uri(uri)
-        .header("Range", "bytes=0-")
+        //.header("Range", "bytes=0-")
         .body(Body::default())
         .unwrap();
     let mut resp = http.request(req).await.unwrap();
 
     if resp.status() == 200 {
-        debug!("Good request");
+        warn!("Good request");
     } else {
         warn!("Non 200 Status code: {}", resp.status());
     }
@@ -67,7 +67,7 @@ async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    debug!("Creating download file");
+    warn!("Creating download file");
     let fd = OpenOptions::new()
         .read(true)
         .write(true)
