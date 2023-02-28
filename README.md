@@ -10,6 +10,10 @@ This repo is an exploration into that space, and since Arti is in an alpha state
 
 This project aims to build a small download manager prototype which can connect to the Tor network and get a copy of the Tor browser from there.
 
+In order to speed up the process, it will make multiple connections (similar to popular download managers) to the server and use [HTTP Range header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests) to specify what portion of the file we wish to obtain.
+
+There are costs associated with each Tor connection, so some care must be taken to balance the speed benefits of a new Tor connection with the slow startup speed and overall network health.
+
 ## Setup
 
 Make sure you have Rust installed and ready to go.
