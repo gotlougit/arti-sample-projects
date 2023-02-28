@@ -9,7 +9,7 @@ edition = "2021"
 arti-client = "0.8.1"
 arti-hyper = { version = "0.8.1", features = ["default"]}
 tokio = { version = "1.7", features = ["full"] }
-anyhow = "1.0.23"
 hyper = { version = "0.14", features = ["http1", "client", "runtime"] }
 tls-api = "0.9.0"
 tls-api-native-tls = "0.9.0"
+tor-rtcompat = "0.8.1"

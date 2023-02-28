@@ -132,13 +132,13 @@ dependencies = [
 name = "arti-sample-project"
 version = "0.1.0"
 dependencies = [
- "anyhow",
  "arti-client",
  "arti-hyper",
  "hyper",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
+ "tor-rtcompat",
 ]
 
 [[package]]
