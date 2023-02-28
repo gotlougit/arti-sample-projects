@@ -15,10 +15,19 @@ const TESTURL: &str = "https://gotlou.srht.site/pubkey.pgp";
 
 // TODO: Handle all unwrap() effectively
 
-// Create new HTTPS connection with a new circuit
-async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
+// Create a single TorClient which will be used to spawn isolated connections
+//
+// Workaround for https://gitlab.torproject.org/tpo/core/arti/-/issues/779
+
+async fn get_tor_client() -> TorClient<PreferredRuntime> {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
+    tor_client
+}
+
+// Create new HTTPS connection with a new circuit
+async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
+    let tor_client = get_tor_client().await;
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
 
     let connection = ArtiHttpConnector::new(tor_client, tls_connector);
