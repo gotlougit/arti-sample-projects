@@ -2,7 +2,7 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use hyper::{Body, Client, Method, Request, Uri};
 use memmap2::MmapMut;
-use std::fs::{File,OpenOptions};
+use std::fs::{File, OpenOptions};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
