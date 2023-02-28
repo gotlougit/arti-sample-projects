@@ -25,9 +25,8 @@ async fn get_new_connection() -> Client<ArtiHttpConnector<tor_rtcompat::Preferre
     http
 }
 
-//sanity check
+// get IP address via Tor
 async fn get_ip_hyper() {
-
     let http = get_new_connection().await;
     eprintln!("requesting IP via Tor...");
     let mut resp = http.get("https://icanhazip.com".try_into().unwrap()).await.unwrap();
