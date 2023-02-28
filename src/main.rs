@@ -8,6 +8,10 @@ use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
+// TODO: Handle all unwrap() effectively
+// TODO: get rid of memmap2 and unsafe usage
+
+// Create new HTTPS connection with a new circuit
 async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
@@ -18,6 +22,7 @@ async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsC
     http
 }
 
+// Get the size of file to be downloaded
 async fn get_content_length(url: &'static str) -> u64 {
     let http = get_new_connection().await;
     let uri = Uri::from_static(url);
@@ -35,6 +40,7 @@ async fn get_content_length(url: &'static str) -> u64 {
     length
 }
 
+// Just get the file from the server and store it in a Vec
 async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
     let uri = Uri::from_static(url);
