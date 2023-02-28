@@ -1,7 +1,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 
-use hyper::{Body, Client};
+use hyper::{Body, Client, HeaderMap};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 
 use tls_api_native_tls::TlsConnector;
@@ -9,7 +9,7 @@ use tor_rtcompat;
 
 use memmap2::MmapMut;
 use std::fs::OpenOptions;
-use tracing::{debug, error, warn};
+use tracing::{debug, warn};
 
 async fn get_new_connection(
 ) -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>> {
@@ -22,7 +22,6 @@ async fn get_new_connection(
     http
 }
 
-// get IP address via Tor
 async fn request(url: &str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
     debug!("Requesting {} via Tor...", url);
