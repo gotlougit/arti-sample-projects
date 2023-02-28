@@ -8,9 +8,10 @@ use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
-const REQSIZE : u64 = 1000;
-const TORURL : &str = "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
-const TESTURL : &str = "https://gotlou.srht.site/pubkey.pgp";
+const REQSIZE: u64 = 1000;
+const TORURL: &str =
+    "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
+const TESTURL: &str = "https://gotlou.srht.site/pubkey.pgp";
 
 // TODO: Handle all unwrap() effectively
 // TODO: get rid of memmap2 and unsafe usage
@@ -48,7 +49,8 @@ async fn get_content_length(url: &'static str) -> u64 {
 async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
     let uri = Uri::from_static(url);
-    let partial_req_value = String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
+    let partial_req_value =
+        String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
     warn!("Requesting {} via Tor...", url);
     let req = Request::builder()
         .method(Method::GET)
@@ -92,7 +94,7 @@ async fn main() {
         let body = request(url, start, end).await;
         unsafe {
             let mut mmap = MmapMut::map_mut(&fd).unwrap();
-            mmap[start..end+1].copy_from_slice(&body[..]);
+            mmap[start..end + 1].copy_from_slice(&body[..]);
         };
         start = end + 1;
     }
@@ -102,6 +104,5 @@ async fn main() {
             let mut mmap = MmapMut::map_mut(&fd).unwrap();
             mmap[start..].copy_from_slice(&body[..]);
         };
-
     }
 }
