@@ -4,16 +4,8 @@ use arti_hyper::*;
 use hyper::{Body, Client};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 
-use tor_rtcompat;
-
-// On apple-darwin targets there is an issue with the native and rustls
-// tls implementation so this makes it fall back to the openssl variant.
-//
-// https://gitlab.torproject.org/tpo/core/arti/-/issues/715
-#[cfg(not(target_vendor = "apple"))]
 use tls_api_native_tls::TlsConnector;
-#[cfg(target_vendor = "apple")]
-use tls_api_openssl::TlsConnector;
+use tor_rtcompat;
 
 async fn get_new_connection(
 ) -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>> {
