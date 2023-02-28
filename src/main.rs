@@ -9,6 +9,8 @@ use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
 const REQSIZE : u64 = 1000;
+const TORURL : &str = "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
+const TESTURL : &str = "https://gotlou.srht.site/pubkey.pgp";
 
 // TODO: Handle all unwrap() effectively
 // TODO: get rid of memmap2 and unsafe usage
@@ -79,7 +81,8 @@ async fn main() {
         .create(true)
         .open("download")
         .unwrap();
-    let url = "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
+    let url = TORURL;
+    //let url = TESTURL;
     let length = get_content_length(url).await;
     fd.set_len(length).unwrap();
     let steps = length / REQSIZE;
