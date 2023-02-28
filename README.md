@@ -22,7 +22,3 @@ Clone this repo, and run ```cargo run```
 to run the program. It will automatically fetch dependencies and compile the program.
 
 Right now, it only downloads a specific Linux build of the Tor Browser Bundle as a file "download".
-
-## Use of Unsafe
-
-Unsafe is used to directly use memmap2, which will aid in writing to random offsets of the file. While this is undesirable, for prototyping purposes this has been kept in the code, and investigation into a safer alternative is highly desired.

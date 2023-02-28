@@ -14,7 +14,6 @@ const TORURL: &str =
 const TESTURL: &str = "https://gotlou.srht.site/pubkey.pgp";
 
 // TODO: Handle all unwrap() effectively
-// TODO: get rid of memmap2 and unsafe usage
 
 // Create new HTTPS connection with a new circuit
 async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
