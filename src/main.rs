@@ -7,8 +7,9 @@ use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat;
 
-use std::fs::OpenOptions;
 use memmap2::MmapMut;
+use std::fs::OpenOptions;
+use tracing::{debug, error, warn};
 
 async fn get_new_connection(
 ) -> Client<ArtiHttpConnector<tor_rtcompat::PreferredRuntime, TlsConnector>> {
@@ -22,30 +23,35 @@ async fn get_new_connection(
 }
 
 // get IP address via Tor
-async fn get_ip_hyper() -> Vec<u8> {
+async fn request(url: &str, start: usize, end: usize) -> Vec<u8> {
     let http = get_new_connection().await;
-    eprintln!("requesting IP via Tor...");
-    let mut resp = http
-        .get("https://icanhazip.com".try_into().unwrap())
+    debug!("Requesting {} via Tor...", url);
+    let mut resp = http.get(url.try_into().unwrap()).await.unwrap();
+
+    if resp.status() == 200 {
+        debug!("Good request");
+    } else {
+        warn!("Non 200 Status code: {}", resp.status());
+    }
+
+    let body = hyper::body::to_bytes(resp.body_mut())
         .await
-        .unwrap();
-
-    eprintln!("status: {}", resp.status());
-
-    let body = hyper::body::to_bytes(resp.body_mut()).await.unwrap().to_vec();
+        .unwrap()
+        .to_vec();
     body
 }
 
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
+    tracing_subscriber::fmt::init();
+    debug!("Creating download file");
     let fd = OpenOptions::new()
         .read(true)
         .write(true)
         .create(true)
         .open("download")
         .unwrap();
-    let body = get_ip_hyper().await;
+    let body = request("https://icanhazip.com", 0, 0).await;
     fd.set_len(body.len() as u64).unwrap();
     unsafe {
         let mut mmap = MmapMut::map_mut(&fd).unwrap();
