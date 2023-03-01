@@ -60,9 +60,9 @@ async fn request(
     url: &'static str,
     start: usize,
     end: usize,
-    baseconn: &TorClient<PreferredRuntime>,
+    http: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> Vec<u8> {
-    let http = get_new_connection(baseconn).await;
+    //let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
     let partial_req_value =
         String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
@@ -88,7 +88,12 @@ async fn request(
     body
 }
 
-fn save_to_file(fd: &mut File, start: usize, body: Vec<u8>) {
+fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
+    let mut fd = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open(fname)
+        .unwrap();
     fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
     fd.write_all(&body).unwrap();
 }
@@ -97,7 +102,7 @@ fn save_to_file(fd: &mut File, start: usize, body: Vec<u8>) {
 async fn main() {
     tracing_subscriber::fmt::init();
     warn!("Creating download file");
-    let mut fd = OpenOptions::new()
+    let fd = OpenOptions::new()
         .write(true)
         .create(true)
         .open("download")
@@ -111,12 +116,16 @@ async fn main() {
     let mut start = 0;
     for _ in 0..steps {
         let end = start + (REQSIZE as usize) - 1;
-        let body = request(url, start, end, &baseconn).await;
-        save_to_file(&mut fd, start, body);
+        let newhttp = get_new_connection(&baseconn).await;
+        tokio::task::spawn(async move {
+            let body = request(url, start, end, newhttp).await;
+            save_to_file("download", start, body);
+        });
         start = end + 1;
     }
     if start < length as usize {
-        let body = request(url, start, length as usize, &baseconn).await;
-        save_to_file(&mut fd, start, body);
+        let newhttp = get_new_connection(&baseconn).await;
+        let body = request(url, start, length as usize, newhttp).await;
+        save_to_file("download", start, body);
     }
 }
