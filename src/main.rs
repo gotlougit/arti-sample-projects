@@ -26,8 +26,8 @@ async fn get_tor_client() -> TorClient<PreferredRuntime> {
 }
 
 // Create new HTTPS connection with a new circuit
-async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
-    let tor_client = get_tor_client().await;
+async fn get_new_connection(baseconn: &TorClient<PreferredRuntime>) -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
+    let tor_client = baseconn.isolated_client();
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
 
     let connection = ArtiHttpConnector::new(tor_client, tls_connector);
@@ -36,8 +36,8 @@ async fn get_new_connection() -> Client<ArtiHttpConnector<PreferredRuntime, TlsC
 }
 
 // Get the size of file to be downloaded
-async fn get_content_length(url: &'static str) -> u64 {
-    let http = get_new_connection().await;
+async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRuntime>) -> u64 {
+    let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
     warn!("Requesting content length of {} via Tor...", url);
     let req = Request::builder()
@@ -54,8 +54,8 @@ async fn get_content_length(url: &'static str) -> u64 {
 }
 
 // Just get the file from the server and store it in a Vec
-async fn request(url: &'static str, start: usize, end: usize) -> Vec<u8> {
-    let http = get_new_connection().await;
+async fn request(url: &'static str, start: usize, end: usize, baseconn: &TorClient<PreferredRuntime>) -> Vec<u8> {
+    let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
     let partial_req_value =
         String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
@@ -97,18 +97,19 @@ async fn main() {
         .unwrap();
     let url = TORURL;
     //let url = TESTURL;
-    let length = get_content_length(url).await;
+    let baseconn = get_tor_client().await;
+    let length = get_content_length(url,&baseconn).await;
     fd.set_len(length).unwrap();
     let steps = length / REQSIZE;
     let mut start = 0;
     for _ in 0..steps {
         let end = start + (REQSIZE as usize) - 1;
-        let body = request(url, start, end).await;
+        let body = request(url, start, end, &baseconn).await;
         save_to_file(&mut fd, start, body);
         start = end + 1;
     }
     if start < length as usize {
-        let body = request(url, start, length as usize).await;
+        let body = request(url, start, length as usize, &baseconn).await;
         save_to_file(&mut fd, start, body);
     }
 }
