@@ -11,7 +11,7 @@ use tracing::warn;
 const REQSIZE: u64 = 1024;
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
-const TESTURL: &str = "https://gotlou.srht.site/pubkey.pgp";
+const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
 
 // TODO: Handle all unwrap() effectively
 
