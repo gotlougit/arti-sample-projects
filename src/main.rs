@@ -26,7 +26,9 @@ async fn get_tor_client() -> TorClient<PreferredRuntime> {
 }
 
 // Create new HTTPS connection with a new circuit
-async fn get_new_connection(baseconn: &TorClient<PreferredRuntime>) -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
+async fn get_new_connection(
+    baseconn: &TorClient<PreferredRuntime>,
+) -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
     let tor_client = baseconn.isolated_client();
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
 
@@ -54,7 +56,12 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
 }
 
 // Just get the file from the server and store it in a Vec
-async fn request(url: &'static str, start: usize, end: usize, baseconn: &TorClient<PreferredRuntime>) -> Vec<u8> {
+async fn request(
+    url: &'static str,
+    start: usize,
+    end: usize,
+    baseconn: &TorClient<PreferredRuntime>,
+) -> Vec<u8> {
     let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
     let partial_req_value =
@@ -98,7 +105,7 @@ async fn main() {
     let url = TORURL;
     //let url = TESTURL;
     let baseconn = get_tor_client().await;
-    let length = get_content_length(url,&baseconn).await;
+    let length = get_content_length(url, &baseconn).await;
     fd.set_len(length).unwrap();
     let steps = length / REQSIZE;
     let mut start = 0;
