@@ -12,6 +12,7 @@ const REQSIZE: u64 = 1024;
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
 const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
+const DOWNLOAD_FILE_NAME : &str = "download";
 
 // TODO: Handle all unwrap() effectively
 
@@ -105,7 +106,7 @@ async fn main() {
     let fd = OpenOptions::new()
         .write(true)
         .create(true)
-        .open("download")
+        .open(DOWNLOAD_FILE_NAME)
         .unwrap();
     let url = TORURL;
     //let url = TESTURL;
@@ -119,13 +120,13 @@ async fn main() {
         let newhttp = get_new_connection(&baseconn).await;
         tokio::task::spawn(async move {
             let body = request(url, start, end, newhttp).await;
-            save_to_file("download", start, body);
+            save_to_file(DOWNLOAD_FILE_NAME, start, body);
         });
         start = end + 1;
     }
     if start < length as usize {
         let newhttp = get_new_connection(&baseconn).await;
         let body = request(url, start, length as usize, newhttp).await;
-        save_to_file("download", start, body);
+        save_to_file(DOWNLOAD_FILE_NAME, start, body);
     }
 }
