@@ -8,7 +8,7 @@ use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
-const REQSIZE: u64 = 1024;
+const REQSIZE: u64 = 1024*1024;
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
 const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
@@ -118,10 +118,12 @@ async fn main() {
     for _ in 0..steps {
         let end = start + (REQSIZE as usize) - 1;
         let newhttp = get_new_connection(&baseconn).await;
-        tokio::task::spawn(async move {
+        //tokio::task::spawn(async move {
+        {
             let body = request(url, start, end, newhttp).await;
             save_to_file(DOWNLOAD_FILE_NAME, start, body);
-        });
+        }
+        //});
         start = end + 1;
     }
     if start < length as usize {
