@@ -8,17 +8,18 @@ use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
+// REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024*1024;
+// TORURL is the particular Tor Browser Bundle URL
 const TORURL: &str =
-    "https://dist.torproject.org/torbrowser/12.0.3/tor-browser-linux64-12.0.3_ALL.tar.xz";
+    "https://dist.torproject.org/torbrowser/12.0.4/tor-browser-linux64-12.0.4_ALL.tar.xz";
 const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
+// Save the TBB with this filename
 const DOWNLOAD_FILE_NAME : &str = "download.tar.xz";
 
 // TODO: Handle all unwrap() effectively
 
 // Create a single TorClient which will be used to spawn isolated connections
-//
-// Workaround for https://gitlab.torproject.org/tpo/core/arti/-/issues/779
 
 async fn get_tor_client() -> TorClient<PreferredRuntime> {
     let config = TorClientConfig::default();
@@ -63,11 +64,11 @@ async fn request(
     end: usize,
     http: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> Vec<u8> {
-    //let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
     let partial_req_value =
         String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
     warn!("Requesting {} via Tor...", url);
+    // GET the contents of URL from byte offset "start" to "end"
     let req = Request::builder()
         .method(Method::GET)
         .uri(uri)
@@ -76,12 +77,14 @@ async fn request(
         .unwrap();
     let mut resp = http.request(req).await.unwrap();
 
+    // Got partial content, this is good
     if resp.status() == 206 {
         warn!("Good request, getting partial content...");
     } else {
         warn!("Non 206 Status code: {}", resp.status());
     }
 
+    // Get the body of the response
     let body = hyper::body::to_bytes(resp.body_mut())
         .await
         .unwrap()
@@ -89,6 +92,7 @@ async fn request(
     body
 }
 
+// just write the bytes at the right position in the file
 fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
     let mut fd = OpenOptions::new()
         .write(true)
@@ -113,19 +117,24 @@ async fn main() {
     let baseconn = get_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
     fd.set_len(length).unwrap();
+    // determine the amount of iterations required
     let steps = length / REQSIZE;
     let mut start = 0;
     for _ in 0..steps {
+        // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
         let newhttp = get_new_connection(&baseconn).await;
         //tokio::task::spawn(async move {
         {
+            // request via new Tor connection
             let body = request(url, start, end, newhttp).await;
+            // save to disk
             save_to_file(DOWNLOAD_FILE_NAME, start, body);
         }
         //});
         start = end + 1;
     }
+    // if last portion of file is left, request it and write to disk
     if start < length as usize {
         let newhttp = get_new_connection(&baseconn).await;
         let body = request(url, start, length as usize, newhttp).await;
