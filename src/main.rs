@@ -20,7 +20,7 @@ const DOWNLOAD_FILE_NAME : &str = "download.tar.xz";
 // TODO: Handle all unwrap() effectively
 
 // Create a single TorClient which will be used to spawn isolated connections
-
+// This Client uses the default config with no other changes
 async fn get_tor_client() -> TorClient<PreferredRuntime> {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
@@ -44,6 +44,7 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
     let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
     warn!("Requesting content length of {} via Tor...", url);
+    // Create a new request
     let req = Request::builder()
         .method(Method::GET)
         .uri(uri)
@@ -51,9 +52,11 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
         .unwrap();
 
     let resp = http.request(req).await.unwrap();
+    // Get Content-Length
     let raw_length = resp.headers().get("Content-Length").unwrap();
     let length = raw_length.to_str().unwrap().parse::<u64>().unwrap();
     warn!("Content-Length of resource: {}", length);
+    // Return it after a suitable typecast
     length
 }
 
@@ -102,6 +105,10 @@ fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
     fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
     fd.write_all(&body).unwrap();
 }
+
+// Summary: create a new TorClient, determine the number of "chunks" to get
+// the Tor Browser Bundle in, create a new isolated circuit for each chunk,
+// get the chunk at that offset, save it to the disk
 
 #[tokio::main]
 async fn main() {
