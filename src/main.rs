@@ -143,9 +143,7 @@ async fn main() {
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = connections
-            .get(i as usize % MAX_CONNECTIONS)
-            .unwrap();
+        let newhttp = connections.get(i as usize % MAX_CONNECTIONS).unwrap();
         //tokio::task::spawn(async move {
         {
             // request via new Tor connection
