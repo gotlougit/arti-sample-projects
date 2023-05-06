@@ -130,14 +130,8 @@ async fn main() {
     // determine the amount of iterations required
     let steps = length / REQSIZE;
     let mut start = 0;
-    let mut connections: Vec<
-        Client<
-            arti_hyper::ArtiHttpConnector<
-                tor_rtcompat::PreferredRuntime,
-                tls_api_native_tls::TlsConnector,
-            >,
-        >,
-    > = Vec::new();
+    let mut connections: Vec<Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>> =
+        Vec::new();
     for _ in 0..MAX_CONNECTIONS {
         let newhttp = get_new_connection(&baseconn).await;
         connections.push(newhttp);
