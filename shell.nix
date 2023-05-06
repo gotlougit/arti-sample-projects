@@ -10,4 +10,8 @@ in
       sqlite.dev
       ];
     OPENSSL_DEV=openssl.dev;
+
+    shellHook = ''
+      alias check-sig='gpgv --keyring ./tor.keyring signature.asc download.tar.xz'
+    '';
   }
