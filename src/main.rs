@@ -126,20 +126,26 @@ async fn main() {
     //let url = TESTURL;
     let baseconn = get_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
-    fd.set_len(length).unwrap();
-    // determine the amount of iterations required
-    let steps = length / REQSIZE;
-    let mut start = 0;
-    let mut connections: Vec<Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>> =
-        Vec::new();
+
+    // Initialize the connections we will use for this download
+    let mut connections: Vec<Client<_>> = Vec::new();
     for _ in 0..MAX_CONNECTIONS {
         let newhttp = get_new_connection(&baseconn).await;
         connections.push(newhttp);
     }
+
+    // set length of file
+    fd.set_len(length).unwrap();
+    // determine the amount of iterations required
+    let steps = length / REQSIZE;
+
+    let mut start = 0;
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = &connections[i as usize % MAX_CONNECTIONS];
+        let newhttp = connections
+            .get(i as usize % MAX_CONNECTIONS)
+            .unwrap();
         //tokio::task::spawn(async move {
         {
             // request via new Tor connection
