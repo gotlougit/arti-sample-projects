@@ -65,7 +65,7 @@ async fn request(
     url: &'static str,
     start: usize,
     end: usize,
-    http: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
+    http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> Vec<u8> {
     let uri = Uri::from_static(url);
     let partial_req_value =
@@ -127,10 +127,15 @@ async fn main() {
     // determine the amount of iterations required
     let steps = length / REQSIZE;
     let mut start = 0;
-    for _ in 0..steps {
+    let mut connections : Vec<Client<arti_hyper::ArtiHttpConnector<tor_rtcompat::PreferredRuntime, tls_api_native_tls::TlsConnector>>> = Vec::new();
+    for _ in 0..6 {
+        let newhttp = get_new_connection(&baseconn).await;
+        connections.push(newhttp);
+    }
+    for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = get_new_connection(&baseconn).await;
+        let newhttp = &connections[i as usize % 6];
         //tokio::task::spawn(async move {
         {
             // request via new Tor connection
@@ -144,7 +149,7 @@ async fn main() {
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
         let newhttp = get_new_connection(&baseconn).await;
-        let body = request(url, start, length as usize, newhttp).await;
+        let body = request(url, start, length as usize, &newhttp).await;
         save_to_file(DOWNLOAD_FILE_NAME, start, body);
     }
 }
