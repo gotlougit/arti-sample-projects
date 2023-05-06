@@ -21,4 +21,4 @@ Make sure you have Rust installed and ready to go.
 Clone this repo, and run ```cargo run```
 to run the program. It will automatically fetch dependencies and compile the program.
 
-Right now, it only downloads a specific Linux build of the Tor Browser Bundle as a file "download".
+Right now, it only downloads a specific Linux build of the Tor Browser Bundle as a file "download.tar.xz".
