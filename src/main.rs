@@ -9,13 +9,13 @@ use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
 // REQSIZE is just the size of each chunk we get from a particular circuit
-const REQSIZE: u64 = 1024*1024;
+const REQSIZE: u64 = 1024 * 1024;
 // TORURL is the particular Tor Browser Bundle URL
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.0.4/tor-browser-linux64-12.0.4_ALL.tar.xz";
 const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
 // Save the TBB with this filename
-const DOWNLOAD_FILE_NAME : &str = "download.tar.xz";
+const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 
 // TODO: Handle all unwrap() effectively
 
@@ -127,7 +127,14 @@ async fn main() {
     // determine the amount of iterations required
     let steps = length / REQSIZE;
     let mut start = 0;
-    let mut connections : Vec<Client<arti_hyper::ArtiHttpConnector<tor_rtcompat::PreferredRuntime, tls_api_native_tls::TlsConnector>>> = Vec::new();
+    let mut connections: Vec<
+        Client<
+            arti_hyper::ArtiHttpConnector<
+                tor_rtcompat::PreferredRuntime,
+                tls_api_native_tls::TlsConnector,
+            >,
+        >,
+    > = Vec::new();
     for _ in 0..6 {
         let newhttp = get_new_connection(&baseconn).await;
         connections.push(newhttp);
