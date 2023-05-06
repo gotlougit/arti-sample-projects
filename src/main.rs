@@ -16,6 +16,9 @@ const TORURL: &str =
 const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
 // Save the TBB with this filename
 const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
+// Number of simultaneous connections that are made
+// TODO: make this user configurable
+const MAX_CONNECTIONS: usize = 6;
 
 // TODO: Handle all unwrap() effectively
 
@@ -135,14 +138,14 @@ async fn main() {
             >,
         >,
     > = Vec::new();
-    for _ in 0..6 {
+    for _ in 0..MAX_CONNECTIONS {
         let newhttp = get_new_connection(&baseconn).await;
         connections.push(newhttp);
     }
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = &connections[i as usize % 6];
+        let newhttp = &connections[i as usize % MAX_CONNECTIONS];
         //tokio::task::spawn(async move {
         {
             // request via new Tor connection
