@@ -7,6 +7,7 @@ use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
+use futures::future::join_all;
 
 // REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
@@ -138,22 +139,21 @@ async fn main() {
     fd.set_len(length).unwrap();
     // determine the amount of iterations required
     let steps = length / REQSIZE;
-
+    let mut downloadtasks = Vec::new();
     let mut start = 0;
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = connections.get(i as usize % MAX_CONNECTIONS).unwrap();
-        //tokio::task::spawn(async move {
-        {
+        let newhttp = connections.get(i as usize % MAX_CONNECTIONS).unwrap().clone();
+        downloadtasks.push(tokio::spawn(async move {
             // request via new Tor connection
-            let body = request(url, start, end, newhttp).await;
+            let body = request(url, start, end, &newhttp).await;
             // save to disk
             save_to_file(DOWNLOAD_FILE_NAME, start, body);
-        }
-        //});
+        }));
         start = end + 1;
     }
+    join_all(downloadtasks).await;
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
         let newhttp = get_new_connection(&baseconn).await;
