@@ -409,7 +409,12 @@ name = "connection-checker"
 version = "0.1.0"
 dependencies = [
  "arti-client",
+ "arti-hyper",
+ "hyper",
+ "tls-api",
+ "tls-api-native-tls",
  "tokio",
+ "tor-rtcompat",
  "tracing",
  "tracing-subscriber",
 ]
