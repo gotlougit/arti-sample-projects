@@ -1,5 +1,6 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
+use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
 use std::fs::OpenOptions;
 use std::io::{Seek, Write};
@@ -7,7 +8,6 @@ use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
-use futures::future::join_all;
 
 // REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
@@ -144,7 +144,10 @@ async fn main() {
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = connections.get(i as usize % MAX_CONNECTIONS).unwrap().clone();
+        let newhttp = connections
+            .get(i as usize % MAX_CONNECTIONS)
+            .unwrap()
+            .clone();
         downloadtasks.push(tokio::spawn(async move {
             // request via new Tor connection
             let body = request(url, start, end, &newhttp).await;
