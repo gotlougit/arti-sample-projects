@@ -2,3 +2,10 @@
 download.tar.xz
 tor.keyring
 signature.asc
+
+
+# Added by cargo
+#
+# already existing elements were commented out
+
+#/target
