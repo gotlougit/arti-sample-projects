@@ -146,22 +146,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "arti-sample-project"
-version = "0.1.0"
-dependencies = [
- "arti-client",
- "arti-hyper",
- "futures",
- "hyper",
- "tls-api",
- "tls-api-native-tls",
- "tokio",
- "tor-rtcompat",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "async-compression"
 version = "0.3.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -418,6 +402,16 @@ dependencies = [
  "pathdiff",
  "serde",
  "toml 0.5.11",
+]
+
+[[package]]
+name = "connection-checker"
+version = "0.1.0"
+dependencies = [
+ "arti-client",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -709,6 +703,22 @@ name = "downcast-rs"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
+
+[[package]]
+name = "download-manager"
+version = "0.1.0"
+dependencies = [
+ "arti-client",
+ "arti-hyper",
+ "futures",
+ "hyper",
+ "tls-api",
+ "tls-api-native-tls",
+ "tokio",
+ "tor-rtcompat",
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "dyn-clone"
