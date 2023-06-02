@@ -1,7 +1,8 @@
 [workspace]
 members = [
     "crates/download-manager",
-    "crates/connection-checker"
+    "crates/connection-checker",
+    "crates/dns-resolver"
 ]
 
 resolver = "2"
