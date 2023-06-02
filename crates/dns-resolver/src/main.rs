@@ -4,6 +4,7 @@ use futures::io::{AsyncReadExt, AsyncWriteExt};
 
 // header will be used by both types of messages so need to serialize and deserialize
 #[derive(Encode, Decode)]
+#[repr(C)]
 struct Header {
     pub identification: u16,
     // TODO: don't rely on cryptic packed bits
@@ -15,6 +16,7 @@ struct Header {
 }
 
 #[derive(Encode)]
+#[repr(C)]
 struct Query {
     pub header: Header,
     pub qname: Vec<u8>, // domain name
@@ -36,12 +38,12 @@ struct Response {
 fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
-        identification: 123, // chosen by random dice roll, secure
-        packed_second_row: 0x100,
-        qdcount: 1,
-        ancount: 0,
-        nscount: 0,
-        arcount: 0,
+        identification: 0x0123, // chosen by random dice roll, secure
+        packed_second_row: 0x0100,
+        qdcount: 0x0001,
+        ancount: 0x0000,
+        nscount: 0x0000,
+        arcount: 0x0000,
     };
     let mut qname: Vec<u8> = Vec::new();
     let split_domain: Vec<&str> = domain.split('.').collect();
