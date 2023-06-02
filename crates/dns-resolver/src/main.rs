@@ -26,9 +26,9 @@ struct Header {
 #[derive(Serialize)]
 struct Query {
     header: Header,
-    qname: u16,  // domain name
-    qtype: u16,  // set to 0x0001 for A records
-    qclass: u16, // set to 1 for Internet addresses
+    qname: Vec<u8>, // domain name
+    qtype: u16,     // set to 0x0001 for A records
+    qclass: u16,    // set to 1 for Internet addresses
 }
 
 #[derive(Deserialize)]
