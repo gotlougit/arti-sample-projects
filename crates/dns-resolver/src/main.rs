@@ -1,6 +1,6 @@
 use arti_client::{TorClient, TorClientConfig};
 use bincode::{config, Decode, Encode};
-use futures::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
 // header will be used by both types of messages so need to serialize and deserialize
 #[derive(Encode, Decode)]
