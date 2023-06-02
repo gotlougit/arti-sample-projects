@@ -1,6 +1,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use bincode::{config, Decode, Encode};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::net::TcpStream;
 
 // header will be used by both types of messages so need to serialize and deserialize
 #[derive(Encode, Decode)]
@@ -38,7 +39,7 @@ struct Response {
 fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
-        identification: 0x0123, // chosen by random dice roll, secure
+        identification: 0x304e, // chosen by random dice roll, secure
         packed_second_row: 0x0100,
         qdcount: 0x0001,
         ancount: 0x0000,
@@ -50,28 +51,33 @@ fn craft_query(domain: &str) -> Query {
     for part in split_domain {
         let l = part.len() as u8;
         qname.push(l);
-        qname.extend(part.as_bytes().to_vec());
+        qname.extend_from_slice(part.as_bytes());
     }
-    qname.push(0);
+    qname.push(0x00);
     Query {
         header,
         qname,
-        qtype: 1,
-        qclass: 1,
+        qtype: 0x0001,
+        qclass: 0x0001,
     }
 }
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    let bincode_config = config::standard();
+    let bincode_config = config::standard()
+        .with_big_endian()
+        .with_variable_int_encoding();
+    /*
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
-    let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
+    */
+    let mut stream = TcpStream::connect("9.9.9.9:53").await.unwrap();
+    //let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
     let req = craft_query("google.com");
     let raw_req = bincode::encode_to_vec(&req, bincode_config).unwrap();
     dbg!("{}", &raw_req);
-    stream.write_all(&raw_req).await.unwrap();
+    stream.write_all(raw_req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
     let mut buf = Vec::new();
     stream.read_to_end(&mut buf).await.unwrap();
