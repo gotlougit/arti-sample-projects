@@ -19,7 +19,7 @@ struct Header {
 
 impl AsBytes for Header {
     fn as_bytes(self) -> Vec<u8> {
-        let mut v: Vec<u8> = Vec::new();
+        let mut v: Vec<u8> = Vec::with_capacity(12);
         let id_bits = u16::to_be_bytes(self.identification);
         let second_bits = u16::to_be_bytes(self.packed_second_row);
         let qd_bits = u16::to_be_bytes(self.qdcount);
