@@ -115,7 +115,7 @@ async fn main() {
     let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
-    let mut buf = Vec::new();
+    let mut buf = vec![0u8; 100];
     stream.read_to_end(&mut buf).await.unwrap();
     dbg!("{}", buf);
 }
