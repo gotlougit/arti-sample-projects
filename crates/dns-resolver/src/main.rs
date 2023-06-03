@@ -1,5 +1,6 @@
 use arti_client::{TorClient, TorClientConfig};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+//use tokio::net::TcpStream;
 
 // Used to convert to raw bytes to be sent over the network
 trait AsBytes {
@@ -25,7 +26,10 @@ struct Header {
 // Ugly, repetitive code to convert all six 16-bit fields into Vec<u8>
 impl AsBytes for Header {
     fn as_bytes(self) -> Vec<u8> {
-        let mut v: Vec<u8> = Vec::with_capacity(12);
+        let mut v: Vec<u8> = Vec::with_capacity(14);
+        // Add some magic numbers; these were observed using Wireshark
+        v.push(0x00);
+        v.push(0x33);
         let id_bits = u16::to_be_bytes(self.identification);
         let second_bits = u16::to_be_bytes(self.packed_second_row);
         let qd_bits = u16::to_be_bytes(self.qdcount);
@@ -63,6 +67,10 @@ impl AsBytes for Query {
         v.extend(self.qname);
         v.extend_from_slice(&qtype_bits);
         v.extend_from_slice(&qclass_bits);
+        // Add dummy bytes to query to make query work
+        while v.len() != 53 {
+            v.push(0x00);
+        }
         v
     }
 }
@@ -84,7 +92,7 @@ fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
         identification: 0x304e, // chosen by random dice roll, secure
-        packed_second_row: 0x0120,
+        packed_second_row: 0x0100,
         qdcount: 0x0001,
         ancount: 0x0000,
         nscount: 0x0000,
@@ -118,4 +126,12 @@ async fn main() {
     let mut buf = vec![0u8; 100];
     stream.read_to_end(&mut buf).await.unwrap();
     dbg!("{}", buf);
+    /*
+    let mut stream = TcpStream::connect("1.1.1.1:53").await.unwrap();
+    let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
+    stream.write_all(&req).await.unwrap();
+    let mut buf = [0u8; 53];
+    stream.read(&mut buf).await.unwrap();
+    dbg!("{}", buf);
+    */
 }
