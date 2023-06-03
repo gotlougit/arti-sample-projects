@@ -1,6 +1,5 @@
 use arti_client::{TorClient, TorClientConfig};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::UdpSocket;
 
 trait AsBytes {
     fn as_bytes(self) -> Vec<u8>;
@@ -98,25 +97,13 @@ fn craft_query(domain: &str) -> Query {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    /*
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
-    */
-    let mut stream = UdpSocket::bind("0.0.0.0:8080").await.unwrap();
-    stream.connect("1.1.1.1:53").await.unwrap();
-    //let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
-    let req = craft_query("google.com");
-    let mut raw_req = req.as_bytes();
-    dbg!("{}", &raw_req);
-    stream.send(&raw_req).await.unwrap();
-    let mut buf: Vec<u8> = Vec::new();
-    let len = stream.recv(&mut buf).await.unwrap();
+    let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
+    let req = craft_query("google.com").as_bytes();
+    stream.write_all(req.as_slice()).await.unwrap();
+    stream.flush().await.unwrap();
+    let mut buf = Vec::new();
+    stream.read_to_end(&mut buf).await.unwrap();
     dbg!("{}", buf);
-    /*
-     stream.write_all(raw_req.as_slice()).await.unwrap();
-     stream.flush().await.unwrap();
-     let mut buf = Vec::new();
-     stream.read_to_end(&mut buf).await.unwrap();
-     dbg!("{}", buf);
-    */
 }
