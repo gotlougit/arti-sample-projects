@@ -1,5 +1,4 @@
 use arti_client::{TorClient, TorClientConfig};
-use bincode::{config, Decode, Encode};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::UdpSocket;
 
@@ -8,7 +7,6 @@ trait AsBytes {
 }
 
 // header will be used by both types of messages so need to serialize and deserialize
-#[derive(Encode, Decode)]
 #[repr(C)]
 struct Header {
     pub identification: u16,
@@ -39,7 +37,6 @@ impl AsBytes for Header {
     }
 }
 
-#[derive(Encode)]
 #[repr(C)]
 struct Query {
     pub header: Header,
@@ -62,7 +59,6 @@ impl AsBytes for Query {
     }
 }
 
-#[derive(Decode)]
 struct Response {
     pub header: Header,
     pub name: u16,      // same as in Query
