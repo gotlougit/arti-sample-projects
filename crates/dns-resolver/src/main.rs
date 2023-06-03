@@ -1,11 +1,16 @@
 use arti_client::{TorClient, TorClientConfig};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
+// Used to convert to raw bytes to be sent over the network
 trait AsBytes {
     fn as_bytes(self) -> Vec<u8>;
 }
 
-// header will be used by both types of messages so need to serialize and deserialize
+// Note: repr(C) disables struct data shuffling to adhere to standards
+
+// DNS Header to be used by both Query and Response
+// The default values written below are from the perspective of the client
+// TODO: For server we will have to interpret given values
 #[repr(C)]
 struct Header {
     pub identification: u16,
@@ -17,6 +22,7 @@ struct Header {
     pub arcount: u16,           // set to 0
 }
 
+// Ugly, repetitive code to convert all six 16-bit fields into Vec<u8>
 impl AsBytes for Header {
     fn as_bytes(self) -> Vec<u8> {
         let mut v: Vec<u8> = Vec::with_capacity(12);
@@ -36,6 +42,9 @@ impl AsBytes for Header {
     }
 }
 
+// The actual query we will send to a DNS server
+// For now A records are fetched only
+// TODO: add support for different records to be fetched
 #[repr(C)]
 struct Query {
     pub header: Header,
@@ -58,6 +67,8 @@ impl AsBytes for Query {
     }
 }
 
+// Unused for now
+// TODO: use this to interpret response
 struct Response {
     pub header: Header,
     pub name: u16,      // same as in Query
@@ -68,6 +79,7 @@ struct Response {
     pub rdata: Vec<u8>, // IP address(es)
 }
 
+// Craft the actual query by hardcoding some values
 fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
@@ -85,7 +97,7 @@ fn craft_query(domain: &str) -> Query {
         qname.push(l);
         qname.extend_from_slice(part.as_bytes());
     }
-    qname.push(0x00);
+    qname.push(0x00); // Denote that hostname has ended by pushing 0x00
     Query {
         header,
         qname,
@@ -100,7 +112,7 @@ async fn main() {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
-    let req = craft_query("google.com").as_bytes();
+    let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
     let mut buf = Vec::new();
