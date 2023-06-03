@@ -1,7 +1,11 @@
 use arti_client::{TorClient, TorClientConfig};
 use bincode::{config, Decode, Encode};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpStream;
+use tokio::net::UdpSocket;
+
+trait AsBytes {
+    fn as_bytes(self) -> Vec<u8>;
+}
 
 // header will be used by both types of messages so need to serialize and deserialize
 #[derive(Encode, Decode)]
@@ -16,6 +20,25 @@ struct Header {
     pub arcount: u16,           // set to 0
 }
 
+impl AsBytes for Header {
+    fn as_bytes(self) -> Vec<u8> {
+        let mut v: Vec<u8> = Vec::new();
+        let id_bits = u16::to_be_bytes(self.identification);
+        let second_bits = u16::to_be_bytes(self.packed_second_row);
+        let qd_bits = u16::to_be_bytes(self.qdcount);
+        let an_bits = u16::to_be_bytes(self.ancount);
+        let ns_bits = u16::to_be_bytes(self.nscount);
+        let ar_bits = u16::to_be_bytes(self.arcount);
+        v.extend_from_slice(&id_bits);
+        v.extend_from_slice(&second_bits);
+        v.extend_from_slice(&qd_bits);
+        v.extend_from_slice(&an_bits);
+        v.extend_from_slice(&ns_bits);
+        v.extend_from_slice(&ar_bits);
+        v
+    }
+}
+
 #[derive(Encode)]
 #[repr(C)]
 struct Query {
@@ -23,6 +46,20 @@ struct Query {
     pub qname: Vec<u8>, // domain name
     pub qtype: u16,     // set to 0x0001 for A records
     pub qclass: u16,    // set to 1 for Internet addresses
+}
+
+impl AsBytes for Query {
+    fn as_bytes(self) -> Vec<u8> {
+        let mut v: Vec<u8> = Vec::new();
+        let header_bytes = self.header.as_bytes();
+        let qtype_bits = u16::to_be_bytes(self.qtype);
+        let qclass_bits = u16::to_be_bytes(self.qclass);
+        v.extend(header_bytes);
+        v.extend(self.qname);
+        v.extend_from_slice(&qtype_bits);
+        v.extend_from_slice(&qclass_bits);
+        v
+    }
 }
 
 #[derive(Decode)]
@@ -40,7 +77,7 @@ fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
         identification: 0x304e, // chosen by random dice roll, secure
-        packed_second_row: 0x0100,
+        packed_second_row: 0x0120,
         qdcount: 0x0001,
         ancount: 0x0000,
         nscount: 0x0000,
@@ -65,21 +102,25 @@ fn craft_query(domain: &str) -> Query {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    let bincode_config = config::standard()
-        .with_big_endian()
-        .with_variable_int_encoding();
     /*
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     */
-    let mut stream = TcpStream::connect("9.9.9.9:53").await.unwrap();
+    let mut stream = UdpSocket::bind("0.0.0.0:8080").await.unwrap();
+    stream.connect("1.1.1.1:53").await.unwrap();
     //let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
     let req = craft_query("google.com");
-    let raw_req = bincode::encode_to_vec(&req, bincode_config).unwrap();
+    let mut raw_req = req.as_bytes();
     dbg!("{}", &raw_req);
-    stream.write_all(raw_req.as_slice()).await.unwrap();
-    stream.flush().await.unwrap();
-    let mut buf = Vec::new();
-    stream.read_to_end(&mut buf).await.unwrap();
+    stream.send(&raw_req).await.unwrap();
+    let mut buf: Vec<u8> = Vec::new();
+    let len = stream.recv(&mut buf).await.unwrap();
     dbg!("{}", buf);
+    /*
+     stream.write_all(raw_req.as_slice()).await.unwrap();
+     stream.flush().await.unwrap();
+     let mut buf = Vec::new();
+     stream.read_to_end(&mut buf).await.unwrap();
+     dbg!("{}", buf);
+    */
 }
