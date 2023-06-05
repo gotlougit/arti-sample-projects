@@ -55,6 +55,18 @@ impl AsBytes for Header {
     }
 }
 
+impl Display for Header {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "ID: {}\n", self.identification).unwrap();
+        write!(f, "Flags: {}\n", self.packed_second_row).unwrap();
+        write!(f, "QDCOUNT: {}\n", self.qdcount).unwrap();
+        write!(f, "ANCOUNT: {}\n", self.ancount).unwrap();
+        write!(f, "NSCOUNT: {}\n", self.nscount).unwrap();
+        write!(f, "ARCOUNT: {}\n", self.arcount).unwrap();
+        Ok(())
+    }
+}
+
 impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> Self {
         // Skip first two bytes
@@ -137,6 +149,7 @@ impl FromBytes for Response {
 
 impl Display for Response {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.header).unwrap();
         write!(f, "Res type: {}\n", self.restype).unwrap();
         write!(f, "Class: {}\n", self.class).unwrap();
         write!(f, "TTL: {}\n", self.ttl).unwrap();
