@@ -7,6 +7,14 @@ trait AsBytes {
     fn as_bytes(self) -> Vec<u8>;
 }
 
+// Used to get a struct from raw bytes representation
+trait FromBytes {
+    fn u8_to_u16(upper: u8, lower: u8) -> u16 {
+        ((upper << 8) | lower) as u16
+    }
+    fn from_bytes(bytes: &[u8]) -> Self;
+}
+
 // Note: repr(C) disables struct data shuffling to adhere to standards
 
 // DNS Header to be used by both Query and Response
@@ -43,6 +51,20 @@ impl AsBytes for Header {
         v.extend_from_slice(&ns_bits);
         v.extend_from_slice(&ar_bits);
         v
+    }
+}
+
+impl FromBytes for Header {
+    fn from_bytes(bytes: &[u8]) -> Self {
+        // Skip first two bytes
+        Header {
+            identification: Header::u8_to_u16(bytes[3], bytes[2]),
+            packed_second_row: Header::u8_to_u16(bytes[5], bytes[4]),
+            qdcount: Header::u8_to_u16(bytes[7], bytes[6]),
+            ancount: Header::u8_to_u16(bytes[9], bytes[8]),
+            nscount: Header::u8_to_u16(bytes[11], bytes[10]),
+            arcount: Header::u8_to_u16(bytes[13], bytes[12]),
+        }
     }
 }
 
@@ -85,6 +107,20 @@ struct Response {
     pub ttl: u16,       // Number of seconds to cache the result
     pub rdlength: u16,  // Length of RDATA
     pub rdata: Vec<u8>, // IP address(es)
+}
+
+impl FromBytes for Response {
+    fn from_bytes(bytes: &[u8]) -> Self {
+        Response {
+            header: Header::from_bytes(&bytes[..14]),
+            name: Response::u8_to_u16(bytes[15], bytes[14]),
+            restype: Response::u8_to_u16(bytes[17], bytes[16]),
+            class: Response::u8_to_u16(bytes[19], bytes[18]),
+            ttl: Response::u8_to_u16(bytes[21], bytes[20]),
+            rdlength: Response::u8_to_u16(bytes[23], bytes[22]),
+            rdata: bytes[24..].to_vec(),
+        }
+    }
 }
 
 // Craft the actual query by hardcoding some values
