@@ -59,12 +59,12 @@ impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> Self {
         // Skip first two bytes
         Header {
-            identification: Header::u8_to_u16(bytes[3], bytes[2]),
-            packed_second_row: Header::u8_to_u16(bytes[5], bytes[4]),
-            qdcount: Header::u8_to_u16(bytes[7], bytes[6]),
-            ancount: Header::u8_to_u16(bytes[9], bytes[8]),
-            nscount: Header::u8_to_u16(bytes[11], bytes[10]),
-            arcount: Header::u8_to_u16(bytes[13], bytes[12]),
+            identification: Header::u8_to_u16(bytes[2], bytes[3]),
+            packed_second_row: Header::u8_to_u16(bytes[4], bytes[5]),
+            qdcount: Header::u8_to_u16(bytes[6], bytes[7]),
+            ancount: Header::u8_to_u16(bytes[8], bytes[9]),
+            nscount: Header::u8_to_u16(bytes[10], bytes[11]),
+            arcount: Header::u8_to_u16(bytes[12], bytes[13]),
         }
     }
 }
@@ -126,10 +126,10 @@ impl FromBytes for Response {
         Response {
             header: Header::from_bytes(&bytes[..14]),
             name: namevec,
-            restype: Response::u8_to_u16(bytes[lastnamebyte + 1], bytes[lastnamebyte]),
-            class: Response::u8_to_u16(bytes[lastnamebyte + 3], bytes[lastnamebyte + 2]),
-            ttl: Response::u8_to_u16(bytes[lastnamebyte + 5], bytes[lastnamebyte + 4]),
-            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 7], bytes[lastnamebyte + 6]),
+            restype: Response::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
+            class: Response::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
+            ttl: Response::u8_to_u16(bytes[lastnamebyte + 4], bytes[lastnamebyte + 5]),
+            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 6], bytes[lastnamebyte + 7]),
             rdata: bytes[l - 4..].to_vec(),
         }
     }
