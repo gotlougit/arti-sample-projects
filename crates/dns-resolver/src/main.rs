@@ -1,6 +1,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tracing::{debug, error};
 //use tokio::net::TcpStream;
 
 // Used to convert to raw bytes to be sent over the network
@@ -126,6 +127,16 @@ struct Response {
 impl FromBytes for Response {
     fn from_bytes(bytes: &[u8]) -> Self {
         let l = bytes.len();
+        let messagelen = Response::u8_to_u16(bytes[0], bytes[1]);
+        if messagelen == (l - 2) as u16 {
+            debug!("Appear to have gotten good message from server");
+        } else {
+            error!(
+                "Expected and observed message length don't match: {} and {} respectively",
+                l - 2,
+                messagelen
+            );
+        }
         let mut namevec: Vec<u8> = Vec::new();
         let mut lastnamebyte: usize = 0;
         for i in 14..l {
