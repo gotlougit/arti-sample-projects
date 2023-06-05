@@ -1,4 +1,5 @@
 use arti_client::{TorClient, TorClientConfig};
+use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 //use tokio::net::TcpStream;
 
@@ -124,6 +125,22 @@ impl FromBytes for Response {
     }
 }
 
+impl Display for Response {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Res type: {}\n", self.restype).unwrap();
+        write!(f, "Class: {}\n", self.class).unwrap();
+        write!(f, "TTL: {}\n", self.ttl).unwrap();
+        write!(f, "RDLENGTH: {}\n", self.rdlength).unwrap();
+        write!(
+            f,
+            "IP address: {}.{}.{}.{}\n",
+            self.rdata[0], self.rdata[1], self.rdata[2], self.rdata[3]
+        )
+        .unwrap();
+        Ok(())
+    }
+}
+
 // Craft the actual query by hardcoding some values
 fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
@@ -163,7 +180,7 @@ async fn main() {
     let mut buf = vec![0u8; 0];
     stream.read_to_end(&mut buf).await.unwrap();
     let resp = Response::from_bytes(&buf);
-    dbg!("{}", resp.rdata);
+    println!("{}", resp);
     /*
     let mut stream = TcpStream::connect("1.1.1.1:53").await.unwrap();
     let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
