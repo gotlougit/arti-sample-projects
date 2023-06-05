@@ -730,8 +730,6 @@ name = "dns-resolver"
 version = "0.1.0"
 dependencies = [
  "arti-client",
- "futures",
- "serde",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
