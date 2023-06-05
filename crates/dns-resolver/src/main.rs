@@ -71,12 +71,12 @@ impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> Self {
         // Skip first two bytes
         Header {
-            identification: Header::u8_to_u16(bytes[2], bytes[3]),
-            packed_second_row: Header::u8_to_u16(bytes[4], bytes[5]),
-            qdcount: Header::u8_to_u16(bytes[6], bytes[7]),
-            ancount: Header::u8_to_u16(bytes[8], bytes[9]),
-            nscount: Header::u8_to_u16(bytes[10], bytes[11]),
-            arcount: Header::u8_to_u16(bytes[12], bytes[13]),
+            identification: Header::u8_to_u16(bytes[0], bytes[1]),
+            packed_second_row: Header::u8_to_u16(bytes[2], bytes[3]),
+            qdcount: Header::u8_to_u16(bytes[4], bytes[5]),
+            ancount: Header::u8_to_u16(bytes[6], bytes[7]),
+            nscount: Header::u8_to_u16(bytes[8], bytes[9]),
+            arcount: Header::u8_to_u16(bytes[10], bytes[11]),
         }
     }
 }
@@ -137,7 +137,7 @@ impl FromBytes for Response {
             }
         }
         Response {
-            header: Header::from_bytes(&bytes[..14]),
+            header: Header::from_bytes(&bytes[2..14]),
             name: namevec,
             restype: Response::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: Response::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
