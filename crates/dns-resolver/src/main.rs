@@ -57,12 +57,12 @@ impl AsBytes for Header {
 
 impl Display for Header {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "ID: {}\n", self.identification).unwrap();
-        write!(f, "Flags: {}\n", self.packed_second_row).unwrap();
-        write!(f, "QDCOUNT: {}\n", self.qdcount).unwrap();
-        write!(f, "ANCOUNT: {}\n", self.ancount).unwrap();
-        write!(f, "NSCOUNT: {}\n", self.nscount).unwrap();
-        write!(f, "ARCOUNT: {}\n", self.arcount).unwrap();
+        write!(f, "ID: 0x{:x}\n", self.identification).unwrap();
+        write!(f, "Flags: 0x{:x}\n", self.packed_second_row).unwrap();
+        write!(f, "QDCOUNT: 0x{:x}\n", self.qdcount).unwrap();
+        write!(f, "ANCOUNT: 0x{:x}\n", self.ancount).unwrap();
+        write!(f, "NSCOUNT: 0x{:x}\n", self.nscount).unwrap();
+        write!(f, "ARCOUNT: 0x{:x}\n", self.arcount).unwrap();
         Ok(())
     }
 }
@@ -150,10 +150,10 @@ impl FromBytes for Response {
 impl Display for Response {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.header).unwrap();
-        write!(f, "Res type: {}\n", self.restype).unwrap();
-        write!(f, "Class: {}\n", self.class).unwrap();
-        write!(f, "TTL: {}\n", self.ttl).unwrap();
-        write!(f, "RDLENGTH: {}\n", self.rdlength).unwrap();
+        write!(f, "Res type: 0x{:x}\n", self.restype).unwrap();
+        write!(f, "Class: 0x{:x}\n", self.class).unwrap();
+        write!(f, "TTL: 0x{:x}\n", self.ttl).unwrap();
+        write!(f, "RDLENGTH: 0x{:x}\n", self.rdlength).unwrap();
         write!(
             f,
             "IP address: {}.{}.{}.{}",
