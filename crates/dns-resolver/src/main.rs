@@ -111,6 +111,7 @@ struct Response {
 
 impl FromBytes for Response {
     fn from_bytes(bytes: &[u8]) -> Self {
+        let l = bytes.len();
         Response {
             header: Header::from_bytes(&bytes[..14]),
             name: Response::u8_to_u16(bytes[15], bytes[14]),
@@ -118,7 +119,7 @@ impl FromBytes for Response {
             class: Response::u8_to_u16(bytes[19], bytes[18]),
             ttl: Response::u8_to_u16(bytes[21], bytes[20]),
             rdlength: Response::u8_to_u16(bytes[23], bytes[22]),
-            rdata: bytes[24..].to_vec(),
+            rdata: bytes[l - 4..].to_vec(),
         }
     }
 }
