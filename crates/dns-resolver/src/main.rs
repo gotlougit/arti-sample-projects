@@ -10,7 +10,7 @@ trait AsBytes {
 // Used to get a struct from raw bytes representation
 trait FromBytes {
     fn u8_to_u16(upper: u8, lower: u8) -> u16 {
-        ((upper << 8) | lower) as u16
+        (upper as u16) << 8 | lower as u16
     }
     fn from_bytes(bytes: &[u8]) -> Self;
 }
