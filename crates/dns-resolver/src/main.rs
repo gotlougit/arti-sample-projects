@@ -112,6 +112,7 @@ impl AsBytes for Query {
 
 // Unused for now
 // TODO: use this to interpret response
+#[repr(C)]
 struct Response {
     pub header: Header,
     pub name: Vec<u8>,  // same as in Query
