@@ -143,7 +143,7 @@ impl Display for Response {
         write!(f, "RDLENGTH: {}\n", self.rdlength).unwrap();
         write!(
             f,
-            "IP address: {}.{}.{}.{}\n",
+            "IP address: {}.{}.{}.{}",
             self.rdata[0], self.rdata[1], self.rdata[2], self.rdata[3]
         )
         .unwrap();
