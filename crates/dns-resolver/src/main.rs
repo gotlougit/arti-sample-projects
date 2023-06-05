@@ -102,7 +102,7 @@ impl AsBytes for Query {
 // TODO: use this to interpret response
 struct Response {
     pub header: Header,
-    pub name: u16,      // same as in Query
+    pub name: Vec<u8>,  // same as in Query
     pub restype: u16,   // same as in Query
     pub class: u16,     // Same as in Query
     pub ttl: u16,       // Number of seconds to cache the result
@@ -113,13 +113,23 @@ struct Response {
 impl FromBytes for Response {
     fn from_bytes(bytes: &[u8]) -> Self {
         let l = bytes.len();
+        let mut namevec: Vec<u8> = Vec::new();
+        let mut lastnamebyte: usize = 0;
+        for i in 14..l {
+            if bytes[i] != 0 {
+                namevec.push(bytes[i]);
+            } else {
+                lastnamebyte = i + 1;
+                break;
+            }
+        }
         Response {
             header: Header::from_bytes(&bytes[..14]),
-            name: Response::u8_to_u16(bytes[15], bytes[14]),
-            restype: Response::u8_to_u16(bytes[17], bytes[16]),
-            class: Response::u8_to_u16(bytes[19], bytes[18]),
-            ttl: Response::u8_to_u16(bytes[21], bytes[20]),
-            rdlength: Response::u8_to_u16(bytes[23], bytes[22]),
+            name: namevec,
+            restype: Response::u8_to_u16(bytes[lastnamebyte + 1], bytes[lastnamebyte]),
+            class: Response::u8_to_u16(bytes[lastnamebyte + 3], bytes[lastnamebyte + 2]),
+            ttl: Response::u8_to_u16(bytes[lastnamebyte + 5], bytes[lastnamebyte + 4]),
+            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 7], bytes[lastnamebyte + 6]),
             rdata: bytes[l - 4..].to_vec(),
         }
     }
