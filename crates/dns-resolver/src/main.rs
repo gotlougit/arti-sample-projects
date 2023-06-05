@@ -161,7 +161,8 @@ async fn main() {
     stream.flush().await.unwrap();
     let mut buf = vec![0u8; 0];
     stream.read_to_end(&mut buf).await.unwrap();
-    dbg!("{}", buf);
+    let resp = Response::from_bytes(&buf);
+    dbg!("{}", resp.rdata);
     /*
     let mut stream = TcpStream::connect("1.1.1.1:53").await.unwrap();
     let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
