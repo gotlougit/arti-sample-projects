@@ -154,7 +154,6 @@ impl FromBytes for Response {
                 break;
             }
         }
-        dbg!("{}", &bytes[lastnamebyte..]);
         let ip_addr_size =
             Response::u8_to_u16(bytes[lastnamebyte + 14], bytes[lastnamebyte + 15]) as usize;
         Response {
