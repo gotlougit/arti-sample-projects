@@ -156,7 +156,7 @@ impl FromBytes for Response {
                     name.push(bytes[i] as char);
                 } else {
                     // Just starting the parsing
-                    if curcount == 0 {
+                    if i == 0 {
                         curcount = bytes[i];
                     // We have parsed one part of the domain
                     } else {
