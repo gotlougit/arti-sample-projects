@@ -176,12 +176,18 @@ impl Display for Response {
         write!(f, "Class: 0x{:x}\n", self.class).unwrap();
         write!(f, "TTL: 0x{:x}\n", self.ttl).unwrap();
         write!(f, "RDLENGTH: 0x{:x}\n", self.rdlength).unwrap();
-        write!(
-            f,
-            "IP address: {}.{}.{}.{}",
-            self.rdata[0], self.rdata[1], self.rdata[2], self.rdata[3]
-        )
-        .unwrap();
+        let num_ip_addresses = self.rdata.len() / 4;
+        for i in 0..num_ip_addresses {
+            write!(
+                f,
+                "IP address: {}.{}.{}.{}",
+                self.rdata[i + 0],
+                self.rdata[i + 1],
+                self.rdata[i + 2],
+                self.rdata[i + 3]
+            )
+            .unwrap();
+        }
         Ok(())
     }
 }
