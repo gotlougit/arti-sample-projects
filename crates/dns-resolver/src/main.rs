@@ -174,7 +174,7 @@ impl Display for Response {
         write!(f, "{}", self.header).unwrap();
         write!(f, "Res type: 0x{:x}\n", self.restype).unwrap();
         write!(f, "Class: 0x{:x}\n", self.class).unwrap();
-        write!(f, "TTL: 0x{:x}\n", self.ttl).unwrap();
+        write!(f, "TTL: {}\n", self.ttl).unwrap();
         write!(f, "RDLENGTH: 0x{:x}\n", self.rdlength).unwrap();
         let num_ip_addresses = self.rdata.len() / 4;
         for i in 0..num_ip_addresses {
