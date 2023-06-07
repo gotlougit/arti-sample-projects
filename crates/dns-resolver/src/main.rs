@@ -180,7 +180,7 @@ impl Display for Response {
         for i in 0..num_ip_addresses {
             write!(
                 f,
-                "IP address: {}.{}.{}.{}",
+                "IP address: {}.{}.{}.{}\n",
                 self.rdata[i + 0],
                 self.rdata[i + 1],
                 self.rdata[i + 2],
