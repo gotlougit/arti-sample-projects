@@ -124,7 +124,7 @@ impl AsBytes for Query {
 #[repr(C)]
 struct Response {
     pub header: Header,
-    pub name: Vec<u8>,  // same as in Query
+    pub name: String,   // preprocessed from raw bytes
     pub restype: u16,   // same as in Query
     pub class: u16,     // Same as in Query
     pub ttl: i32,       // Number of seconds to cache the result
@@ -145,12 +145,26 @@ impl FromBytes for Response {
                 messagelen
             );
         }
-        let mut namevec: Vec<u8> = Vec::new();
-        let mut lastnamebyte: usize = 0;
-        for i in 14..l {
+        let mut lastnamebyte = 0;
+        let mut name = String::new();
+        let mut curcount = 0;
+        // TODO: check we have parsed the domain name correctly
+        for i in 15..l {
             if bytes[i] != 0 {
-                namevec.push(bytes[i]);
+                // Allowed characters in domain name are appended to the string
+                if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
+                    name.push(bytes[i] as char);
+                } else {
+                    // Just starting the parsing
+                    if curcount == 0 {
+                        curcount = bytes[i];
+                    // We have parsed one part of the domain
+                    } else {
+                        name.push('.');
+                    }
+                }
             } else {
+                // End of domain name, proceed to parse further fields
                 lastnamebyte = i + 1;
                 break;
             }
@@ -159,7 +173,7 @@ impl FromBytes for Response {
             Response::u8_to_u16(bytes[lastnamebyte + 14], bytes[lastnamebyte + 15]) as usize;
         Response {
             header: Header::from_bytes(&bytes[2..14]),
-            name: namevec,
+            name,
             restype: Response::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: Response::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
             ttl: Response::u8_to_i32(&bytes[lastnamebyte + 10..lastnamebyte + 14]),
@@ -172,6 +186,7 @@ impl FromBytes for Response {
 impl Display for Response {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.header).unwrap();
+        write!(f, "Name: {}\n", self.name).unwrap();
         write!(f, "Res type: 0x{:x}\n", self.restype).unwrap();
         write!(f, "Class: 0x{:x}\n", self.class).unwrap();
         write!(f, "TTL: {}\n", self.ttl).unwrap();
