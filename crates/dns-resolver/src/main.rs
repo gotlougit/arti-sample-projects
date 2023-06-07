@@ -133,7 +133,10 @@ struct Response {
 }
 
 impl FromBytes for Response {
+    // Try to construct Response from raw byte data from network
+    // We will also try to check if a valid DNS response has been sent back to us
     fn from_bytes(bytes: &[u8]) -> Self {
+        // Check message length
         let l = bytes.len();
         let messagelen = Response::u8_to_u16(bytes[0], bytes[1]);
         if messagelen == (l - 2) as u16 {
@@ -145,8 +148,9 @@ impl FromBytes for Response {
                 messagelen
             );
         }
-        let mut lastnamebyte = 0;
+        // Parse NAME field that has been sent back to us
         let mut name = String::new();
+        let mut lastnamebyte = 0;
         let mut curcount = 0;
         let mut part_parsed = 0;
         for i in 14..l {
@@ -175,6 +179,7 @@ impl FromBytes for Response {
                 break;
             }
         }
+        // Get length of IP address field to store all the responses we got
         let ip_addr_size =
             Response::u8_to_u16(bytes[lastnamebyte + 14], bytes[lastnamebyte + 15]) as usize;
         Response {
