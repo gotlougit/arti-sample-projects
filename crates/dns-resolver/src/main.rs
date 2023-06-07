@@ -149,14 +149,14 @@ impl FromBytes for Response {
         let mut name = String::new();
         let mut curcount = 0;
         // TODO: check we have parsed the domain name correctly
-        for i in 15..l {
+        for i in 14..l {
             if bytes[i] != 0 {
                 // Allowed characters in domain name are appended to the string
                 if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
                     name.push(bytes[i] as char);
                 } else {
                     // Just starting the parsing
-                    if i == 0 {
+                    if i == 14 {
                         curcount = bytes[i];
                     // We have parsed one part of the domain
                     } else {
