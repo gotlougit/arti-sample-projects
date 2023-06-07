@@ -2,7 +2,7 @@
 download.tar.xz
 tor.keyring
 signature.asc
-
+.envrc
 
 # Added by cargo
 #
