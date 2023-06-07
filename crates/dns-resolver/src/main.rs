@@ -1,4 +1,5 @@
 use arti_client::{TorClient, TorClientConfig};
+use std::env;
 use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error};
@@ -221,10 +222,15 @@ fn craft_query(domain: &str) -> Query {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
+    let args: Vec<String> = env::args().collect();
+    if args.len() < 2 {
+        eprintln!("Usage: dns-resolver <hostname-to-lookup>");
+        return;
+    }
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
-    let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
+    let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
     let mut buf = vec![0u8; 0];
