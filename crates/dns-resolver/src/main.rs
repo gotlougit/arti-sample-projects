@@ -14,6 +14,13 @@ trait FromBytes {
     fn u8_to_u16(upper: u8, lower: u8) -> u16 {
         (upper as u16) << 8 | lower as u16
     }
+    fn u8_to_i32(bytes: &[u8]) -> i32 {
+        let ans: i32 = (bytes[0] as i32) << 24
+            | (bytes[1] as i32) << 16
+            | (bytes[2] as i32) << 8
+            | bytes[3] as i32;
+        ans
+    }
     fn from_bytes(bytes: &[u8]) -> Self;
 }
 
@@ -119,7 +126,7 @@ struct Response {
     pub name: Vec<u8>,  // same as in Query
     pub restype: u16,   // same as in Query
     pub class: u16,     // Same as in Query
-    pub ttl: u16,       // Number of seconds to cache the result
+    pub ttl: i32,       // Number of seconds to cache the result
     pub rdlength: u16,  // Length of RDATA
     pub rdata: Vec<u8>, // IP address(es)
 }
@@ -147,14 +154,17 @@ impl FromBytes for Response {
                 break;
             }
         }
+        dbg!("{}", &bytes[lastnamebyte..]);
+        let ip_addr_size =
+            Response::u8_to_u16(bytes[lastnamebyte + 14], bytes[lastnamebyte + 15]) as usize;
         Response {
             header: Header::from_bytes(&bytes[2..14]),
             name: namevec,
             restype: Response::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: Response::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
-            ttl: Response::u8_to_u16(bytes[lastnamebyte + 4], bytes[lastnamebyte + 5]),
-            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 6], bytes[lastnamebyte + 7]),
-            rdata: bytes[l - 4..].to_vec(),
+            ttl: Response::u8_to_i32(&bytes[lastnamebyte + 10..lastnamebyte + 14]),
+            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
+            rdata: bytes[l - ip_addr_size..].to_vec(),
         }
     }
 }
