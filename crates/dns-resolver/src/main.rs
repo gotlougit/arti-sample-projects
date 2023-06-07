@@ -207,7 +207,7 @@ impl Display for Response {
             write!(
                 f,
                 "IP address: {}.{}.{}.{}\n",
-                self.rdata[i + 0],
+                self.rdata[i],
                 self.rdata[i + 1],
                 self.rdata[i + 2],
                 self.rdata[i + 3]
