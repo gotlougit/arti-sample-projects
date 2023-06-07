@@ -78,7 +78,6 @@ impl Display for Header {
 
 impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> Self {
-        // Skip first two bytes
         Header {
             identification: Header::u8_to_u16(bytes[0], bytes[1]),
             packed_second_row: Header::u8_to_u16(bytes[2], bytes[3]),
