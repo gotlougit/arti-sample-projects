@@ -78,9 +78,15 @@ impl Display for Header {
 
 impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> Self {
+        let packed_second_row = Header::u8_to_u16(bytes[2], bytes[3]);
+        if packed_second_row == 0x8180 {
+            debug!("Correct flags set in response");
+        } else {
+            error!("Incorrect flags set in response");
+        }
         Header {
             identification: Header::u8_to_u16(bytes[0], bytes[1]),
-            packed_second_row: Header::u8_to_u16(bytes[2], bytes[3]),
+            packed_second_row,
             qdcount: Header::u8_to_u16(bytes[4], bytes[5]),
             ancount: Header::u8_to_u16(bytes[6], bytes[7]),
             nscount: Header::u8_to_u16(bytes[8], bytes[9]),
