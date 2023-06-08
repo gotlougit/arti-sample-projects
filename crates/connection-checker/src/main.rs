@@ -8,6 +8,7 @@ use tracing::info;
 const URL: &str = "https://www.torproject.org";
 const HOST_PORT: &str = "torproject.org:80";
 
+// Generic function to test HTTPS request to a particular host
 async fn test_connection(tor_client: TorClient<PreferredRuntime>) {
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
     let tor_connector = ArtiHttpConnector::new(tor_client, tls_connector);
@@ -17,7 +18,9 @@ async fn test_connection(tor_client: TorClient<PreferredRuntime>) {
     println!("Status code: {}", status);
 }
 
-// Connect to a sample host and try to
+// Connect to a sample host and print the path it used to get there
+// Note that due to the way Tor works, we can't guarantee this is the only
+// path being used by any requests
 async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
     let stream = tor_client.connect(HOST_PORT).await.unwrap();
     let circ = stream.circuit().path();
@@ -26,6 +29,7 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
     }
 }
 
+// Make a normal connection using publicly known Tor entry nodes
 async fn test_normal_connection() {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
