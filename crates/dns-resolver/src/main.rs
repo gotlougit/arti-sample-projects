@@ -78,6 +78,7 @@ impl Display for Header {
 
 impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> Self {
+        debug!("Parsing the header");
         let packed_second_row = Header::u8_to_u16(bytes[2], bytes[3]);
         if packed_second_row == 0x8180 {
             debug!("Correct flags set in response");
@@ -141,6 +142,7 @@ impl FromBytes for Response {
     // Try to construct Response from raw byte data from network
     // We will also try to check if a valid DNS response has been sent back to us
     fn from_bytes(bytes: &[u8]) -> Self {
+        debug!("Parsing response into struct");
         // Check message length
         let l = bytes.len();
         let messagelen = Response::u8_to_u16(bytes[0], bytes[1]);
@@ -180,6 +182,7 @@ impl FromBytes for Response {
                 }
             } else {
                 // End of domain name, proceed to parse further fields
+                debug!("Reached end of name, moving on to parse other fields");
                 lastnamebyte = i + 1;
                 break;
             }
@@ -242,6 +245,7 @@ fn craft_query(domain: &str) -> Query {
         qname.extend_from_slice(part.as_bytes());
     }
     qname.push(0x00); // Denote that hostname has ended by pushing 0x00
+    debug!("Crafted query successfully!");
     Query {
         header,
         qname,
@@ -260,10 +264,12 @@ async fn main() {
     }
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
+    debug!("Connecting to 1.1.1.1 port 53 for DNS over TCP lookup");
     let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
     let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
+    debug!("Awaiting response...");
     let mut buf = vec![0u8; 0];
     stream.read_to_end(&mut buf).await.unwrap();
     let resp = Response::from_bytes(&buf);
