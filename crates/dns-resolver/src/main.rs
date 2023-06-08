@@ -45,7 +45,9 @@ struct Header {
 impl AsBytes for Header {
     fn as_bytes(self) -> Vec<u8> {
         let mut v: Vec<u8> = Vec::with_capacity(14);
-        // Add some magic numbers; these were observed using Wireshark
+        // TODO: don't pad message unnecessarily, change these values
+        // These 2 bytes store size of the rest of the payload (including header)
+        // Right now it denotes 51 byte size packet, excluding these 2 bytes
         v.push(0x00);
         v.push(0x33);
         let id_bits = u16::to_be_bytes(self.identification);
