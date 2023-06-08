@@ -65,7 +65,7 @@ async fn test_snowflake_connection() {
     let mut transport = ManagedTransportConfigBuilder::default();
     transport
         .protocols(vec!["snowflake".parse().unwrap()])
-        .path(CfgPath::new(("/sbin/snowflake-pt-client").into()))
+        .path(CfgPath::new(("client").into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
     let config = builder.build().unwrap();
@@ -78,4 +78,5 @@ async fn test_snowflake_connection() {
 async fn main() {
     tracing_subscriber::fmt::init();
     test_normal_connection().await;
+    test_snowflake_connection().await;
 }
