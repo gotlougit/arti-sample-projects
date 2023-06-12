@@ -127,7 +127,6 @@ impl AsBytes for Query {
     }
 }
 
-// Unused for now
 // TODO: use this to interpret response
 #[repr(C)]
 struct Response {
