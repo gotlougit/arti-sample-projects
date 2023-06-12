@@ -19,7 +19,7 @@ async fn test_connection(tor_client: TorClient<PreferredRuntime>) {
     let resp = http.get(URL.try_into().unwrap()).await.unwrap();
     let status = resp.status();
     if status == 200 {
-        info!("Got 200 status code, we are successfully connected to resource!");
+        println!("Got 200 status code, we are successfully connected to resource!");
     } else {
         error!("Non 200 status code encountered! {}", status);
     }
@@ -34,7 +34,7 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
         Ok(stream) => {
             let circ = stream.circuit().path();
             for node in circ {
-                info!("Node: {}", node);
+                println!("Node: {}", node);
             }
         }
         Err(e) => {
