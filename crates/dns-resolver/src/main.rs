@@ -101,7 +101,7 @@ impl FromBytes for Header {
 // A struct which represents one RR
 #[repr(C)]
 struct ResourceRecord {
-    pub name: Vec<u8>,
+    pub name: String,
     pub rtype: u16,
     pub class: u16,
     pub ttl: u32,
