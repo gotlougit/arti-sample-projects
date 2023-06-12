@@ -217,7 +217,7 @@ impl FromBytes for ResourceRecord {
         Self {
             rtype: ResourceRecord::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: ResourceRecord::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
-            ttl: ResourceRecord::u8_to_u32(&bytes[lastnamebyte + 10..lastnamebyte + 14]),
+            ttl: ResourceRecord::u8_to_u32(&bytes[lastnamebyte + 4..lastnamebyte + 8]),
             rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
             rdata,
         }
