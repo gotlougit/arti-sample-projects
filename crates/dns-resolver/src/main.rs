@@ -135,7 +135,7 @@ struct ResourceRecord {
     pub class: u16,     // same as in Query
     pub ttl: u32,       // number of seconds to cache the result
     pub rdlength: u16,  // Length of RDATA
-    pub rdata: Vec<u8>, // IP address(es)
+    pub rdata: [u8; 4], // IP address
 }
 
 // Stores the response in easy to interpret manner
