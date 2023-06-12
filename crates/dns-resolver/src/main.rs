@@ -15,11 +15,11 @@ trait FromBytes {
     fn u8_to_u16(upper: u8, lower: u8) -> u16 {
         (upper as u16) << 8 | lower as u16
     }
-    fn u8_to_i32(bytes: &[u8]) -> i32 {
-        let ans: i32 = (bytes[0] as i32) << 24
-            | (bytes[1] as i32) << 16
-            | (bytes[2] as i32) << 8
-            | bytes[3] as i32;
+    fn u8_to_u32(bytes: &[u8]) -> i32 {
+        let ans: u32 = (bytes[0] as u32) << 24
+            | (bytes[1] as u32) << 16
+            | (bytes[2] as u32) << 8
+            | bytes[3] as u32;
         ans
     }
     fn from_bytes(bytes: &[u8]) -> Self;
