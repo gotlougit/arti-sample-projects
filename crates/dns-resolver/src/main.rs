@@ -25,6 +25,10 @@ trait FromBytes {
     fn from_bytes(bytes: &[u8]) -> Self;
 }
 
+trait Len {
+    fn len(&self) -> usize;
+}
+
 // Note: repr(C) disables struct data shuffling to adhere to standards
 
 // DNS Header to be used by both Query and Response
@@ -127,6 +131,59 @@ impl AsBytes for Query {
     }
 }
 
+impl Len for Query {
+    fn len(&self) -> usize {
+        // extra 1 is for compensating for how we
+        // use one byte more to store length of domain name
+        return 12 + 1 + self.qname.len() + 2 + 2;
+    }
+}
+
+impl FromBytes for Query {
+    // FIXME: the name struct isn't stored as it was sent over the wire
+    fn from_bytes(bytes: &[u8]) -> Self {
+        let l = bytes.len();
+        let header = Header::from_bytes(&bytes[..12]);
+        let mut name = String::new();
+        let mut lastnamebyte = 0;
+        let mut curcount = 0;
+        let mut part_parsed = 0;
+        for i in 14..l {
+            if bytes[i] != 0 {
+                // Allowed characters in domain name are appended to the string
+                if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
+                    name.push(bytes[i] as char);
+                    part_parsed += 1;
+                } else {
+                    // Condition here is to prevent executing code at beginning of parsing
+                    if i != 14 {
+                        // We have parsed one part of the domain
+                        if part_parsed == curcount {
+                            dbg!("Parsed part successfully");
+                        } else {
+                            error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
+                        }
+                        part_parsed = 0;
+                        name.push('.');
+                    }
+                    curcount = bytes[i];
+                }
+            } else {
+                // End of domain name, proceed to parse further fields
+                debug!("Reached end of name, moving on to parse other fields");
+                lastnamebyte = i + 1;
+                break;
+            }
+        }
+        Self {
+            header,
+            qname: name.as_bytes().to_vec(),
+            qtype: Query::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
+            qclass: Query::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
+        }
+    }
+}
+
 // A struct which represents one RR
 #[repr(C)]
 struct ResourceRecord {
@@ -138,7 +195,7 @@ struct ResourceRecord {
     pub rdata: [u8; 4], // IP address
 }
 
-impl ResourceRecord {
+impl Len for ResourceRecord {
     // return number of bytes it consumes
     fn len(&self) -> usize {
         let mut size = 0;
@@ -210,7 +267,7 @@ impl FromBytes for ResourceRecord {
 // Stores the response in easy to interpret manner
 #[repr(C)]
 struct Response {
-    pub header: Header,
+    pub query: Query,
     pub rr: Vec<ResourceRecord>,
 }
 
@@ -232,6 +289,8 @@ impl FromBytes for Response {
             );
         }
         let mut index = 2;
+        let query = Query::from_bytes(&bytes[index..]);
+        index += query.len();
         let mut rrvec: Vec<ResourceRecord> = Vec::new();
         while index < l {
             let rr = ResourceRecord::from_bytes(&bytes[index..]);
