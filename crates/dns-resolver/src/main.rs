@@ -98,6 +98,17 @@ impl FromBytes for Header {
     }
 }
 
+// A struct which represents one RR
+#[repr(C)]
+struct ResourceRecord {
+    pub name: Vec<u8>,
+    pub rtype: u16,
+    pub class: u16,
+    pub ttl: u32,
+    pub rdlength: u16,
+    pub rdata: Vec<u8>,
+}
+
 // The actual query we will send to a DNS server
 // For now A records are fetched only
 // TODO: add support for different records to be fetched
