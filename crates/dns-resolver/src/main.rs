@@ -127,7 +127,7 @@ impl AsBytes for Query {
     }
 }
 
-// TODO: use this to interpret response
+// Stores the response in easy to interpret manner
 #[repr(C)]
 struct Response {
     pub header: Header,
