@@ -156,7 +156,7 @@ impl FromBytes for Query {
                     part_parsed += 1;
                 } else {
                     // Condition here is to prevent executing code at beginning of parsing
-                    if i != 14 {
+                    if i != 12 {
                         // We have parsed one part of the domain
                         if part_parsed == curcount {
                             dbg!("Parsed part successfully");
