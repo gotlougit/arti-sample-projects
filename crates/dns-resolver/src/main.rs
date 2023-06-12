@@ -138,6 +138,52 @@ struct ResourceRecord {
     pub rdata: [u8; 4], // IP address
 }
 
+impl FromBytes for ResourceRecord {
+    fn from_bytes(bytes: &[u8]) -> Self {
+        let l = bytes.len();
+        // Parse NAME field that has been sent back to us
+        let mut name = String::new();
+        let mut lastnamebyte = 0;
+        let mut curcount = 0;
+        let mut part_parsed = 0;
+        for i in 14..l {
+            if bytes[i] != 0 {
+                // Allowed characters in domain name are appended to the string
+                if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
+                    name.push(bytes[i] as char);
+                    part_parsed += 1;
+                } else {
+                    // Condition here is to prevent executing code at beginning of parsing
+                    if i != 14 {
+                        // We have parsed one part of the domain
+                        if part_parsed == curcount {
+                            dbg!("Parsed part successfully");
+                        } else {
+                            error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
+                        }
+                        part_parsed = 0;
+                        name.push('.');
+                    }
+                    curcount = bytes[i];
+                }
+            } else {
+                // End of domain name, proceed to parse further fields
+                debug!("Reached end of name, moving on to parse other fields");
+                lastnamebyte = i + 1;
+                break;
+            }
+        }
+        Self {
+            name,
+            rtype: ResourceRecord::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
+            class: ResourceRecord::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
+            ttl: ResourceRecord::u8_to_i32(&bytes[lastnamebyte + 10..lastnamebyte + 14]),
+            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
+            rdata: bytes[l - 4..],
+        }
+    }
+}
+
 // Stores the response in easy to interpret manner
 #[repr(C)]
 struct Response {
