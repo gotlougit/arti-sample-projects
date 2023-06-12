@@ -138,6 +138,27 @@ struct ResourceRecord {
     pub rdata: [u8; 4], // IP address
 }
 
+impl ResourceRecord {
+    // return number of bytes it consumes
+    fn len(&self) -> usize {
+        let mut size = 0;
+        // We used compression, so name is empty
+        // We would've stored a u16 for the offset, so increment size by 2
+        if self.name.is_empty() {
+            size += 2;
+        } else {
+            size += self.name.len();
+        }
+        size += 2; // rtype
+        size += 2; // class
+        size += 2; // class
+        size += 4; // ttl
+        size += 2; // rdlength
+        size += 4; // rdata
+        size
+    }
+}
+
 impl FromBytes for ResourceRecord {
     fn from_bytes(bytes: &[u8]) -> Self {
         let l = bytes.len();
@@ -210,49 +231,16 @@ impl FromBytes for Response {
                 messagelen
             );
         }
-        // Parse NAME field that has been sent back to us
-        let mut name = String::new();
-        let mut lastnamebyte = 0;
-        let mut curcount = 0;
-        let mut part_parsed = 0;
-        for i in 14..l {
-            if bytes[i] != 0 {
-                // Allowed characters in domain name are appended to the string
-                if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
-                    name.push(bytes[i] as char);
-                    part_parsed += 1;
-                } else {
-                    // Condition here is to prevent executing code at beginning of parsing
-                    if i != 14 {
-                        // We have parsed one part of the domain
-                        if part_parsed == curcount {
-                            dbg!("Parsed part successfully");
-                        } else {
-                            error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
-                        }
-                        part_parsed = 0;
-                        name.push('.');
-                    }
-                    curcount = bytes[i];
-                }
-            } else {
-                // End of domain name, proceed to parse further fields
-                debug!("Reached end of name, moving on to parse other fields");
-                lastnamebyte = i + 1;
-                break;
-            }
+        let mut index = 2;
+        let mut rrvec: Vec<ResourceRecord> = Vec::new();
+        while index < l {
+            let rr = ResourceRecord::from_bytes(&bytes[index..]);
+            rrvec.push(rr);
+            index += rr.len();
         }
-        // Get length of IP address field to store all the responses we got
-        let ip_addr_size =
-            Response::u8_to_u16(bytes[lastnamebyte + 14], bytes[lastnamebyte + 15]) as usize;
         Response {
             header: Header::from_bytes(&bytes[2..14]),
-            name,
-            restype: Response::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
-            class: Response::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
-            ttl: Response::u8_to_i32(&bytes[lastnamebyte + 10..lastnamebyte + 14]),
-            rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
-            rdata: bytes[l - ip_addr_size..].to_vec(),
+            rr: rrvec,
         }
     }
 }
