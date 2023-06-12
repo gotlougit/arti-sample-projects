@@ -148,7 +148,7 @@ impl FromBytes for Query {
         let mut lastnamebyte = 0;
         let mut curcount = 0;
         let mut part_parsed = 0;
-        for i in 14..l {
+        for i in 12..l {
             if bytes[i] != 0 {
                 // Allowed characters in domain name are appended to the string
                 if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
