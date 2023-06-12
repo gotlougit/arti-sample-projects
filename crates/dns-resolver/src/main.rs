@@ -294,33 +294,26 @@ impl FromBytes for Response {
         let mut rrvec: Vec<ResourceRecord> = Vec::new();
         while index < l {
             let rr = ResourceRecord::from_bytes(&bytes[index..]);
-            rrvec.push(rr);
             index += rr.len();
+            rrvec.push(rr);
         }
-        Response {
-            header: Header::from_bytes(&bytes[2..14]),
-            rr: rrvec,
-        }
+        Response { query, rr: rrvec }
     }
 }
 
 impl Display for Response {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.header).unwrap();
-        write!(f, "Name: {}\n", self.name).unwrap();
-        write!(f, "Res type: 0x{:x}\n", self.restype).unwrap();
-        write!(f, "Class: 0x{:x}\n", self.class).unwrap();
-        write!(f, "TTL: {}\n", self.ttl).unwrap();
-        write!(f, "RDLENGTH: 0x{:x}\n", self.rdlength).unwrap();
-        let num_ip_addresses = self.rdata.len() / 4;
-        for i in 0..num_ip_addresses {
+        write!(f, "{}", self.query.header).unwrap();
+        //write!(f, "Name: {}\n", self.query.qname).unwrap();
+        write!(f, "Res type: 0x{:x}\n", self.query.qtype).unwrap();
+        write!(f, "Class: 0x{:x}\n", self.query.qclass).unwrap();
+        for record in self.rr.iter() {
+            write!(f, "TTL: {}\n", record.ttl).unwrap();
+            write!(f, "RDLENGTH: 0x{:x}\n", record.rdlength).unwrap();
             write!(
                 f,
                 "IP address: {}.{}.{}.{}\n",
-                self.rdata[i],
-                self.rdata[i + 1],
-                self.rdata[i + 2],
-                self.rdata[i + 3]
+                record.rdata[0], record.rdata[1], record.rdata[2], record.rdata[3]
             )
             .unwrap();
         }
