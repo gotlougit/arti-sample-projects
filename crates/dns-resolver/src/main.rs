@@ -98,17 +98,6 @@ impl FromBytes for Header {
     }
 }
 
-// A struct which represents one RR
-#[repr(C)]
-struct ResourceRecord {
-    pub name: String,   // preprocessed from raw bytes
-    pub rtype: u16,     // same as in Query
-    pub class: u16,     // same as in Query
-    pub ttl: u32,       // number of seconds to cache the result
-    pub rdlength: u16,  // Length of RDATA
-    pub rdata: Vec<u8>, // IP address(es)
-}
-
 // The actual query we will send to a DNS server
 // For now A records are fetched only
 // TODO: add support for different records to be fetched
@@ -136,6 +125,17 @@ impl AsBytes for Query {
         }
         v
     }
+}
+
+// A struct which represents one RR
+#[repr(C)]
+struct ResourceRecord {
+    pub name: String,   // preprocessed from raw bytes
+    pub rtype: u16,     // same as in Query
+    pub class: u16,     // same as in Query
+    pub ttl: u32,       // number of seconds to cache the result
+    pub rdlength: u16,  // Length of RDATA
+    pub rdata: Vec<u8>, // IP address(es)
 }
 
 // Stores the response in easy to interpret manner
