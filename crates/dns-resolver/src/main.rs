@@ -173,13 +173,15 @@ impl FromBytes for ResourceRecord {
                 break;
             }
         }
+        let rdata = [0u8; 4];
+        rdata.copy_from_slice(&bytes[lastnamebyte + 10..lastnamebyte + 14]);
         Self {
             name,
             rtype: ResourceRecord::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: ResourceRecord::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
             ttl: ResourceRecord::u8_to_u32(&bytes[lastnamebyte + 10..lastnamebyte + 14]),
             rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
-            rdata: bytes[l - 4..],
+            rdata,
         }
     }
 }
