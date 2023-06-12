@@ -159,7 +159,7 @@ impl FromBytes for Query {
                     if i != 12 {
                         // We have parsed one part of the domain
                         if part_parsed == curcount {
-                            dbg!("Parsed part successfully");
+                            debug!("Parsed part successfully");
                         } else {
                             error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
                         }
