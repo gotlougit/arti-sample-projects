@@ -49,9 +49,9 @@ struct Header {
 impl AsBytes for Header {
     fn as_bytes(self) -> Vec<u8> {
         let mut v: Vec<u8> = Vec::with_capacity(14);
-        // TODO: don't pad message unnecessarily, change these values
         // These 2 bytes store size of the rest of the payload (including header)
         // Right now it denotes 51 byte size packet, excluding these 2 bytes
+        // We will change this when we know the size of Query
         v.push(0x00);
         v.push(0x33);
         let id_bits = u16::to_be_bytes(self.identification);
@@ -123,10 +123,13 @@ impl AsBytes for Query {
         v.extend(self.qname);
         v.extend_from_slice(&qtype_bits);
         v.extend_from_slice(&qclass_bits);
-        // Add dummy bytes to query to make query work
-        while v.len() != 53 {
-            v.push(0x00);
-        }
+        // Now that the packet is ready, we can calculate size and set that in
+        // first two octets
+        // Subtract 2 since these first 2 bits are never counted when reporting
+        // length like this
+        let len_bits = u16::to_be_bytes((v.len() - 2) as u16);
+        v[0] = len_bits[0];
+        v[1] = len_bits[1];
         v
     }
 }
