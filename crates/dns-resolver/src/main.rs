@@ -201,7 +201,6 @@ impl Len for ResourceRecord {
         size += 2; // name, even though we don't store it here
         size += 2; // rtype
         size += 2; // class
-        size += 2; // class
         size += 4; // ttl
         size += 2; // rdlength
         size += 4; // rdata
