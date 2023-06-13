@@ -223,6 +223,22 @@ impl FromBytes for ResourceRecord {
     }
 }
 
+impl Display for ResourceRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "RR record type: 0x{:x}\n", self.rtype).unwrap();
+        write!(f, "RR class: 0x{:x}\n", self.class).unwrap();
+        write!(f, "TTL: {}\n", self.ttl).unwrap();
+        write!(f, "RDLENGTH: 0x{:x}\n", self.rdlength).unwrap();
+        write!(
+            f,
+            "IP address: {}.{}.{}.{}\n",
+            self.rdata[0], self.rdata[1], self.rdata[2], self.rdata[3]
+        )
+        .unwrap();
+        Ok(())
+    }
+}
+
 // Stores the response in easy to interpret manner
 #[repr(C)]
 struct Response {
@@ -272,16 +288,8 @@ impl Display for Response {
         write!(f, "Res type: 0x{:x}\n", self.query.qtype).unwrap();
         write!(f, "Class: 0x{:x}\n", self.query.qclass).unwrap();
         for record in self.rr.iter() {
-            write!(f, "RR record type: 0x{:x}\n", record.rtype).unwrap();
-            write!(f, "RR class: 0x{:x}\n", record.class).unwrap();
-            write!(f, "TTL: {}\n", record.ttl).unwrap();
-            write!(f, "RDLENGTH: 0x{:x}\n", record.rdlength).unwrap();
-            write!(
-                f,
-                "IP address: {}.{}.{}.{}\n",
-                record.rdata[0], record.rdata[1], record.rdata[2], record.rdata[3]
-            )
-            .unwrap();
+            write!(f, "\n").unwrap();
+            write!(f, "{}", record).unwrap();
         }
         Ok(())
     }
