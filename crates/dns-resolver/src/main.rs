@@ -337,7 +337,7 @@ async fn main() {
     println!("{}", resp);
     */
     let mut stream = TcpStream::connect("1.1.1.1:53").await.unwrap();
-    let req = craft_query("google.com").as_bytes(); // Get raw bytes representation
+    let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(&req).await.unwrap();
     debug!("Awaiting response...");
     let mut buf = vec![0u8; 0];
