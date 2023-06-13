@@ -117,12 +117,10 @@ impl AsBytes for Query {
     fn as_bytes(self) -> Vec<u8> {
         let mut v: Vec<u8> = Vec::new();
         let header_bytes = self.header.as_bytes();
-        let qtype_bits = u16::to_be_bytes(self.qtype);
-        let qclass_bits = u16::to_be_bytes(self.qclass);
         v.extend(header_bytes);
         v.extend(self.qname);
-        v.extend_from_slice(&qtype_bits);
-        v.extend_from_slice(&qclass_bits);
+        v.extend_from_slice(&u16::to_be_bytes(self.qtype));
+        v.extend_from_slice(&u16::to_be_bytes(self.qclass));
         // Now that the packet is ready, we can calculate size and set that in
         // first two octets
         // Subtract 2 since these first 2 bits are never counted when reporting
