@@ -58,6 +58,7 @@ impl AsBytes for Header {
         // We will change this when we know the size of Query
         v.push(0x00);
         v.push(0x33);
+        // Just break u16 into [u8, u8] array and copy into vector
         v.extend_from_slice(&u16::to_be_bytes(self.identification));
         v.extend_from_slice(&u16::to_be_bytes(self.packed_second_row));
         v.extend_from_slice(&u16::to_be_bytes(self.qdcount));
