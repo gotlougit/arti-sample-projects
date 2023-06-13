@@ -250,7 +250,7 @@ impl FromBytes for Response {
         }
         let mut index = 2;
         let query = Query::from_bytes(&bytes[index..]);
-        index += query.len();
+        index += query.len() + 2;
         let mut rrvec: Vec<ResourceRecord> = Vec::new();
         while index < l {
             let rr = ResourceRecord::from_bytes(&bytes[index..]);
