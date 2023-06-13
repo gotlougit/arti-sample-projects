@@ -211,7 +211,7 @@ impl Len for ResourceRecord {
 
 impl FromBytes for ResourceRecord {
     fn from_bytes(bytes: &[u8]) -> Self {
-        let lastnamebyte = 2;
+        let lastnamebyte = 1;
         let mut rdata = [0u8; 4];
         rdata.copy_from_slice(&bytes[lastnamebyte + 10..lastnamebyte + 14]);
         Self {
