@@ -58,18 +58,12 @@ impl AsBytes for Header {
         // We will change this when we know the size of Query
         v.push(0x00);
         v.push(0x33);
-        let id_bits = u16::to_be_bytes(self.identification);
-        let second_bits = u16::to_be_bytes(self.packed_second_row);
-        let qd_bits = u16::to_be_bytes(self.qdcount);
-        let an_bits = u16::to_be_bytes(self.ancount);
-        let ns_bits = u16::to_be_bytes(self.nscount);
-        let ar_bits = u16::to_be_bytes(self.arcount);
-        v.extend_from_slice(&id_bits);
-        v.extend_from_slice(&second_bits);
-        v.extend_from_slice(&qd_bits);
-        v.extend_from_slice(&an_bits);
-        v.extend_from_slice(&ns_bits);
-        v.extend_from_slice(&ar_bits);
+        v.extend_from_slice(&u16::to_be_bytes(self.identification));
+        v.extend_from_slice(&u16::to_be_bytes(self.packed_second_row));
+        v.extend_from_slice(&u16::to_be_bytes(self.qdcount));
+        v.extend_from_slice(&u16::to_be_bytes(self.ancount));
+        v.extend_from_slice(&u16::to_be_bytes(self.nscount));
+        v.extend_from_slice(&u16::to_be_bytes(self.arcount));
         v
     }
 }
