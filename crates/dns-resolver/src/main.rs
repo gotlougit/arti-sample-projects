@@ -345,7 +345,7 @@ async fn main() {
     stream.write_all(req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
     debug!("Awaiting response...");
-    let mut buf = vec![0u8; 0];
+    let mut buf: Vec<u8> = Vec::new();
     stream.read_to_end(&mut buf).await.unwrap();
     let resp = Response::from_bytes(&buf);
     println!("{}", resp);
