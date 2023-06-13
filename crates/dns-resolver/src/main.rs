@@ -95,6 +95,7 @@ impl FromBytes for Header {
         } else {
             error!("Incorrect flags set in response");
         }
+        // These offsets were determined by looking at RFC 1035
         Header {
             identification: Header::u8_to_u16(bytes[0], bytes[1]),
             packed_second_row,
@@ -151,6 +152,7 @@ impl FromBytes for Query {
     fn from_bytes(bytes: &[u8]) -> Self {
         let l = bytes.len();
         let header = Header::from_bytes(&bytes[..12]);
+        // Parse name
         let mut name = String::new();
         let mut lastnamebyte = 0;
         let mut curcount = 0;
@@ -182,6 +184,7 @@ impl FromBytes for Query {
                 break;
             }
         }
+        // These offsets were determined by looking at RFC 1035
         Self {
             header,
             qname: name.as_bytes().to_vec(),
@@ -219,7 +222,9 @@ impl FromBytes for ResourceRecord {
     fn from_bytes(bytes: &[u8]) -> Self {
         let lastnamebyte = 1;
         let mut rdata = [0u8; 4];
+        // Copy over IP address into rdata
         rdata.copy_from_slice(&bytes[lastnamebyte + 10..lastnamebyte + 14]);
+        // These offsets were determined by looking at RFC 1035
         Self {
             rtype: ResourceRecord::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: ResourceRecord::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
@@ -270,9 +275,10 @@ impl FromBytes for Response {
                 messagelen
             );
         }
+        // Start index at 2 to skip over message length bytes
         let mut index = 2;
         let query = Query::from_bytes(&bytes[index..]);
-        index += query.len() + 2;
+        index += query.len() + 2; // TODO: needs explanation why it works
         let mut rrvec: Vec<ResourceRecord> = Vec::new();
         while index < l {
             let rr = ResourceRecord::from_bytes(&bytes[index..]);
