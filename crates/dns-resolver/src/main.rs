@@ -273,6 +273,8 @@ impl Display for Response {
         write!(f, "Res type: 0x{:x}\n", self.query.qtype).unwrap();
         write!(f, "Class: 0x{:x}\n", self.query.qclass).unwrap();
         for record in self.rr.iter() {
+            write!(f, "RR record type: 0x{:x}\n", record.rtype).unwrap();
+            write!(f, "RR class: 0x{:x}\n", record.class).unwrap();
             write!(f, "TTL: {}\n", record.ttl).unwrap();
             write!(f, "RDLENGTH: 0x{:x}\n", record.rdlength).unwrap();
             write!(
