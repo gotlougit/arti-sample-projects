@@ -2,8 +2,8 @@ use arti_client::{TorClient, TorClientConfig};
 use std::env;
 use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpStream;
 use tracing::{debug, error};
+//use tokio::net::TcpStream;
 
 // Used to convert to raw bytes to be sent over the network
 trait AsBytes {
