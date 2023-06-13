@@ -323,7 +323,6 @@ async fn main() {
         eprintln!("Usage: dns-resolver <hostname-to-lookup>");
         return;
     }
-    /*
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     debug!("Connecting to 1.1.1.1 port 53 for DNS over TCP lookup");
@@ -336,7 +335,7 @@ async fn main() {
     stream.read_to_end(&mut buf).await.unwrap();
     let resp = Response::from_bytes(&buf);
     println!("{}", resp);
-    */
+    /*
     let mut stream = TcpStream::connect("1.1.1.1:53").await.unwrap();
     let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(&req).await.unwrap();
@@ -345,4 +344,5 @@ async fn main() {
     stream.read_to_end(&mut buf).await.unwrap();
     let resp = Response::from_bytes(&buf);
     println!("{}", resp);
+    */
 }
