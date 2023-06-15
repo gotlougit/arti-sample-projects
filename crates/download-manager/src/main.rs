@@ -1,3 +1,5 @@
+use arti_client::config::pt::ManagedTransportConfigBuilder;
+use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
@@ -21,6 +23,28 @@ const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 const MAX_CONNECTIONS: usize = 6;
 
 // TODO: Handle all unwrap() effectively
+
+// Create a single TorClient which will be used to spawn isolated connections
+// This Client is configured to use Snowflake to connect to Tor
+async fn get_snowflake_tor_client() -> TorClient<PreferredRuntime> {
+    let mut builder = TorClientConfig::builder();
+    // Make sure it is up to date with
+    // https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/common/bridges_list.snowflake.txt
+    let bridge_line : &str = "snowflake 192.0.2.3:80 2B280B23E1107BB62ABFC40DDCC8824814F80A72 fingerprint=2B280B23E1107BB62ABFC40DDCC8824814F80A72 url=https://snowflake-broker.torproject.net.global.prod.fastly.net/ front=cdn.sstatic.net ice=stun:stun.l.google.com:19302,stun:stun.antisip.com:3478,stun:stun.bluesip.net:3478,stun:stun.dus.net:3478,stun:stun.epygi.com:3478,stun:stun.sonetel.com:3478,stun:stun.uls.co.za:3478,stun:stun.voipgate.com:3478,stun:stun.voys.nl:3478 utls-imitate=hellorandomizedalpn";
+    let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
+    builder.bridges().bridges().push(bridge);
+    let mut transport = ManagedTransportConfigBuilder::default();
+    transport
+        .protocols(vec!["snowflake".parse().unwrap()])
+        // THIS IS DISTRO SPECIFIC
+        // If this function doesn't work, check by what name snowflake client
+        // goes by on your system
+        .path(CfgPath::new(("client").into()))
+        .run_on_startup(true);
+    builder.bridges().transports().push(transport);
+    let config = builder.build().unwrap();
+    TorClient::create_bootstrapped(config).await.unwrap()
+}
 
 // Create a single TorClient which will be used to spawn isolated connections
 // This Client uses the default config with no other changes
@@ -124,7 +148,7 @@ async fn main() {
         .unwrap();
     let url = TORURL;
     //let url = TESTURL;
-    let baseconn = get_tor_client().await;
+    let baseconn = get_snowflake_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
 
     // Initialize the connections we will use for this download
