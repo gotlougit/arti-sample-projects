@@ -140,12 +140,14 @@ fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
+    /*
     warn!("Creating download file");
     let fd = OpenOptions::new()
         .write(true)
         .create(true)
         .open(DOWNLOAD_FILE_NAME)
         .unwrap();
+    */
     let url = TORURL;
     let baseconn = get_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
@@ -158,7 +160,7 @@ async fn main() {
     }
 
     // set length of file
-    fd.set_len(length).unwrap();
+    //fd.set_len(length).unwrap();
     // determine the amount of iterations required
     let steps = length / REQSIZE;
     let mut downloadtasks = Vec::new();
