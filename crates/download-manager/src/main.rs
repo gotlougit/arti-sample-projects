@@ -14,7 +14,6 @@ const REQSIZE: u64 = 1024 * 1024;
 // TORURL is the particular Tor Browser Bundle URL
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.0.7/tor-browser-linux64-12.0.7_ALL.tar.xz";
-const TESTURL: &str = "https://www.gutenberg.org/files/2701/2701-0.txt";
 // Save the TBB with this filename
 const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 // Number of simultaneous connections that are made
