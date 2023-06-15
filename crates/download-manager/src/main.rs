@@ -147,7 +147,7 @@ async fn main() {
         .open(DOWNLOAD_FILE_NAME)
         .unwrap();
     let url = TORURL;
-    let baseconn = get_snowflake_tor_client().await;
+    let baseconn = get_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
 
     // Initialize the connections we will use for this download
