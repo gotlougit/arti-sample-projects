@@ -153,8 +153,6 @@ async fn main() {
         connections.push(newhttp);
     }
 
-    // set length of file
-    //fd.set_len(length).unwrap();
     // determine the amount of iterations required
     let steps = length / REQSIZE;
     let mut downloadtasks = Vec::new();
