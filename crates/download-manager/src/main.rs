@@ -124,6 +124,7 @@ async fn request(
 
 // just write the bytes at the right position in the file
 fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
+    warn!("Saving a chunk to disk...");
     let mut fd = OpenOptions::new()
         .write(true)
         .create(true)
