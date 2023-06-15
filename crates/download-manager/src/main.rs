@@ -4,7 +4,7 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions};
 use std::io::{Seek, Write};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
@@ -123,13 +123,8 @@ async fn request(
 }
 
 // just write the bytes at the right position in the file
-fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
+fn save_to_file(mut fd: File, start: usize, body: Vec<u8>) {
     warn!("Saving a chunk to disk...");
-    let mut fd = OpenOptions::new()
-        .write(true)
-        .create(true)
-        .open(fname)
-        .unwrap();
     fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
     fd.write_all(&body).unwrap();
 }
@@ -141,14 +136,12 @@ fn save_to_file(fname: &'static str, start: usize, body: Vec<u8>) {
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    /*
     warn!("Creating download file");
     let fd = OpenOptions::new()
         .write(true)
         .create(true)
         .open(DOWNLOAD_FILE_NAME)
         .unwrap();
-    */
     let url = TORURL;
     let baseconn = get_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
@@ -173,11 +166,12 @@ async fn main() {
             .get(i as usize % MAX_CONNECTIONS)
             .unwrap()
             .clone();
+        let fd_clone = fd.try_clone().unwrap();
         downloadtasks.push(tokio::spawn(async move {
             // request via new Tor connection
             let body = request(url, start, end, &newhttp).await;
             // save to disk
-            save_to_file(DOWNLOAD_FILE_NAME, start, body);
+            save_to_file(fd_clone, start, body);
         }));
         start = end + 1;
     }
@@ -186,6 +180,6 @@ async fn main() {
     if start < length as usize {
         let newhttp = get_new_connection(&baseconn).await;
         let body = request(url, start, length as usize, &newhttp).await;
-        save_to_file(DOWNLOAD_FILE_NAME, start, body);
+        save_to_file(fd, start, body);
     }
 }
