@@ -46,7 +46,7 @@ async fn test_obfs4_connection(bridge_line: &str) {
     let config = builder.build().unwrap();
     match TorClient::create_bootstrapped(config).await {
         Ok(tor_client) => get_circuit(&tor_client).await,
-        Err(e) => eprintln!("{}", bridge_line),
+        Err(e) => eprintln!("{}", e.report()),
     }
 }
 
