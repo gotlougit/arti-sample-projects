@@ -1709,6 +1709,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "obfs4-checker"
+version = "0.1.0"
+dependencies = [
+ "arti-client",
+ "arti-hyper",
+ "hyper",
+ "tls-api",
+ "tls-api-native-tls",
+ "tokio",
+ "tor-error",
+ "tor-rtcompat",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "object"
 version = "0.30.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
