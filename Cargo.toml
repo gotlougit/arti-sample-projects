@@ -2,6 +2,7 @@
 members = [
     "crates/download-manager",
     "crates/connection-checker",
+    "crates/obfs4-checker",
     "crates/dns-resolver"
 ]
 
