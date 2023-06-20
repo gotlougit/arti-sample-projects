@@ -38,7 +38,7 @@ async fn test_obfs4_connection(bridge_line: &str) {
     transport
         .protocols(vec!["obfs4".parse().unwrap()])
         // THIS IS DISTRO SPECIFIC
-        // If this function doesn't work, check by what name snowflake client
+        // If this function doesn't work, check by what name obfs4 client
         // goes by on your system
         .path(CfgPath::new(("obfs4proxy").into()))
         .run_on_startup(true);
