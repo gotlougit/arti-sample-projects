@@ -139,43 +139,43 @@ dependencies = [
 [[package]]
 name = "arti-client"
 version = "0.9.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "cfg-if",
  "derive_builder_fork_arti",
  "derive_more",
  "directories",
  "educe",
- "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "futures",
  "hostname-validator",
  "humantime-serde",
  "libc",
  "pin-project",
  "postage",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "thiserror",
- "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-dirmgr 0.10.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hsclient 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-persist 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-ptmgr 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rpcbase 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-dirmgr 0.10.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hsclient 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-persist 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-ptmgr 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rpcbase 0.1.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
  "void",
 ]
@@ -408,7 +408,7 @@ checksum = "69f929120996bb6fe9f243e440c2914eaf12da9e0fa45d847118098e59baced4"
 [[package]]
 name = "caret"
 version = "0.4.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 
 [[package]]
 name = "cc"
@@ -1097,7 +1097,7 @@ dependencies = [
 [[package]]
 name = "fs-mistrust"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "derive_builder_fork_arti",
  "dirs",
@@ -1858,13 +1858,13 @@ dependencies = [
 name = "obfs4-checker"
 version = "0.1.0"
 dependencies = [
- "arti-client 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "arti-client 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
  "tor-chanmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
  "tracing-subscriber",
 ]
@@ -2373,7 +2373,7 @@ checksum = "edcbb4f662b4e1c5b2e2902ab45422dd7d3f9711c62c2f7d837b87ae4eea8de9"
 [[package]]
 name = "retry-error"
 version = "0.4.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 
 [[package]]
 name = "rfc6979"
@@ -2516,7 +2516,7 @@ dependencies = [
 [[package]]
 name = "safelog"
 version = "0.3.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "derive_more",
  "educe",
@@ -3216,7 +3216,7 @@ dependencies = [
 [[package]]
 name = "tor-async-utils"
 version = "0.1.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "futures",
  "pin-project",
@@ -3243,7 +3243,7 @@ dependencies = [
 [[package]]
 name = "tor-basic-utils"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "hex",
  "libc",
@@ -3276,7 +3276,7 @@ dependencies = [
 [[package]]
 name = "tor-bytes"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "bytes",
  "digest 0.10.7",
@@ -3285,8 +3285,8 @@ dependencies = [
  "getrandom 0.2.10",
  "signature 1.6.4",
  "thiserror",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "zeroize",
 ]
 
@@ -3318,24 +3318,24 @@ dependencies = [
 [[package]]
 name = "tor-cell"
 version = "0.11.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "bitflags 2.3.2",
  "bytes",
- "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "derive_more",
  "educe",
  "paste",
  "rand 0.8.5",
  "thiserror",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cert 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cert 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
@@ -3357,16 +3357,16 @@ dependencies = [
 [[package]]
 name = "tor-cert"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
- "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "derive_builder_fork_arti",
  "digest 0.10.7",
  "signature 1.6.4",
  "thiserror",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
@@ -3403,7 +3403,7 @@ dependencies = [
 [[package]]
 name = "tor-chanmgr"
 version = "0.9.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-trait",
  "derive_builder_fork_arti",
@@ -3412,20 +3412,20 @@ dependencies = [
  "futures",
  "postage",
  "rand 0.8.5",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "thiserror",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-socksproto 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-socksproto 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
  "void",
 ]
@@ -3445,12 +3445,12 @@ dependencies = [
 [[package]]
 name = "tor-checkable"
 version = "0.5.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "humantime 2.1.0",
  "signature 1.6.4",
  "thiserror",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
@@ -3497,7 +3497,7 @@ dependencies = [
 [[package]]
 name = "tor-circmgr"
 version = "0.9.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-trait",
  "bounded-vec-deque",
@@ -3512,23 +3512,23 @@ dependencies = [
  "once_cell",
  "pin-project",
  "rand 0.8.5",
- "retry-error 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "retry-error 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "static_assertions",
  "thiserror",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-persist 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-persist 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
  "visibility",
  "weak-table",
@@ -3564,14 +3564,14 @@ dependencies = [
 [[package]]
 name = "tor-config"
 version = "0.9.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "config",
  "derive_builder_fork_arti",
  "directories",
  "educe",
  "either",
- "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "itertools",
  "once_cell",
  "paste",
@@ -3582,8 +3582,8 @@ dependencies = [
  "strum",
  "thiserror",
  "toml 0.7.4",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -3602,12 +3602,12 @@ dependencies = [
 [[package]]
 name = "tor-consdiff"
 version = "0.5.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "digest 0.10.7",
  "hex",
  "thiserror",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
@@ -3641,7 +3641,7 @@ dependencies = [
 [[package]]
 name = "tor-dirclient"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-compression",
  "base64ct",
@@ -3654,14 +3654,14 @@ dependencies = [
  "itertools",
  "memchr",
  "thiserror",
- "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -3718,7 +3718,7 @@ dependencies = [
 [[package]]
 name = "tor-dirmgr"
 version = "0.10.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-trait",
  "base64ct",
@@ -3727,7 +3727,7 @@ dependencies = [
  "digest 0.10.7",
  "educe",
  "event-listener",
- "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "fslock",
  "futures",
  "hex",
@@ -3739,28 +3739,28 @@ dependencies = [
  "paste",
  "postage",
  "rand 0.8.5",
- "retry-error 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "retry-error 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "rusqlite",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "scopeguard",
  "serde",
  "signature 1.6.4",
  "strum",
  "thiserror",
  "time",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-consdiff 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-dirclient 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-consdiff 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-dirclient 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -3781,7 +3781,7 @@ dependencies = [
 [[package]]
 name = "tor-error"
 version = "0.5.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "backtrace",
  "derive_more",
@@ -3833,7 +3833,7 @@ dependencies = [
 [[package]]
 name = "tor-guardmgr"
 version = "0.9.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "base64ct",
  "derive_builder_fork_arti",
@@ -3849,22 +3849,22 @@ dependencies = [
  "postage",
  "rand 0.8.5",
  "retain_mut",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "strum",
  "thiserror",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-persist 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-persist 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -3905,7 +3905,7 @@ dependencies = [
 [[package]]
 name = "tor-hsclient"
 version = "0.2.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -3916,26 +3916,26 @@ dependencies = [
  "postage",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "retry-error 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "retry-error 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "slotmap",
  "strum",
  "thiserror",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-dirclient 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-dirclient 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tor-keymgr",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -3964,7 +3964,7 @@ dependencies = [
 [[package]]
 name = "tor-hscrypto"
 version = "0.2.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "data-encoding",
  "derive_more",
@@ -3973,28 +3973,28 @@ dependencies = [
  "paste",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "signature 1.6.4",
  "thiserror",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
 name = "tor-keymgr"
 version = "0.1.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "derive_more",
- "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "ssh-key",
  "thiserror",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "zeroize",
 ]
 
@@ -4028,27 +4028,27 @@ dependencies = [
 [[package]]
 name = "tor-linkspec"
 version = "0.8.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "base64ct",
  "by_address",
- "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "cfg-if",
  "derive_builder_fork_arti",
  "derive_more",
  "educe",
  "hex",
  "itertools",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "serde_with",
  "strum",
  "thiserror",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
@@ -4086,7 +4086,7 @@ dependencies = [
 [[package]]
 name = "tor-llcrypto"
 version = "0.5.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "aes",
  "base64ct",
@@ -4100,7 +4100,7 @@ dependencies = [
  "rand_core 0.5.1",
  "rand_core 0.6.4",
  "rsa 0.9.2",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "serde",
  "sha1",
  "sha2 0.10.7",
@@ -4152,7 +4152,7 @@ dependencies = [
 [[package]]
 name = "tor-netdir"
 version = "0.9.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "bitflags 2.3.2",
  "derive_builder_fork_arti",
@@ -4170,16 +4170,16 @@ dependencies = [
  "strum",
  "thiserror",
  "time",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
  "typed-index-collections",
 ]
@@ -4231,7 +4231,7 @@ dependencies = [
 [[package]]
 name = "tor-netdoc"
 version = "0.8.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "base64ct",
  "bitflags 2.3.2",
@@ -4255,16 +4255,16 @@ dependencies = [
  "thiserror",
  "time",
  "tinystr",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cert 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cert 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "visibility",
  "visible",
  "weak-table",
@@ -4291,16 +4291,16 @@ dependencies = [
 [[package]]
 name = "tor-persist"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "derive_more",
- "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "fslock",
  "sanitize-filename",
  "serde",
  "serde_json",
  "thiserror",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -4355,7 +4355,7 @@ dependencies = [
 [[package]]
 name = "tor-proto"
 version = "0.11.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "asynchronous-codec",
  "bytes",
@@ -4372,26 +4372,26 @@ dependencies = [
  "pin-project",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "subtle",
  "thiserror",
  "tokio",
  "tokio-util",
- "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-cert 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtmock 0.8.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-cert 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtmock 0.8.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
  "typenum",
  "visibility",
@@ -4411,9 +4411,9 @@ dependencies = [
 [[package]]
 name = "tor-protover"
 version = "0.5.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
- "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "thiserror",
 ]
 
@@ -4441,20 +4441,20 @@ dependencies = [
 [[package]]
 name = "tor-ptmgr"
 version = "0.3.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-trait",
  "derive_builder_fork_arti",
- "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "futures",
  "serde",
  "thiserror",
- "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-socksproto 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-socksproto 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -4482,7 +4482,7 @@ dependencies = [
 [[package]]
 name = "tor-rpcbase"
 version = "0.1.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "downcast-rs",
  "erased-serde",
@@ -4494,8 +4494,8 @@ dependencies = [
  "serde",
  "serde_repr",
  "thiserror",
- "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "typetag",
 ]
 
@@ -4520,7 +4520,7 @@ dependencies = [
 [[package]]
 name = "tor-rtcompat"
 version = "0.9.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-native-tls",
  "async-trait",
@@ -4552,14 +4552,14 @@ dependencies = [
 [[package]]
 name = "tor-rtmock"
 version = "0.8.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "async-trait",
  "futures",
  "humantime 2.1.0",
  "pin-project",
  "thiserror",
- "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
 ]
 
@@ -4579,13 +4579,13 @@ dependencies = [
 [[package]]
 name = "tor-socksproto"
 version = "0.7.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
- "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "subtle",
  "thiserror",
- "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
- "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
 ]
 
 [[package]]
@@ -4601,7 +4601,7 @@ dependencies = [
 [[package]]
 name = "tor-units"
 version = "0.6.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#a7627341ec8ea419f8129fbcb5dadaf8fd85135f"
 dependencies = [
  "derive_more",
  "thiserror",
