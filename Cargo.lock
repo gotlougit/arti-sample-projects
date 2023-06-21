@@ -1718,6 +1718,7 @@ dependencies = [
  "tls-api",
  "tls-api-native-tls",
  "tokio",
+ "tor-chanmgr",
  "tor-error",
  "tor-rtcompat",
  "tracing",
