@@ -102,36 +102,80 @@ dependencies = [
  "derive_more",
  "directories",
  "educe",
- "fs-mistrust",
+ "fs-mistrust 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "futures",
  "hostname-validator",
  "humantime-serde",
  "libc",
  "pin-project",
  "postage",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "thiserror",
- "tor-async-utils",
- "tor-basic-utils",
- "tor-cell",
- "tor-chanmgr",
- "tor-checkable",
- "tor-circmgr",
- "tor-config",
- "tor-dirmgr",
- "tor-error",
- "tor-guardmgr",
- "tor-hsclient",
- "tor-hscrypto",
- "tor-llcrypto",
- "tor-netdir",
- "tor-netdoc",
- "tor-persist",
- "tor-proto",
- "tor-ptmgr",
- "tor-rpcbase",
- "tor-rtcompat",
+ "tor-async-utils 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-cell 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-chanmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-circmgr 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-dirmgr 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-guardmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hsclient 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdir 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-persist 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-ptmgr 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rpcbase 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+ "void",
+]
+
+[[package]]
+name = "arti-client"
+version = "0.9.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "cfg-if",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "directories",
+ "educe",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "futures",
+ "hostname-validator",
+ "humantime-serde",
+ "libc",
+ "pin-project",
+ "postage",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "serde",
+ "thiserror",
+ "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-dirmgr 0.10.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hsclient 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-persist 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-ptmgr 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rpcbase 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
  "void",
 ]
@@ -143,7 +187,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9482a833c5a478d6488c2072e4a98dd18e899001a897eb50a978f8167029475e"
 dependencies = [
  "anyhow",
- "arti-client",
+ "arti-client 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "educe",
  "hyper",
  "pin-project",
@@ -151,8 +195,8 @@ dependencies = [
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-error",
- "tor-rtcompat",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -261,6 +305,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "base16ct"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "349a06037c7bf932dd7e7d1f653678b2038b9ad46a74102f1fc7bd7872678cce"
+
+[[package]]
 name = "base64"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -356,6 +406,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "69f929120996bb6fe9f243e440c2914eaf12da9e0fa45d847118098e59baced4"
 
 [[package]]
+name = "caret"
+version = "0.4.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+
+[[package]]
 name = "cc"
 version = "1.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -424,14 +479,14 @@ dependencies = [
 name = "connection-checker"
 version = "0.1.0"
 dependencies = [
- "arti-client",
+ "arti-client 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "arti-hyper",
  "hyper",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-error",
- "tor-rtcompat",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tracing",
  "tracing-subscriber",
 ]
@@ -499,6 +554,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a22b2d63d4d1dc0b7f1b6b2747dd0088008a9be28b6ddf0b1e7d335e3037294"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "crypto-bigint"
+version = "0.4.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef2b4b23cddf68b89b8f8069890e8c270d54e2d5fe1b143820234805e4cb17ef"
+dependencies = [
+ "generic-array",
+ "rand_core 0.6.4",
+ "subtle",
+ "zeroize",
 ]
 
 [[package]]
@@ -625,12 +692,23 @@ checksum = "c2e66c9d817f1720209181c316d28635c050fa304f9c79e47a520882661b7308"
 
 [[package]]
 name = "der"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f1a467a65c5e759bce6e65eaf91cc29f466cdc57cb65777bd646872a8a1fd4de"
+dependencies = [
+ "const-oid",
+ "pem-rfc7468 0.6.0",
+ "zeroize",
+]
+
+[[package]]
+name = "der"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56acb310e15652100da43d130af8d97b509e95af61aab1c5a7939ef24337ee17"
 dependencies = [
  "const-oid",
- "pem-rfc7468",
+ "pem-rfc7468 0.7.0",
  "zeroize",
 ]
 
@@ -744,11 +822,11 @@ dependencies = [
 name = "dns-resolver"
 version = "0.1.0"
 dependencies = [
- "arti-client",
+ "arti-client 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-rtcompat",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tracing",
  "tracing-subscriber",
 ]
@@ -763,14 +841,14 @@ checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 name = "download-manager"
 version = "0.1.0"
 dependencies = [
- "arti-client",
+ "arti-client 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "arti-hyper",
  "futures",
  "hyper",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-rtcompat",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "tracing",
  "tracing-subscriber",
 ]
@@ -780,6 +858,18 @@ name = "dyn-clone"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68b0cf012f1230e43cd00ebb729c6bb58707ecfa8ad08b52ef3a4ccd2697fc30"
+
+[[package]]
+name = "ecdsa"
+version = "0.14.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "413301934810f597c1d19ca71c8710e99a3f1ba28a0d2ebc01551a2daeea3c5c"
+dependencies = [
+ "der 0.6.1",
+ "elliptic-curve",
+ "rfc6979",
+ "signature 1.6.4",
+]
 
 [[package]]
 name = "ed25519"
@@ -822,6 +912,25 @@ name = "either"
 version = "1.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcaabb2fef8c910e7f4c7ce9f67a1283a1715879a7c230ca9d6d1ae31f16d91"
+
+[[package]]
+name = "elliptic-curve"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7bb888ab5300a19b8e5bceef25ac745ad065f3c9f7efc6de1b91958110891d3"
+dependencies = [
+ "base16ct",
+ "crypto-bigint",
+ "der 0.6.1",
+ "digest 0.10.7",
+ "ff",
+ "generic-array",
+ "group",
+ "rand_core 0.6.4",
+ "sec1",
+ "subtle",
+ "zeroize",
+]
 
 [[package]]
 name = "enum-ordinalize"
@@ -907,6 +1016,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ff"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d013fc25338cc558c5c2cfbad646908fb23591e2404481826742b651c9af7160"
+dependencies = [
+ "rand_core 0.6.4",
+ "subtle",
+]
+
+[[package]]
 name = "fiat-crypto"
 version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -963,6 +1082,22 @@ name = "fs-mistrust"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4fc79026ea6be3901febf74f0eb01897d51fe4d09dfbf3343b325efe5417d361"
+dependencies = [
+ "derive_builder_fork_arti",
+ "dirs",
+ "educe",
+ "libc",
+ "once_cell",
+ "serde",
+ "thiserror",
+ "users",
+ "walkdir",
+]
+
+[[package]]
+name = "fs-mistrust"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
 dependencies = [
  "derive_builder_fork_arti",
  "dirs",
@@ -1145,6 +1280,17 @@ name = "gimli"
 version = "0.27.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6c80984affa11d98d1b88b66ac8853f143217b399d3c74116778ff8fdb4ed2e"
+
+[[package]]
+name = "group"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5dfbfb3a6cfbd390d5c9564ab283a0349b9b9fcd46a706c1eb10e0db70bfbac7"
+dependencies = [
+ "ff",
+ "rand_core 0.6.4",
+ "subtle",
+]
 
 [[package]]
 name = "hashbrown"
@@ -1712,15 +1858,14 @@ dependencies = [
 name = "obfs4-checker"
 version = "0.1.0"
 dependencies = [
- "arti-client",
- "arti-hyper",
+ "arti-client 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "hyper",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-chanmgr",
- "tor-error",
- "tor-rtcompat",
+ "tor-chanmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1797,6 +1942,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d"
 
 [[package]]
+name = "p256"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "51f44edd08f51e2ade572f141051021c5af22677e42b7dd28a88155151c33594"
+dependencies = [
+ "ecdsa",
+ "elliptic-curve",
+ "sha2 0.10.7",
+]
+
+[[package]]
+name = "p384"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dfc8c5bf642dde52bb9e87c0ecd8ca5a76faac2eeed98dedb7c717997e1080aa"
+dependencies = [
+ "ecdsa",
+ "elliptic-curve",
+ "sha2 0.10.7",
+]
+
+[[package]]
 name = "packed_simd_2"
 version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1850,6 +2017,15 @@ dependencies = [
  "base64 0.13.1",
  "once_cell",
  "regex",
+]
+
+[[package]]
+name = "pem-rfc7468"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "24d159833a9105500e0398934e205e0773f0b27529557134ecfc51c27646adac"
+dependencies = [
+ "base64ct",
 ]
 
 [[package]]
@@ -1943,13 +2119,35 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "pkcs1"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eff33bdbdfc54cc98a2eca766ebdec3e1b8fb7387523d5c9c9a2891da856f719"
+dependencies = [
+ "der 0.6.1",
+ "pkcs8 0.9.0",
+ "spki 0.6.0",
+ "zeroize",
+]
+
+[[package]]
+name = "pkcs1"
 version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8ffb9f10fa047879315e6625af03c164b16962a5368d724ed16323b68ace47f"
 dependencies = [
- "der",
- "pkcs8",
- "spki",
+ "der 0.7.6",
+ "pkcs8 0.10.2",
+ "spki 0.7.2",
+]
+
+[[package]]
+name = "pkcs8"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9eca2c590a5f85da82668fa685c09ce2888b9430e83299debf1f34b65fd4a4ba"
+dependencies = [
+ "der 0.6.1",
+ "spki 0.6.0",
 ]
 
 [[package]]
@@ -1958,8 +2156,8 @@ version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f950b2377845cebe5cf8b5165cb3cc1a5e0fa5cfa3e1f7f55707d8fd82e0a7b7"
 dependencies = [
- "der",
- "spki",
+ "der 0.7.6",
+ "spki 0.7.2",
 ]
 
 [[package]]
@@ -2174,6 +2372,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "edcbb4f662b4e1c5b2e2902ab45422dd7d3f9711c62c2f7d837b87ae4eea8de9"
 
 [[package]]
+name = "retry-error"
+version = "0.4.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+
+[[package]]
+name = "rfc6979"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7743f17af12fa0b03b803ba12cd6a8d9483a587e89c69445e3909655c0b9fabb"
+dependencies = [
+ "crypto-bigint",
+ "hmac",
+ "zeroize",
+]
+
+[[package]]
 name = "ring"
 version = "0.16.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2190,6 +2404,27 @@ dependencies = [
 
 [[package]]
 name = "rsa"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "094052d5470cbcef561cb848a7209968c9f12dfa6d668f4bca048ac5de51099c"
+dependencies = [
+ "byteorder",
+ "digest 0.10.7",
+ "num-bigint-dig",
+ "num-integer",
+ "num-iter",
+ "num-traits",
+ "pkcs1 0.4.1",
+ "pkcs8 0.9.0",
+ "rand_core 0.6.4",
+ "signature 1.6.4",
+ "smallvec",
+ "subtle",
+ "zeroize",
+]
+
+[[package]]
+name = "rsa"
 version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ab43bb47d23c1a631b4b680199a45255dce26fa9ab2fa902581f624ff13e6a8"
@@ -2201,11 +2436,11 @@ dependencies = [
  "num-integer",
  "num-iter",
  "num-traits",
- "pkcs1",
- "pkcs8",
+ "pkcs1 0.7.5",
+ "pkcs8 0.10.2",
  "rand_core 0.6.4",
  "signature 2.1.0",
- "spki",
+ "spki 0.7.2",
  "subtle",
  "zeroize",
 ]
@@ -2280,6 +2515,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "safelog"
+version = "0.3.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "derive_more",
+ "educe",
+ "either",
+ "fluid-let",
+ "thiserror",
+]
+
+[[package]]
 name = "same-file"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2312,6 +2559,20 @@ name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
+
+[[package]]
+name = "sec1"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3be24c1842290c45df0a7bf069e0c268a747ad05a192f2fd7dcfdbc1cba40928"
+dependencies = [
+ "base16ct",
+ "der 0.6.1",
+ "generic-array",
+ "pkcs8 0.9.0",
+ "subtle",
+ "zeroize",
+]
 
 [[package]]
 name = "security-framework"
@@ -2507,6 +2768,10 @@ name = "signature"
 version = "1.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74233d3b3b2f6d4b006dc19dee745e73e2a6bfb6f93607cd3b02bd5b00797d7c"
+dependencies = [
+ "digest 0.10.7",
+ "rand_core 0.6.4",
+]
 
 [[package]]
 name = "signature"
@@ -2578,12 +2843,51 @@ checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
 
 [[package]]
 name = "spki"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67cf02bbac7a337dc36e4f5a693db6c21e7863f45070f7064577eb4367a3212b"
+dependencies = [
+ "base64ct",
+ "der 0.6.1",
+]
+
+[[package]]
+name = "spki"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d1e996ef02c474957d681f1b05213dfb0abab947b446a62d37770b23500184a"
 dependencies = [
  "base64ct",
- "der",
+ "der 0.7.6",
+]
+
+[[package]]
+name = "ssh-encoding"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "19cfdc32e0199062113edf41f344fbf784b8205a94600233c84eb838f45191e1"
+dependencies = [
+ "base64ct",
+ "pem-rfc7468 0.6.0",
+ "sha2 0.10.7",
+]
+
+[[package]]
+name = "ssh-key"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "288d8f5562af5a3be4bda308dd374b2c807b940ac370b5efa1c99311da91d9a1"
+dependencies = [
+ "ed25519-dalek",
+ "p256",
+ "p384",
+ "rand_core 0.6.4",
+ "rsa 0.7.2",
+ "sec1",
+ "sha2 0.10.7",
+ "signature 1.6.4",
+ "ssh-encoding",
+ "zeroize",
 ]
 
 [[package]]
@@ -2911,10 +3215,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "tor-async-utils"
+version = "0.1.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "futures",
+ "pin-project",
+ "postage",
+ "thiserror",
+ "void",
+]
+
+[[package]]
 name = "tor-basic-utils"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ac8513ced55be76ea62f4b4b1105f0d5cae40a2137a6b30070d919c2b5bade2"
+dependencies = [
+ "hex",
+ "libc",
+ "paste",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "slab",
+ "thiserror",
+]
+
+[[package]]
+name = "tor-basic-utils"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
 dependencies = [
  "hex",
  "libc",
@@ -2939,8 +3269,25 @@ dependencies = [
  "getrandom 0.2.10",
  "signature 1.6.4",
  "thiserror",
- "tor-error",
- "tor-llcrypto",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "zeroize",
+]
+
+[[package]]
+name = "tor-bytes"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "bytes",
+ "digest 0.10.7",
+ "educe",
+ "generic-array",
+ "getrandom 0.2.10",
+ "signature 1.6.4",
+ "thiserror",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "zeroize",
 ]
 
@@ -2953,20 +3300,43 @@ dependencies = [
  "arrayref",
  "bitflags 2.3.2",
  "bytes",
- "caret",
+ "caret 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "derive_more",
  "educe",
  "paste",
  "rand 0.8.5",
  "thiserror",
- "tor-basic-utils",
- "tor-bytes",
- "tor-cert",
- "tor-error",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-units",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-cert 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-cell"
+version = "0.11.0"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "bitflags 2.3.2",
+ "bytes",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "derive_more",
+ "educe",
+ "paste",
+ "rand 0.8.5",
+ "thiserror",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cert 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
 ]
 
 [[package]]
@@ -2975,14 +3345,29 @@ version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c9ac7c763f70b2f729d192e578465961fa9110107f21edef191a928cc36be64b"
 dependencies = [
- "caret",
+ "caret 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "derive_builder_fork_arti",
  "digest 0.10.7",
  "signature 1.6.4",
  "thiserror",
- "tor-bytes",
- "tor-checkable",
- "tor-llcrypto",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-cert"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "derive_builder_fork_arti",
+ "digest 0.10.7",
+ "signature 1.6.4",
+ "thiserror",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
 ]
 
 [[package]]
@@ -2998,20 +3383,50 @@ dependencies = [
  "futures",
  "postage",
  "rand 0.8.5",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "thiserror",
- "tor-basic-utils",
- "tor-cell",
- "tor-config",
- "tor-error",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-netdir",
- "tor-proto",
- "tor-rtcompat",
- "tor-socksproto",
- "tor-units",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-cell 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdir 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-socksproto 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+ "void",
+]
+
+[[package]]
+name = "tor-chanmgr"
+version = "0.9.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-trait",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "educe",
+ "futures",
+ "postage",
+ "rand 0.8.5",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "serde",
+ "thiserror",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-socksproto 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
  "void",
 ]
@@ -3025,7 +3440,18 @@ dependencies = [
  "humantime 2.1.0",
  "signature 1.6.4",
  "thiserror",
- "tor-llcrypto",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-checkable"
+version = "0.5.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "humantime 2.1.0",
+ "signature 1.6.4",
+ "thiserror",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
 ]
 
 [[package]]
@@ -3047,23 +3473,63 @@ dependencies = [
  "once_cell",
  "pin-project",
  "rand 0.8.5",
- "retry-error",
- "safelog",
+ "retry-error 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "static_assertions",
  "thiserror",
- "tor-basic-utils",
- "tor-chanmgr",
- "tor-config",
- "tor-error",
- "tor-guardmgr",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-netdir",
- "tor-netdoc",
- "tor-persist",
- "tor-proto",
- "tor-rtcompat",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-chanmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-guardmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdir 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-persist 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+ "visibility",
+ "weak-table",
+]
+
+[[package]]
+name = "tor-circmgr"
+version = "0.9.0"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-trait",
+ "bounded-vec-deque",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "downcast-rs",
+ "dyn-clone",
+ "educe",
+ "futures",
+ "humantime-serde",
+ "itertools",
+ "once_cell",
+ "pin-project",
+ "rand 0.8.5",
+ "retry-error 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "serde",
+ "static_assertions",
+ "thiserror",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-persist 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
  "visibility",
  "weak-table",
@@ -3080,7 +3546,7 @@ dependencies = [
  "directories",
  "educe",
  "either",
- "fs-mistrust",
+ "fs-mistrust 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools",
  "once_cell",
  "paste",
@@ -3091,8 +3557,34 @@ dependencies = [
  "strum",
  "thiserror",
  "toml 0.7.4",
- "tor-basic-utils",
- "tor-error",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-config"
+version = "0.9.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "config",
+ "derive_builder_fork_arti",
+ "directories",
+ "educe",
+ "either",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "itertools",
+ "once_cell",
+ "paste",
+ "regex",
+ "serde",
+ "serde_ignored",
+ "shellexpand",
+ "strum",
+ "thiserror",
+ "toml 0.7.4",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3105,7 +3597,18 @@ dependencies = [
  "digest 0.10.7",
  "hex",
  "thiserror",
- "tor-llcrypto",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-consdiff"
+version = "0.5.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "digest 0.10.7",
+ "hex",
+ "thiserror",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
 ]
 
 [[package]]
@@ -3125,14 +3628,41 @@ dependencies = [
  "itertools",
  "memchr",
  "thiserror",
- "tor-circmgr",
- "tor-error",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-netdoc",
- "tor-proto",
- "tor-rtcompat",
+ "tor-circmgr 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-dirclient"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-compression",
+ "base64ct",
+ "derive_more",
+ "futures",
+ "hex",
+ "http",
+ "httparse",
+ "httpdate",
+ "itertools",
+ "memchr",
+ "thiserror",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3149,7 +3679,7 @@ dependencies = [
  "digest 0.10.7",
  "educe",
  "event-listener",
- "fs-mistrust",
+ "fs-mistrust 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "fslock",
  "futures",
  "hex",
@@ -3161,28 +3691,77 @@ dependencies = [
  "paste",
  "postage",
  "rand 0.8.5",
- "retry-error",
+ "retry-error 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rusqlite",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "scopeguard",
  "serde",
  "signature 1.6.4",
  "strum",
  "thiserror",
  "time",
- "tor-basic-utils",
- "tor-checkable",
- "tor-circmgr",
- "tor-config",
- "tor-consdiff",
- "tor-dirclient",
- "tor-error",
- "tor-guardmgr",
- "tor-llcrypto",
- "tor-netdir",
- "tor-netdoc",
- "tor-proto",
- "tor-rtcompat",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-circmgr 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-consdiff 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-dirclient 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-guardmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdir 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-dirmgr"
+version = "0.10.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-trait",
+ "base64ct",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "digest 0.10.7",
+ "educe",
+ "event-listener",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fslock",
+ "futures",
+ "hex",
+ "humantime 2.1.0",
+ "humantime-serde",
+ "itertools",
+ "memmap2",
+ "once_cell",
+ "paste",
+ "postage",
+ "rand 0.8.5",
+ "retry-error 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "rusqlite",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "scopeguard",
+ "serde",
+ "signature 1.6.4",
+ "strum",
+ "thiserror",
+ "time",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-consdiff 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-dirclient 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3191,6 +3770,19 @@ name = "tor-error"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "293afaea6fb25cb3bb98158a177a87a48c35f86f8570f78879390fa8c209af2e"
+dependencies = [
+ "backtrace",
+ "derive_more",
+ "futures",
+ "once_cell",
+ "strum",
+ "thiserror",
+]
+
+[[package]]
+name = "tor-error"
+version = "0.5.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
 dependencies = [
  "backtrace",
  "derive_more",
@@ -3220,22 +3812,60 @@ dependencies = [
  "postage",
  "rand 0.8.5",
  "retain_mut",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "strum",
  "thiserror",
- "tor-basic-utils",
- "tor-config",
- "tor-error",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-netdir",
- "tor-netdoc",
- "tor-persist",
- "tor-proto",
- "tor-protover",
- "tor-rtcompat",
- "tor-units",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdir 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-persist 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-protover 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-guardmgr"
+version = "0.9.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "base64ct",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "dyn-clone",
+ "educe",
+ "futures",
+ "humantime 2.1.0",
+ "humantime-serde",
+ "itertools",
+ "num_enum",
+ "pin-project",
+ "postage",
+ "rand 0.8.5",
+ "retain_mut",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "serde",
+ "strum",
+ "thiserror",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-persist 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3253,23 +3883,60 @@ dependencies = [
  "postage",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "retry-error",
- "safelog",
+ "retry-error 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "slotmap",
  "strum",
  "thiserror",
- "tor-checkable",
- "tor-circmgr",
- "tor-config",
- "tor-dirclient",
- "tor-error",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-netdir",
- "tor-netdoc",
- "tor-proto",
- "tor-rtcompat",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-circmgr 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-dirclient 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdir 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-proto 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-hsclient"
+version = "0.2.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-trait",
+ "derive_more",
+ "educe",
+ "either",
+ "futures",
+ "itertools",
+ "postage",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
+ "retry-error 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "slotmap",
+ "strum",
+ "thiserror",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-circmgr 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-dirclient 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-keymgr",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdir 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-proto 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3285,14 +3952,51 @@ dependencies = [
  "itertools",
  "paste",
  "rand_core 0.6.4",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "signature 1.6.4",
  "thiserror",
- "tor-basic-utils",
- "tor-bytes",
- "tor-llcrypto",
- "tor-units",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-hscrypto"
+version = "0.2.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "data-encoding",
+ "derive_more",
+ "digest 0.10.7",
+ "itertools",
+ "paste",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "serde",
+ "signature 1.6.4",
+ "thiserror",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+]
+
+[[package]]
+name = "tor-keymgr"
+version = "0.1.0"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "derive_more",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "ssh-key",
+ "thiserror",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "zeroize",
 ]
 
 [[package]]
@@ -3303,23 +4007,49 @@ checksum = "0cbf3a61154ef597de21a61787241548730003c23df0bdddf14ebe78e8cdb174"
 dependencies = [
  "base64ct",
  "by_address",
- "caret",
+ "caret 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "cfg-if",
  "derive_builder_fork_arti",
  "derive_more",
  "educe",
  "hex",
  "itertools",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_with",
  "strum",
  "thiserror",
- "tor-basic-utils",
- "tor-bytes",
- "tor-config",
- "tor-llcrypto",
- "tor-protover",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-protover 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-linkspec"
+version = "0.8.0"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "base64ct",
+ "by_address",
+ "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "cfg-if",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "educe",
+ "hex",
+ "itertools",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "serde",
+ "serde_with",
+ "strum",
+ "thiserror",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
 ]
 
 [[package]]
@@ -3340,8 +4070,38 @@ dependencies = [
  "hex",
  "rand_core 0.5.1",
  "rand_core 0.6.4",
- "rsa",
- "safelog",
+ "rsa 0.9.2",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde",
+ "sha1",
+ "sha2 0.10.7",
+ "sha3",
+ "signature 1.6.4",
+ "simple_asn1",
+ "subtle",
+ "thiserror",
+ "x25519-dalek",
+ "zeroize",
+]
+
+[[package]]
+name = "tor-llcrypto"
+version = "0.5.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "aes",
+ "base64ct",
+ "ctr",
+ "curve25519-dalek 3.2.0",
+ "derive_more",
+ "digest 0.10.7",
+ "ed25519-dalek",
+ "getrandom 0.2.10",
+ "hex",
+ "rand_core 0.5.1",
+ "rand_core 0.6.4",
+ "rsa 0.9.2",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "serde",
  "sha1",
  "sha2 0.10.7",
@@ -3376,16 +4136,51 @@ dependencies = [
  "strum",
  "thiserror",
  "time",
- "tor-basic-utils",
- "tor-checkable",
- "tor-config",
- "tor-error",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-netdoc",
- "tor-protover",
- "tor-units",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-netdoc 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-protover 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+ "typed-index-collections",
+]
+
+[[package]]
+name = "tor-netdir"
+version = "0.9.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "bitflags 2.3.2",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "digest 0.10.7",
+ "futures",
+ "hex",
+ "humantime 2.1.0",
+ "itertools",
+ "num_enum",
+ "rand 0.8.5",
+ "serde",
+ "signature 1.6.4",
+ "static_assertions",
+ "strum",
+ "thiserror",
+ "time",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-netdoc 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
  "typed-index-collections",
 ]
@@ -3418,16 +4213,59 @@ dependencies = [
  "thiserror",
  "time",
  "tinystr",
- "tor-basic-utils",
- "tor-bytes",
- "tor-cert",
- "tor-checkable",
- "tor-error",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-protover",
- "tor-units",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-cert 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-protover 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "visibility",
+ "visible",
+ "weak-table",
+ "zeroize",
+]
+
+[[package]]
+name = "tor-netdoc"
+version = "0.8.0"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "base64ct",
+ "bitflags 2.3.2",
+ "cipher",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "digest 0.10.7",
+ "educe",
+ "hex",
+ "hex-literal",
+ "humantime 2.1.0",
+ "itertools",
+ "once_cell",
+ "phf",
+ "rand 0.8.5",
+ "serde",
+ "serde_with",
+ "signature 1.6.4",
+ "smallvec",
+ "subtle",
+ "thiserror",
+ "time",
+ "tinystr",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cert 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "visibility",
  "visible",
  "weak-table",
@@ -3441,13 +4279,29 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ff61208456aed45ff7d62cef54dbc878fa6077ecf94faad142db94117689cd23"
 dependencies = [
  "derive_more",
- "fs-mistrust",
+ "fs-mistrust 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "fslock",
  "sanitize-filename",
  "serde",
  "serde_json",
  "thiserror",
- "tor-error",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-persist"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "derive_more",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "fslock",
+ "sanitize-filename",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3473,26 +4327,72 @@ dependencies = [
  "pin-project",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "safelog",
+ "safelog 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "subtle",
  "thiserror",
  "tokio",
  "tokio-util",
- "tor-async-utils",
- "tor-basic-utils",
- "tor-bytes",
- "tor-cell",
- "tor-cert",
- "tor-checkable",
- "tor-config",
- "tor-error",
- "tor-hscrypto",
- "tor-linkspec",
- "tor-llcrypto",
- "tor-protover",
- "tor-rtcompat",
- "tor-rtmock",
- "tor-units",
+ "tor-async-utils 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-basic-utils 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-cell 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-cert 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-checkable 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-hscrypto 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-llcrypto 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-protover 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtmock 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-units 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+ "typenum",
+ "visibility",
+ "zeroize",
+]
+
+[[package]]
+name = "tor-proto"
+version = "0.11.0"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "asynchronous-codec",
+ "bytes",
+ "cipher",
+ "coarsetime",
+ "derive_builder_fork_arti",
+ "derive_more",
+ "digest 0.10.7",
+ "educe",
+ "futures",
+ "generic-array",
+ "hkdf",
+ "hmac",
+ "pin-project",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
+ "safelog 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "subtle",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+ "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-basic-utils 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cell 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-cert 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-checkable 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-hscrypto 0.2.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-llcrypto 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-protover 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtmock 0.8.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-units 0.6.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
  "typenum",
  "visibility",
@@ -3505,7 +4405,16 @@ version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "036387be00668c742ea9a5a97abba8919a62e722c1e03aa3a80bb5792ea14f8c"
 dependencies = [
- "caret",
+ "caret 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror",
+]
+
+[[package]]
+name = "tor-protover"
+version = "0.5.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "thiserror",
 ]
 
@@ -3517,16 +4426,36 @@ checksum = "f5db9d06941f143f62bbb198b8db005cebae826846b4215858df81cc86fa5c73"
 dependencies = [
  "async-trait",
  "derive_builder_fork_arti",
- "fs-mistrust",
+ "fs-mistrust 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "futures",
  "serde",
  "thiserror",
- "tor-chanmgr",
- "tor-config",
- "tor-error",
- "tor-linkspec",
- "tor-rtcompat",
- "tor-socksproto",
+ "tor-chanmgr 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-config 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-linkspec 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-socksproto 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-ptmgr"
+version = "0.3.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-trait",
+ "derive_builder_fork_arti",
+ "fs-mistrust 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "futures",
+ "serde",
+ "thiserror",
+ "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-config 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-linkspec 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-socksproto 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3546,8 +4475,28 @@ dependencies = [
  "serde",
  "serde_repr",
  "thiserror",
- "tor-async-utils",
- "tor-error",
+ "tor-async-utils 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "typetag",
+]
+
+[[package]]
+name = "tor-rpcbase"
+version = "0.1.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "downcast-rs",
+ "erased-serde",
+ "futures",
+ "futures-await-test",
+ "inventory",
+ "once_cell",
+ "paste",
+ "serde",
+ "serde_repr",
+ "thiserror",
+ "tor-async-utils 0.1.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "typetag",
 ]
 
@@ -3556,6 +4505,23 @@ name = "tor-rtcompat"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c8245470d443107d2af2a9822d6cec0fd00c8e93c23bfc28b76198deb8e7069"
+dependencies = [
+ "async-native-tls",
+ "async-trait",
+ "async_executors",
+ "educe",
+ "futures",
+ "native-tls",
+ "pin-project",
+ "thiserror",
+ "tokio",
+ "tokio-util",
+]
+
+[[package]]
+name = "tor-rtcompat"
+version = "0.9.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
 dependencies = [
  "async-native-tls",
  "async-trait",
@@ -3580,7 +4546,21 @@ dependencies = [
  "humantime 2.1.0",
  "pin-project",
  "thiserror",
- "tor-rtcompat",
+ "tor-rtcompat 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tracing",
+]
+
+[[package]]
+name = "tor-rtmock"
+version = "0.8.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "async-trait",
+ "futures",
+ "humantime 2.1.0",
+ "pin-project",
+ "thiserror",
+ "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
  "tracing",
 ]
 
@@ -3590,11 +4570,23 @@ version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72bb830548307de146a936e449d9dc75bbe52d9b279a1a2f39840a47cb700d99"
 dependencies = [
- "caret",
+ "caret 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "subtle",
  "thiserror",
- "tor-bytes",
- "tor-error",
+ "tor-bytes 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "tor-socksproto"
+version = "0.7.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
+dependencies = [
+ "caret 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "subtle",
+ "thiserror",
+ "tor-bytes 0.7.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method)",
 ]
 
 [[package]]
@@ -3602,6 +4594,15 @@ name = "tor-units"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6d78bc57d8f01b6ab12a5d7a19889bcd0ad52e0980fcd0e9e726ffc9a9ec75c"
+dependencies = [
+ "derive_more",
+ "thiserror",
+]
+
+[[package]]
+name = "tor-units"
+version = "0.6.1"
+source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=chanmgr-method#056ca5c4385a6c58494c73b48ebff47d266ae7a1"
 dependencies = [
  "derive_more",
  "thiserror",
