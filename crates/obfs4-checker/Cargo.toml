@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 arti-client = { version = "0.9.1", features = [ "bridge-client", "pt-client", "experimental" ] }
 tor-chanmgr = { version = "0.9.1", features = [ "pt-client" ] }
-arti-hyper = { version = "0.9.1", features = ["default"]}
 tokio = { version = "1.7", features = ["full"] }
 tracing = "0.1"
 tor-rtcompat = "0.9.1"
