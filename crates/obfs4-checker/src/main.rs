@@ -7,24 +7,36 @@ use tor_guardmgr::bridge::BridgeConfig;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
-async fn is_bridge_online(bridge_config: &BridgeConfig, tor_client: &TorClient<PreferredRuntime>) {
+async fn is_bridge_online(
+    bridge_config: &BridgeConfig,
+    tor_client: &TorClient<PreferredRuntime>,
+) -> bool {
     println!("Seeing if the bridge is online or not...");
     let chanmgr = tor_client.chanmgr();
     match chanmgr
         .get_or_launch(bridge_config, ChannelUsage::UserTraffic)
         .await
     {
-        Ok(_) => println!("Bridge {} is online", bridge_config),
-        Err(e) => eprintln!("For bridge {}, {}", bridge_config, e.report()),
+        Ok(_) => {
+            println!("Bridge {} is online", bridge_config);
+            true
+        }
+        Err(e) => {
+            eprintln!("For bridge {}, {}", bridge_config, e.report());
+            false
+        }
     }
 }
 
-async fn test_obfs4_connection(config: TorClientConfig, bridge_line: &str) {
+async fn test_obfs4_connection(config: TorClientConfig, bridge_line: &str) -> bool {
     let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
     let bridge_config = bridge.build().unwrap();
     match TorClient::create_bootstrapped(config).await {
         Ok(tor_client) => is_bridge_online(&bridge_config, &tor_client).await,
-        Err(e) => eprintln!("{}", e.report()),
+        Err(e) => {
+            eprintln!("{}", e.report());
+            false
+        }
     }
 }
 
@@ -57,7 +69,15 @@ async fn main() {
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
     let config = builder.build().unwrap();
+    let mut number_online = 0;
     for i in bridge_lines.iter() {
-        test_obfs4_connection(config.clone(), i).await;
+        if test_obfs4_connection(config.clone(), i).await {
+            number_online += 1;
+        }
     }
+    println!(
+        "STATUS: {} out of {} online",
+        number_online,
+        bridge_lines.len()
+    );
 }
