@@ -21,21 +21,9 @@ async fn is_bridge_online(bridge_config: &BridgeConfig, tor_client: &TorClient<P
 
 // FIXME: this doesn't work because Arti and bridges are somewhat broken right now
 // Watch for arti#611
-async fn test_obfs4_connection(bridge_line: &str) {
-    println!("Testing obfs4 bridge");
-    let mut builder = TorClientConfig::builder();
+async fn test_obfs4_connection(config: TorClientConfig, bridge_line: &str) {
     let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
     let bridge_config = bridge.build().unwrap();
-    let mut transport = ManagedTransportConfigBuilder::default();
-    transport
-        .protocols(vec!["obfs4".parse().unwrap()])
-        // THIS IS DISTRO SPECIFIC
-        // If this function doesn't work, check by what name obfs4 client
-        // goes by on your system
-        .path(CfgPath::new(("obfs4proxy").into()))
-        .run_on_startup(true);
-    builder.bridges().transports().push(transport);
-    let config = builder.build().unwrap();
     match TorClient::create_bootstrapped(config).await {
         Ok(tor_client) => is_bridge_online(&bridge_config, &tor_client).await,
         Err(e) => eprintln!("{}", e.report()),
@@ -60,7 +48,18 @@ async fn main() {
         "obfs4 45.145.95.6:27015 C5B7CD6946FF10C5B3E89691A7D3F2C122D2117C cert=TD7PbUO0/0k6xYHMPW3vJxICfkMZNdkRrb63Zhl5j9dW3iRGiCx0A7mPhe5T2EDzQ35+Zw iat-mode=0",
         "obfs4 51.222.13.177:80 5EDAC3B810E12B01F6FD8050D2FD3E277B289A08 cert=2uplIpLQ0q9+0qMFrK5pkaYRDOe460LL9WHBvatgkuRr/SL31wBOEupaMMJ6koRE6Ld0ew iat-mode=0",
     ];
+    let mut builder = TorClientConfig::builder();
+    let mut transport = ManagedTransportConfigBuilder::default();
+    transport
+        .protocols(vec!["obfs4".parse().unwrap()])
+        // THIS IS DISTRO SPECIFIC
+        // If this function doesn't work, check by what name obfs4 client
+        // goes by on your system
+        .path(CfgPath::new(("obfs4proxy").into()))
+        .run_on_startup(true);
+    builder.bridges().transports().push(transport);
+    let config = builder.build().unwrap();
     for i in bridge_lines.iter() {
-        test_obfs4_connection(*i).await;
+        test_obfs4_connection(config.clone(), *i).await;
     }
 }
