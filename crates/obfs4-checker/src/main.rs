@@ -46,7 +46,6 @@ async fn test_obfs4_connection(bridge_line: &str) {
     let mut builder = TorClientConfig::builder();
     let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
     let bridge_config = bridge.build().unwrap();
-    builder.bridges().bridges().push(bridge);
     let mut transport = ManagedTransportConfigBuilder::default();
     transport
         .protocols(vec!["obfs4".parse().unwrap()])
