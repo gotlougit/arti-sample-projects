@@ -34,7 +34,7 @@ async fn is_bridge_online(bridge_config: &BridgeConfig, tor_client: &TorClient<P
         .get_or_launch(bridge_config, ChannelUsage::UserTraffic)
         .await
     {
-        Ok(_) => println!("Bridge is online"),
+        Ok(_) => println!("Bridge {} is online", bridge_config),
         Err(e) => eprintln!("{}", e.report()),
     }
 }
