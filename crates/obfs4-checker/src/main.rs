@@ -58,6 +58,6 @@ async fn main() {
     builder.bridges().transports().push(transport);
     let config = builder.build().unwrap();
     for i in bridge_lines.iter() {
-        test_obfs4_connection(config.clone(), *i).await;
+        test_obfs4_connection(config.clone(), i).await;
     }
 }
