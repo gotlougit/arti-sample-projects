@@ -7,7 +7,8 @@ edition = "2021"
 
 [dependencies]
 arti-client = { git = "https://gitlab.torproject.org/tpo/core/arti/", features = [ "bridge-client", "pt-client", "experimental" ] }
-tor-chanmgr = { version = "0.9.1", features = [ "pt-client" ] }
+tor-chanmgr = { git = "https://gitlab.torproject.org/tpo/core/arti/" , features = [ "pt-client", "experimental-api" ]}
+tor-guardmgr = { git = "https://gitlab.torproject.org/tpo/core/arti/" , features = [ "full" ]}
 tokio = { version = "1.7", features = ["full"] }
 tracing = "0.1"
 tor-rtcompat = { git = "https://gitlab.torproject.org/tpo/core/arti/" }
