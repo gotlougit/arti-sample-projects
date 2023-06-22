@@ -19,8 +19,6 @@ async fn is_bridge_online(bridge_config: &BridgeConfig, tor_client: &TorClient<P
     }
 }
 
-// FIXME: this doesn't work because Arti and bridges are somewhat broken right now
-// Watch for arti#611
 async fn test_obfs4_connection(config: TorClientConfig, bridge_line: &str) {
     let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
     let bridge_config = bridge.build().unwrap();
