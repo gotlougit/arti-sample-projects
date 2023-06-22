@@ -1,9 +1,9 @@
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
-use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
-use tls_api_native_tls::TlsConnector;
+use tor_chanmgr::ChannelUsage;
 use tor_error::ErrorReport;
+use tor_guardmgr::bridge::BridgeConfig;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
@@ -27,12 +27,25 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
     }
 }
 
+async fn is_bridge_online(bridge_config: &BridgeConfig, tor_client: &TorClient<PreferredRuntime>) {
+    println!("Seeing if the bridge is online or not...");
+    let chanmgr = tor_client.chanmgr();
+    match chanmgr
+        .get_or_launch(bridge_config, ChannelUsage::UserTraffic)
+        .await
+    {
+        Ok(_) => println!("Bridge is online"),
+        Err(e) => eprintln!("{}", e.report()),
+    }
+}
+
 // FIXME: this doesn't work because Arti and bridges are somewhat broken right now
 // Watch for arti#611
 async fn test_obfs4_connection(bridge_line: &str) {
     println!("Testing obfs4 bridge");
     let mut builder = TorClientConfig::builder();
     let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
+    let bridge_config = bridge.build().unwrap();
     builder.bridges().bridges().push(bridge);
     let mut transport = ManagedTransportConfigBuilder::default();
     transport
@@ -45,7 +58,7 @@ async fn test_obfs4_connection(bridge_line: &str) {
     builder.bridges().transports().push(transport);
     let config = builder.build().unwrap();
     match TorClient::create_bootstrapped(config).await {
-        Ok(tor_client) => get_circuit(&tor_client).await,
+        Ok(tor_client) => is_bridge_online(&bridge_config, &tor_client).await,
         Err(e) => eprintln!("{}", e.report()),
     }
 }
