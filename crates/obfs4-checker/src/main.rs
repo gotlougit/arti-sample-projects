@@ -15,7 +15,7 @@ async fn is_bridge_online(bridge_config: &BridgeConfig, tor_client: &TorClient<P
         .await
     {
         Ok(_) => println!("Bridge {} is online", bridge_config),
-        Err(e) => eprintln!("{}", e.report()),
+        Err(e) => eprintln!("For bridge {}, {}", bridge_config, e.report()),
     }
 }
 
