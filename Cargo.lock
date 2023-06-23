@@ -2049,6 +2049,7 @@ name = "obfs4-checker"
 version = "0.1.0"
 dependencies = [
  "arti-client 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "futures",
  "tls-api",
  "tls-api-native-tls",
  "tokio",
