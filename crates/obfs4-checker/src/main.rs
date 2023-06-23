@@ -1,6 +1,7 @@
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
+use futures::future::join_all;
 use tor_chanmgr::ChannelUsage;
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::BridgeConfig;
@@ -28,9 +29,7 @@ async fn is_bridge_online(
     }
 }
 
-async fn test_obfs4_connection(config: TorClientConfig, bridge_line: &str) -> bool {
-    let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
-    let bridge_config = bridge.build().unwrap();
+async fn test_obfs4_connection(config: TorClientConfig, bridge_config: BridgeConfig) -> bool {
     match TorClient::create_bootstrapped(config).await {
         Ok(tor_client) => is_bridge_online(&bridge_config, &tor_client).await,
         Err(e) => {
@@ -68,10 +67,26 @@ async fn main() {
         .path(CfgPath::new(("obfs4proxy").into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
-    let config = builder.build().unwrap();
     let mut number_online = 0;
+    let mut tasks = Vec::new();
     for i in bridge_lines.iter() {
-        if test_obfs4_connection(config.clone(), i).await {
+        let bridge: BridgeConfigBuilder = i.parse().unwrap();
+        let bridge_config = bridge.build().unwrap();
+        let config = builder.build().unwrap();
+        match TorClient::create_bootstrapped(config).await {
+            Ok(tor_client) => {
+                tasks.push(tokio::task::spawn(async move {
+                    is_bridge_online(&bridge_config, &tor_client).await;
+                }));
+            }
+            Err(e) => {
+                eprintln!("{}", e.report());
+            }
+        };
+    }
+    let res = join_all(tasks).await;
+    for r in res {
+        if r.is_ok() {
             number_online += 1;
         }
     }
