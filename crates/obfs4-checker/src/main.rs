@@ -12,7 +12,7 @@ async fn is_bridge_online(
     bridge_config: &BridgeConfig,
     tor_client: &TorClient<PreferredRuntime>,
 ) -> bool {
-    println!("Seeing if the bridge is online or not...");
+    info!("Seeing if the bridge is online or not...");
     let chanmgr = tor_client.chanmgr();
     match chanmgr
         .get_or_launch(bridge_config, ChannelUsage::UserTraffic)
@@ -23,7 +23,7 @@ async fn is_bridge_online(
             true
         }
         Err(e) => {
-            eprintln!("For bridge {}, {}", bridge_config, e.report());
+            error!("For bridge {}, {}", bridge_config, e.report());
             false
         }
     }
@@ -70,7 +70,7 @@ async fn main() {
                 }));
             }
             Err(e) => {
-                eprintln!("{}", e.report());
+                error!("{}", e.report());
             }
         };
     }
@@ -83,7 +83,7 @@ async fn main() {
                 }
             }
             Err(e) => {
-                eprintln!("{}", e.report());
+                error!("{}", e.report());
             }
         }
     }
