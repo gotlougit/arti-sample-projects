@@ -29,16 +29,6 @@ async fn is_bridge_online(
     }
 }
 
-async fn test_obfs4_connection(config: TorClientConfig, bridge_config: BridgeConfig) -> bool {
-    match TorClient::create_bootstrapped(config).await {
-        Ok(tor_client) => is_bridge_online(&bridge_config, &tor_client).await,
-        Err(e) => {
-            eprintln!("{}", e.report());
-            false
-        }
-    }
-}
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
