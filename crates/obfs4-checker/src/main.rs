@@ -76,7 +76,7 @@ async fn main() {
         match TorClient::create_bootstrapped(config).await {
             Ok(tor_client) => {
                 tasks.push(tokio::task::spawn(async move {
-                    is_bridge_online(&bridge_config, &tor_client).await;
+                    return is_bridge_online(&bridge_config, &tor_client).await;
                 }));
             }
             Err(e) => {
@@ -84,10 +84,17 @@ async fn main() {
             }
         };
     }
-    let res = join_all(tasks).await;
-    for r in res {
-        if r.is_ok() {
-            number_online += 1;
+    let task_results = join_all(tasks).await;
+    for task in task_results {
+        match task {
+            Ok(result) => {
+                if result {
+                    number_online += 1;
+                }
+            }
+            Err(e) => {
+                eprintln!("{}", e.report());
+            }
         }
     }
     println!(
