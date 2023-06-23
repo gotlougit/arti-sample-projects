@@ -59,8 +59,8 @@ async fn main() {
     builder.bridges().transports().push(transport);
     let mut number_online = 0;
     let mut tasks = Vec::new();
-    for i in bridge_lines.iter() {
-        let bridge: BridgeConfigBuilder = i.parse().unwrap();
+    for bridge_line in bridge_lines.iter() {
+        let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
         let bridge_config = bridge.build().unwrap();
         let config = builder.build().unwrap();
         match TorClient::create_bootstrapped(config).await {
