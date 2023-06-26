@@ -2,6 +2,8 @@ use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
 use futures::future::join_all;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use tor_chanmgr::ChannelUsage;
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::BridgeConfig;
@@ -27,6 +29,13 @@ async fn is_bridge_online(
             false
         }
     }
+}
+
+async fn read_lines_from_file(fname: &str) -> Vec<String> {
+    let file = File::open(fname).unwrap();
+    let reader = BufReader::new(file);
+    let lines: Vec<String> = reader.lines().collect::<Result<_, _>>().unwrap();
+    lines
 }
 
 async fn test_entry_nodes(node_lines: &[&str]) -> u32 {
