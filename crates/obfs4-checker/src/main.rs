@@ -10,6 +10,8 @@ use tor_guardmgr::bridge::BridgeConfig;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
+const MAX_CONNECTIONS: i32 = 10;
+
 async fn is_bridge_online(
     bridge_config: &BridgeConfig,
     tor_client: &TorClient<PreferredRuntime>,
@@ -58,32 +60,41 @@ fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
 
 async fn controlled_test_function(node_lines: &[String], builder: TorClientConfigBuilder) -> u32 {
     let mut number_online = 0;
-    let mut tasks = Vec::new();
-    for node_line in node_lines.iter() {
-        let bridge: BridgeConfigBuilder = node_line.parse().unwrap();
-        let bridge_config = bridge.build().unwrap();
-        let config = builder.build().unwrap();
-        match TorClient::create_bootstrapped(config).await {
-            Ok(tor_client) => {
-                tasks.push(tokio::spawn(async move {
-                    return is_bridge_online(&bridge_config, &tor_client).await;
-                }));
+    let mut counter = 0;
+    while counter < node_lines.len() as i32 {
+        let mut tasks = Vec::new();
+        info!("Getting more descriptors to test...");
+        for i in 0..MAX_CONNECTIONS {
+            if counter as usize >= node_lines.len() {
+                break;
             }
-            Err(e) => {
-                error!("{}", e.report());
-            }
-        };
-    }
-    let task_results = join_all(tasks).await;
-    for task in task_results {
-        match task {
-            Ok(result) => {
-                if result {
-                    number_online += 1;
+            let bridge: BridgeConfigBuilder = node_lines[(counter + i) as usize].parse().unwrap();
+            let bridge_config = bridge.build().unwrap();
+            let config = builder.build().unwrap();
+            match TorClient::create_bootstrapped(config).await {
+                Ok(tor_client) => {
+                    tasks.push(tokio::spawn(async move {
+                        return is_bridge_online(&bridge_config, &tor_client).await;
+                    }));
                 }
-            }
-            Err(e) => {
-                error!("{}", e.report());
+                Err(e) => {
+                    error!("{}", e.report());
+                }
+            };
+            counter += 1;
+        }
+        info!("Now trying to get results of these connections");
+        let task_results = join_all(tasks).await;
+        for task in task_results {
+            match task {
+                Ok(result) => {
+                    if result {
+                        number_online += 1;
+                    }
+                }
+                Err(e) => {
+                    error!("{}", e.report());
+                }
             }
         }
     }
