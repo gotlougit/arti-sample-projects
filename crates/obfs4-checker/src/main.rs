@@ -39,8 +39,7 @@ fn read_lines_from_file(fname: &str) -> Vec<String> {
 }
 
 fn build_entry_node_config() -> TorClientConfigBuilder {
-    let mut builder = TorClientConfig::builder();
-    builder
+    TorClientConfig::builder()
 }
 
 fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
