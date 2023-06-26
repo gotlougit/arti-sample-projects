@@ -63,7 +63,7 @@ async fn controlled_test_function(node_lines: &[String], builder: TorClientConfi
     let mut counter = 0;
     while counter < node_lines.len() as i32 {
         let mut tasks = Vec::new();
-        info!("Getting more descriptors to test...");
+        println!("Getting more descriptors to test...");
         for i in 0..MAX_CONNECTIONS {
             if counter as usize >= node_lines.len() {
                 break;
@@ -83,7 +83,7 @@ async fn controlled_test_function(node_lines: &[String], builder: TorClientConfi
             };
             counter += 1;
         }
-        info!("Now trying to get results of these connections");
+        println!("Now trying to get results of these connections");
         let task_results = join_all(tasks).await;
         for task in task_results {
             match task {
