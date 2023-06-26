@@ -57,8 +57,7 @@ fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
     builder
 }
 
-async fn test_entry_nodes(node_lines: &[String]) -> u32 {
-    let builder = build_entry_node_config();
+async fn controlled_test_function(node_lines: &[String], builder: TorClientConfigBuilder) -> u32 {
     let mut number_online = 0;
     let mut tasks = Vec::new();
     for node_line in node_lines.iter() {
@@ -92,39 +91,14 @@ async fn test_entry_nodes(node_lines: &[String]) -> u32 {
     number_online
 }
 
-async fn test_obfs4_bridges(bridge_lines: &[&str]) -> u32 {
+async fn test_entry_nodes(node_lines: &[String]) -> u32 {
+    let builder = build_entry_node_config();
+    return controlled_test_function(node_lines, builder).await;
+}
+
+async fn test_obfs4_bridges(bridge_lines: &[String]) -> u32 {
     let builder = build_obfs4_bridge_config();
-    let mut number_online = 0;
-    let mut tasks = Vec::new();
-    for bridge_line in bridge_lines.iter() {
-        let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
-        let bridge_config = bridge.build().unwrap();
-        let config = builder.build().unwrap();
-        match TorClient::create_bootstrapped(config).await {
-            Ok(tor_client) => {
-                tasks.push(tokio::task::spawn(async move {
-                    return is_bridge_online(&bridge_config, &tor_client).await;
-                }));
-            }
-            Err(e) => {
-                error!("{}", e.report());
-            }
-        };
-    }
-    let task_results = join_all(tasks).await;
-    for task in task_results {
-        match task {
-            Ok(result) => {
-                if result {
-                    number_online += 1;
-                }
-            }
-            Err(e) => {
-                error!("{}", e.report());
-            }
-        }
-    }
-    number_online
+    return controlled_test_function(bridge_lines, builder).await;
 }
 
 #[tokio::main]
