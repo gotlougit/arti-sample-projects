@@ -10,7 +10,7 @@ use tor_guardmgr::bridge::BridgeConfig;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
-const MAX_CONNECTIONS: i32 = 10;
+const MAX_CONNECTIONS: usize = 10;
 
 async fn is_bridge_online(
     bridge_config: &BridgeConfig,
@@ -60,15 +60,15 @@ fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
 
 async fn controlled_test_function(node_lines: &[String], builder: TorClientConfigBuilder) -> u32 {
     let mut number_online = 0;
-    let mut counter = 0;
-    while counter < node_lines.len() as i32 {
+    let mut counter: usize = 0;
+    while counter < node_lines.len() {
         let mut tasks = Vec::new();
         println!("Getting more descriptors to test...");
         for i in 0..MAX_CONNECTIONS {
-            if counter as usize >= node_lines.len() {
+            if counter >= node_lines.len() {
                 break;
             }
-            let bridge: BridgeConfigBuilder = node_lines[(counter + i) as usize].parse().unwrap();
+            let bridge: BridgeConfigBuilder = node_lines[counter + i].parse().unwrap();
             let bridge_config = bridge.build().unwrap();
             let config = builder.build().unwrap();
             match TorClient::create_bootstrapped(config).await {
