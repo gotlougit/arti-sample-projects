@@ -38,7 +38,7 @@ fn read_lines_from_file(fname: &str) -> Vec<String> {
     lines
 }
 
-async fn test_entry_nodes(node_lines: &[&str]) -> u32 {
+async fn test_entry_nodes(node_lines: &Vec<String>) -> u32 {
     let builder = TorClientConfig::builder();
     let mut number_online = 0;
     let mut tasks = Vec::new();
