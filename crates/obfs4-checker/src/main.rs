@@ -31,7 +31,7 @@ async fn is_bridge_online(
     }
 }
 
-async fn read_lines_from_file(fname: &str) -> Vec<String> {
+fn read_lines_from_file(fname: &str) -> Vec<String> {
     let file = File::open(fname).unwrap();
     let reader = BufReader::new(file);
     let lines: Vec<String> = reader.lines().collect::<Result<_, _>>().unwrap();
