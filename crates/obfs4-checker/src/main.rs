@@ -29,6 +29,41 @@ async fn is_bridge_online(
     }
 }
 
+async fn test_entry_nodes(node_lines: &[&str]) -> u32 {
+    let builder = TorClientConfig::builder();
+    let mut number_online = 0;
+    let mut tasks = Vec::new();
+    for node_line in node_lines.iter() {
+        let bridge: BridgeConfigBuilder = node_line.parse().unwrap();
+        let bridge_config = bridge.build().unwrap();
+        let config = builder.build().unwrap();
+        match TorClient::create_bootstrapped(config).await {
+            Ok(tor_client) => {
+                tasks.push(tokio::task::spawn(async move {
+                    return is_bridge_online(&bridge_config, &tor_client).await;
+                }));
+            }
+            Err(e) => {
+                error!("{}", e.report());
+            }
+        };
+    }
+    let task_results = join_all(tasks).await;
+    for task in task_results {
+        match task {
+            Ok(result) => {
+                if result {
+                    number_online += 1;
+                }
+            }
+            Err(e) => {
+                error!("{}", e.report());
+            }
+        }
+    }
+    number_online
+}
+
 async fn test_obfs4_bridges(bridge_lines: &[&str]) -> u32 {
     let mut builder = TorClientConfig::builder();
     let mut transport = ManagedTransportConfigBuilder::default();
@@ -92,6 +127,7 @@ async fn main() {
         "obfs4 51.222.13.177:80 5EDAC3B810E12B01F6FD8050D2FD3E277B289A08 cert=2uplIpLQ0q9+0qMFrK5pkaYRDOe460LL9WHBvatgkuRr/SL31wBOEupaMMJ6koRE6Ld0ew iat-mode=0",
     ];
     let number_online = test_obfs4_bridges(&bridge_lines).await;
+    //let number_online = test_entry_nodes(&bridge_lines).await;
     println!(
         "STATUS: {} out of {} online",
         number_online,
