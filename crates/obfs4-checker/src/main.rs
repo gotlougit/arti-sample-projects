@@ -1,5 +1,5 @@
 use arti_client::config::pt::ManagedTransportConfigBuilder;
-use arti_client::config::{BridgeConfigBuilder, CfgPath};
+use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
 use futures::future::join_all;
 use std::fs::File;
@@ -38,8 +38,27 @@ fn read_lines_from_file(fname: &str) -> Vec<String> {
     lines
 }
 
+fn build_entry_node_config() -> TorClientConfigBuilder {
+    let mut builder = TorClientConfig::builder();
+    builder
+}
+
+fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
+    let mut builder = TorClientConfig::builder();
+    let mut transport = ManagedTransportConfigBuilder::default();
+    transport
+        .protocols(vec!["obfs4".parse().unwrap()])
+        // THIS IS DISTRO SPECIFIC
+        // If this function doesn't work, check by what name obfs4 client
+        // goes by on your system
+        .path(CfgPath::new(("obfs4proxy").into()))
+        .run_on_startup(true);
+    builder.bridges().transports().push(transport);
+    builder
+}
+
 async fn test_entry_nodes(node_lines: &[String]) -> u32 {
-    let builder = TorClientConfig::builder();
+    let builder = build_entry_node_config();
     let mut number_online = 0;
     let mut tasks = Vec::new();
     for node_line in node_lines.iter() {
@@ -74,16 +93,7 @@ async fn test_entry_nodes(node_lines: &[String]) -> u32 {
 }
 
 async fn test_obfs4_bridges(bridge_lines: &[&str]) -> u32 {
-    let mut builder = TorClientConfig::builder();
-    let mut transport = ManagedTransportConfigBuilder::default();
-    transport
-        .protocols(vec!["obfs4".parse().unwrap()])
-        // THIS IS DISTRO SPECIFIC
-        // If this function doesn't work, check by what name obfs4 client
-        // goes by on your system
-        .path(CfgPath::new(("obfs4proxy").into()))
-        .run_on_startup(true);
-    builder.bridges().transports().push(transport);
+    let builder = build_obfs4_bridge_config();
     let mut number_online = 0;
     let mut tasks = Vec::new();
     for bridge_line in bridge_lines.iter() {
