@@ -38,7 +38,7 @@ fn read_lines_from_file(fname: &str) -> Vec<String> {
     lines
 }
 
-async fn test_entry_nodes(node_lines: &Vec<String>) -> u32 {
+async fn test_entry_nodes(node_lines: &[String]) -> u32 {
     let builder = TorClientConfig::builder();
     let mut number_online = 0;
     let mut tasks = Vec::new();
@@ -137,11 +137,12 @@ async fn main() {
     ];
     let guard_lines = read_lines_from_file("list_of_entry_nodes");
     //let number_online = test_obfs4_bridges(&bridge_lines).await;
-    let number_online = test_entry_nodes(&guard_lines).await;
+    let number_online = test_entry_nodes(&guard_lines[..100]).await;
     println!(
         "STATUS: {} out of {} online",
         number_online,
         //bridge_lines.len()
-        guard_lines.len()
+        //guard_lines.len()
+        100
     );
 }
