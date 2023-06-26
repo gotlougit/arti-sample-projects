@@ -135,11 +135,13 @@ async fn main() {
         "obfs4 45.145.95.6:27015 C5B7CD6946FF10C5B3E89691A7D3F2C122D2117C cert=TD7PbUO0/0k6xYHMPW3vJxICfkMZNdkRrb63Zhl5j9dW3iRGiCx0A7mPhe5T2EDzQ35+Zw iat-mode=0",
         "obfs4 51.222.13.177:80 5EDAC3B810E12B01F6FD8050D2FD3E277B289A08 cert=2uplIpLQ0q9+0qMFrK5pkaYRDOe460LL9WHBvatgkuRr/SL31wBOEupaMMJ6koRE6Ld0ew iat-mode=0",
     ];
-    let number_online = test_obfs4_bridges(&bridge_lines).await;
-    //let number_online = test_entry_nodes(&bridge_lines).await;
+    let guard_lines = read_lines_from_file("list_of_entry_nodes");
+    //let number_online = test_obfs4_bridges(&bridge_lines).await;
+    let number_online = test_entry_nodes(&guard_lines).await;
     println!(
         "STATUS: {} out of {} online",
         number_online,
-        bridge_lines.len()
+        //bridge_lines.len()
+        guard_lines.len()
     );
 }
