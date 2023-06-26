@@ -64,11 +64,11 @@ async fn controlled_test_function(node_lines: &[String], builder: TorClientConfi
     while counter < node_lines.len() {
         let mut tasks = Vec::new();
         println!("Getting more descriptors to test...");
-        for i in 0..MAX_CONNECTIONS {
+        for _ in 0..MAX_CONNECTIONS {
             if counter >= node_lines.len() {
                 break;
             }
-            let bridge: BridgeConfigBuilder = node_lines[counter + i].parse().unwrap();
+            let bridge: BridgeConfigBuilder = node_lines[counter].parse().unwrap();
             let bridge_config = bridge.build().unwrap();
             let config = builder.build().unwrap();
             match TorClient::create_bootstrapped(config).await {
