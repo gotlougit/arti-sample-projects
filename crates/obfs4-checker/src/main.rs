@@ -48,7 +48,7 @@ async fn test_entry_nodes(node_lines: &[String]) -> u32 {
         let config = builder.build().unwrap();
         match TorClient::create_bootstrapped(config).await {
             Ok(tor_client) => {
-                tasks.push(tokio::task::spawn(async move {
+                tasks.push(tokio::spawn(async move {
                     return is_bridge_online(&bridge_config, &tor_client).await;
                 }));
             }
