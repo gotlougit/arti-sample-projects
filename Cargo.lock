@@ -2054,7 +2054,7 @@ dependencies = [
  "tls-api-native-tls",
  "tokio",
  "tor-chanmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tor-error 0.5.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tor-guardmgr 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tor-rtcompat 0.9.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
  "tracing",
