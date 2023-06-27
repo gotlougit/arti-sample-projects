@@ -15,5 +15,5 @@ tor-rtcompat = { git = "https://gitlab.torproject.org/tpo/core/arti/" }
 tracing-subscriber = "0.2.0"
 tls-api = "0.9.0"
 tls-api-native-tls = "0.9.0"
-tor-error = "0.5.1"
+tor-error = { git = "https://gitlab.torproject.org/tpo/core/arti/" }
 futures = "0.3.28"
