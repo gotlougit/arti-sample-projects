@@ -3,7 +3,6 @@ use std::env;
 use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error};
-//use tokio::net::TcpStream;
 
 // Used to convert to raw bytes to be sent over the network
 trait AsBytes {
@@ -349,14 +348,4 @@ async fn main() {
     stream.read_to_end(&mut buf).await.unwrap();
     let resp = Response::from_bytes(&buf);
     println!("{}", resp);
-    /*
-    let mut stream = TcpStream::connect("1.1.1.1:53").await.unwrap();
-    let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
-    stream.write_all(&req).await.unwrap();
-    debug!("Awaiting response...");
-    let mut buf = vec![0u8; 0];
-    stream.read_to_end(&mut buf).await.unwrap();
-    let resp = Response::from_bytes(&buf);
-    println!("{}", resp);
-    */
 }
