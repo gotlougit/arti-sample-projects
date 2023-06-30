@@ -70,12 +70,12 @@ impl AsBytes for Header {
 
 impl Display for Header {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "ID: 0x{:x}\n", self.identification).unwrap();
-        write!(f, "Flags: 0x{:x}\n", self.packed_second_row).unwrap();
-        write!(f, "QDCOUNT: 0x{:x}\n", self.qdcount).unwrap();
-        write!(f, "ANCOUNT: 0x{:x}\n", self.ancount).unwrap();
-        write!(f, "NSCOUNT: 0x{:x}\n", self.nscount).unwrap();
-        write!(f, "ARCOUNT: 0x{:x}\n", self.arcount).unwrap();
+        writeln!(f, "ID: 0x{:x}", self.identification).unwrap();
+        writeln!(f, "Flags: 0x{:x}", self.packed_second_row).unwrap();
+        writeln!(f, "QDCOUNT: 0x{:x}", self.qdcount).unwrap();
+        writeln!(f, "ANCOUNT: 0x{:x}", self.ancount).unwrap();
+        writeln!(f, "NSCOUNT: 0x{:x}", self.nscount).unwrap();
+        writeln!(f, "ARCOUNT: 0x{:x}", self.arcount).unwrap();
         Ok(())
     }
 }
@@ -229,13 +229,13 @@ impl FromBytes for ResourceRecord {
 
 impl Display for ResourceRecord {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "RR record type: 0x{:x}\n", self.rtype).unwrap();
-        write!(f, "RR class: 0x{:x}\n", self.class).unwrap();
-        write!(f, "TTL: {}\n", self.ttl).unwrap();
-        write!(f, "RDLENGTH: 0x{:x}\n", self.rdlength).unwrap();
-        write!(
+        writeln!(f, "RR record type: 0x{:x}", self.rtype).unwrap();
+        writeln!(f, "RR class: 0x{:x}", self.class).unwrap();
+        writeln!(f, "TTL: {}", self.ttl).unwrap();
+        writeln!(f, "RDLENGTH: 0x{:x}", self.rdlength).unwrap();
+        writeln!(
             f,
-            "IP address: {}.{}.{}.{}\n",
+            "IP address: {}.{}.{}.{}",
             self.rdata[0], self.rdata[1], self.rdata[2], self.rdata[3]
         )
         .unwrap();
@@ -283,18 +283,18 @@ impl FromBytes for Response {
 
 impl Display for Response {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.query.header).unwrap();
-        write!(
+        writeln!(f, "{}", self.query.header).unwrap();
+        writeln!(
             f,
-            "Name: {}\n",
+            "Name: {}",
             String::from_utf8(self.query.qname.to_owned()).unwrap()
         )
         .unwrap();
-        write!(f, "Res type: 0x{:x}\n", self.query.qtype).unwrap();
-        write!(f, "Class: 0x{:x}\n", self.query.qclass).unwrap();
+        writeln!(f, "Res type: 0x{:x}", self.query.qtype).unwrap();
+        writeln!(f, "Class: 0x{:x}", self.query.qclass).unwrap();
         for record in self.rr.iter() {
-            write!(f, "\n").unwrap();
-            write!(f, "{}", record).unwrap();
+            writeln!(f, "").unwrap();
+            writeln!(f, "{}", record).unwrap();
         }
         Ok(())
     }
