@@ -40,7 +40,6 @@ trait Len {
 // DNS Header to be used by both Query and Response
 // The default values written below are from the perspective of the client
 // TODO: For server we will have to interpret given values
-#[repr(C)]
 struct Header {
     identification: u16,
     // TODO: don't rely on cryptic packed bits
@@ -107,7 +106,6 @@ impl FromBytes for Header {
 // The actual query we will send to a DNS server
 // For now A records are fetched only
 // TODO: add support for different records to be fetched
-#[repr(C)]
 struct Query {
     header: Header,
     qname: Vec<u8>, // domain name
@@ -190,7 +188,6 @@ impl FromBytes for Query {
 }
 
 // A struct which represents one RR
-#[repr(C)]
 struct ResourceRecord {
     rtype: u16,     // same as in Query
     class: u16,     // same as in Query
@@ -246,7 +243,6 @@ impl Display for ResourceRecord {
 }
 
 // Stores the response in easy to interpret manner
-#[repr(C)]
 struct Response {
     query: Query,
     rr: Vec<ResourceRecord>,
