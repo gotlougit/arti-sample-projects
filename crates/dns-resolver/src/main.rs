@@ -42,13 +42,13 @@ trait Len {
 // TODO: For server we will have to interpret given values
 #[repr(C)]
 struct Header {
-    pub identification: u16,
+    identification: u16,
     // TODO: don't rely on cryptic packed bits
-    pub packed_second_row: u16, // set to 0x100
-    pub qdcount: u16,           // set to 1 since we have 1 question
-    pub ancount: u16,           // set to 0 since client doesn't have answers
-    pub nscount: u16,           // set to 0
-    pub arcount: u16,           // set to 0
+    packed_second_row: u16, // set to 0x100
+    qdcount: u16,           // set to 1 since we have 1 question
+    ancount: u16,           // set to 0 since client doesn't have answers
+    nscount: u16,           // set to 0
+    arcount: u16,           // set to 0
 }
 
 // Ugly, repetitive code to convert all six 16-bit fields into Vec<u8>
@@ -109,10 +109,10 @@ impl FromBytes for Header {
 // TODO: add support for different records to be fetched
 #[repr(C)]
 struct Query {
-    pub header: Header,
-    pub qname: Vec<u8>, // domain name
-    pub qtype: u16,     // set to 0x0001 for A records
-    pub qclass: u16,    // set to 1 for Internet addresses
+    header: Header,
+    qname: Vec<u8>, // domain name
+    qtype: u16,     // set to 0x0001 for A records
+    qclass: u16,    // set to 1 for Internet addresses
 }
 
 impl AsBytes for Query {
@@ -192,11 +192,11 @@ impl FromBytes for Query {
 // A struct which represents one RR
 #[repr(C)]
 struct ResourceRecord {
-    pub rtype: u16,     // same as in Query
-    pub class: u16,     // same as in Query
-    pub ttl: u32,       // number of seconds to cache the result
-    pub rdlength: u16,  // Length of RDATA
-    pub rdata: [u8; 4], // IP address
+    rtype: u16,     // same as in Query
+    class: u16,     // same as in Query
+    ttl: u32,       // number of seconds to cache the result
+    rdlength: u16,  // Length of RDATA
+    rdata: [u8; 4], // IP address
 }
 
 impl Len for ResourceRecord {
@@ -248,8 +248,8 @@ impl Display for ResourceRecord {
 // Stores the response in easy to interpret manner
 #[repr(C)]
 struct Response {
-    pub query: Query,
-    pub rr: Vec<ResourceRecord>,
+    query: Query,
+    rr: Vec<ResourceRecord>,
 }
 
 impl FromBytes for Response {
