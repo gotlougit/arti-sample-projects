@@ -4,6 +4,8 @@ use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error};
 
+const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
+
 // Used to convert to raw bytes to be sent over the network
 trait AsBytes {
     fn as_bytes(&self) -> Vec<u8>;
@@ -338,7 +340,7 @@ async fn main() {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     debug!("Connecting to 1.1.1.1 port 53 for DNS over TCP lookup");
-    let mut stream = tor_client.connect(("1.1.1.1", 53)).await.unwrap();
+    let mut stream = tor_client.connect(DNS_SERVER).await.unwrap();
     let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
     stream.flush().await.unwrap();
