@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-arti-client = { version = "0.9.1", features = ["bridge-client"] }
+arti-client = { git = "https://gitlab.torproject.org/tpo/core/arti" , features = ["bridge-client"] }
 tokio = { version = "1.7", features = ["full"] }
 tls-api = "0.9.0"
 tls-api-native-tls = "0.9.0"
