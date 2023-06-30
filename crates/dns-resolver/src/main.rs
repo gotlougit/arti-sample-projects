@@ -135,7 +135,7 @@ impl Len for Query {
     fn len(&self) -> usize {
         // extra 1 is for compensating for how we
         // use one byte more to store length of domain name
-        return 12 + 1 + self.qname.len() + 2 + 2;
+        12 + 1 + self.qname.len() + 2 + 2
     }
 }
 
@@ -293,7 +293,7 @@ impl Display for Response {
         writeln!(f, "Res type: 0x{:x}", self.query.qtype).unwrap();
         writeln!(f, "Class: 0x{:x}", self.query.qclass).unwrap();
         for record in self.rr.iter() {
-            writeln!(f, "").unwrap();
+            writeln!(f).unwrap();
             writeln!(f, "{}", record).unwrap();
         }
         Ok(())
