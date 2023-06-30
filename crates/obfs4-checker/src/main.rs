@@ -123,6 +123,9 @@ async fn main() {
     for iters in 0..(guard_lines.len() / MAX_CONNECTIONS) {
         //let number_online = test_obfs4_bridges(&bridge_lines).await;
         let start = 100 * iters;
+        if start >= guard_lines.len() {
+            break;
+        }
         let mut end = start + 100;
         while end >= guard_lines.len() {
             end -= 1;
