@@ -331,22 +331,30 @@ fn craft_query(domain: &str) -> Query {
 
 #[tokio::main]
 async fn main() {
+    // Start logging messages
     tracing_subscriber::fmt::init();
+    // Get and check CLI arguments
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
         eprintln!("Usage: dns-resolver <hostname-to-lookup>");
         return;
     }
+    // Create the default TorClientConfig and create a TorClient
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     debug!("Connecting to 1.1.1.1 port 53 for DNS over TCP lookup");
     let mut stream = tor_client.connect(DNS_SERVER).await.unwrap();
+    // We now have a TcpStream analogue to use
     let req = craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
+    // Flushing ensures we actually send data over network right then instead
+    // of waiting for buffer to fill up
     stream.flush().await.unwrap();
     debug!("Awaiting response...");
     let mut buf: Vec<u8> = Vec::new();
+    // Read the response
     stream.read_to_end(&mut buf).await.unwrap();
+    // Interpret the response
     let resp = Response::from_bytes(&buf);
     println!("{}", resp);
 }
