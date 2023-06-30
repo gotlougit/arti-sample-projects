@@ -6,7 +6,7 @@ use tracing::{debug, error};
 
 // Used to convert to raw bytes to be sent over the network
 trait AsBytes {
-    fn as_bytes(self) -> Vec<u8>;
+    fn as_bytes(&self) -> Vec<u8>;
 }
 
 // Used to get a struct from raw bytes representation
@@ -50,7 +50,7 @@ struct Header {
 
 // Ugly, repetitive code to convert all six 16-bit fields into Vec<u8>
 impl AsBytes for Header {
-    fn as_bytes(self) -> Vec<u8> {
+    fn as_bytes(&self) -> Vec<u8> {
         let mut v: Vec<u8> = Vec::with_capacity(14);
         // These 2 bytes store size of the rest of the payload (including header)
         // Right now it denotes 51 byte size packet, excluding these 2 bytes
@@ -113,11 +113,11 @@ struct Query {
 }
 
 impl AsBytes for Query {
-    fn as_bytes(self) -> Vec<u8> {
+    fn as_bytes(&self) -> Vec<u8> {
         let mut v: Vec<u8> = Vec::new();
         let header_bytes = self.header.as_bytes();
         v.extend(header_bytes);
-        v.extend(self.qname);
+        v.extend(&self.qname);
         v.extend_from_slice(&u16::to_be_bytes(self.qtype));
         v.extend_from_slice(&u16::to_be_bytes(self.qclass));
         // Now that the packet is ready, we can calculate size and set that in
