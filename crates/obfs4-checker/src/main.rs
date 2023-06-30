@@ -130,13 +130,23 @@ async fn main() {
         "obfs4 51.222.13.177:80 5EDAC3B810E12B01F6FD8050D2FD3E277B289A08 cert=2uplIpLQ0q9+0qMFrK5pkaYRDOe460LL9WHBvatgkuRr/SL31wBOEupaMMJ6koRE6Ld0ew iat-mode=0",
     ].to_vec();
     let guard_lines = read_lines_from_file("list_of_entry_nodes");
-    //let number_online = test_obfs4_bridges(&bridge_lines).await;
-    let number_online = test_entry_nodes(&guard_lines[..100]).await;
-    println!(
-        "STATUS: {} out of {} online",
-        number_online,
-        //bridge_lines.len()
-        //guard_lines.len()
-        100
-    );
+    for iters in 0..(guard_lines.len() / MAX_CONNECTIONS) {
+        //let number_online = test_obfs4_bridges(&bridge_lines).await;
+        let start = 100 * iters;
+        let mut end = start + 100;
+        while end >= guard_lines.len() {
+            end -= 1;
+        }
+        let cpy = guard_lines[start..end].to_vec();
+        tokio::spawn(async move {
+            let number_online = test_entry_nodes(&cpy).await;
+            println!(
+                "STATUS: {} out of {} online",
+                number_online,
+                //bridge_lines.len()
+                //guard_lines.len()
+                100
+            );
+        });
+    }
 }
