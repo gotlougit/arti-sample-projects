@@ -101,16 +101,6 @@ async fn controlled_test_function(node_lines: &[String], builder: TorClientConfi
     number_online
 }
 
-async fn test_entry_nodes(node_lines: &[String]) -> u32 {
-    let builder = build_entry_node_config();
-    return controlled_test_function(node_lines, builder).await;
-}
-
-async fn test_obfs4_bridges(bridge_lines: &[String]) -> u32 {
-    let builder = build_obfs4_bridge_config();
-    return controlled_test_function(bridge_lines, builder).await;
-}
-
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
@@ -138,8 +128,9 @@ async fn main() {
             end -= 1;
         }
         let cpy = guard_lines[start..end].to_vec();
+        let builder = build_entry_node_config();
         tokio::spawn(async move {
-            let number_online = test_entry_nodes(&cpy).await;
+            let number_online = controlled_test_function(&cpy, builder).await;
             println!(
                 "STATUS: {} out of {} online",
                 number_online,
