@@ -12,14 +12,15 @@ trait AsBytes {
 // Used to get a struct from raw bytes representation
 trait FromBytes {
     fn u8_to_u16(upper: u8, lower: u8) -> u16 {
-        (upper as u16) << 8 | lower as u16
+        let bytes = [upper, lower];
+        u16::from_be_bytes(bytes)
     }
-    fn u8_to_u32(bytes: &[u8]) -> u32 {
-        let ans: u32 = (bytes[0] as u32) << 24
-            | (bytes[1] as u32) << 16
-            | (bytes[2] as u32) << 8
-            | bytes[3] as u32;
-        ans
+    fn u8_to_u32(bytes_slice: &[u8]) -> u32 {
+        let mut bytes = [0u8; 4];
+        for (i, val) in bytes_slice.iter().enumerate() {
+            bytes[i] = *val;
+        }
+        u32::from_be_bytes(bytes)
     }
     fn from_bytes(bytes: &[u8]) -> Self;
 }
