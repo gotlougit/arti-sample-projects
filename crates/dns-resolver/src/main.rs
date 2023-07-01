@@ -54,10 +54,10 @@ trait FromBytes {
     fn from_bytes(bytes: &[u8]) -> Self;
 }
 
-// Report length of the struct as in byte stream
-// Note that this doesn't mean length of struct
-// It is simply used to denote how long the struct is if it were
-// sent over the wire
+/// Report length of the struct as in byte stream
+/// Note that this doesn't mean length of struct
+/// It is simply used to denote how long the struct is if it were
+/// sent over the wire
 trait Len {
     fn len(&self) -> usize;
 }
