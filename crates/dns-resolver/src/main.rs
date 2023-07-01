@@ -55,8 +55,6 @@ trait Len {
     fn len(&self) -> usize;
 }
 
-// Note: repr(C) disables struct data shuffling to adhere to standards
-
 // DNS Header to be used by both Query and Response
 // The default values written below are from the perspective of the client
 // TODO: For server we will have to interpret given values
