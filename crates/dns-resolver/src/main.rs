@@ -6,7 +6,15 @@ use tracing::{debug, error};
 
 const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
 
-// Used to convert to raw bytes to be sent over the network
+/// Used to convert struct to raw bytes to be sent over the network
+///
+/// Example:
+/// ```
+/// // We have some struct S that implements this trait
+/// let s = S::new();
+/// // This prints the raw bytes as debug output
+/// dbg!("{}", s.as_bytes());
+/// ```
 trait AsBytes {
     fn as_bytes(&self) -> Vec<u8>;
 }
