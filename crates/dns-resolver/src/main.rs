@@ -33,10 +33,17 @@ trait AsBytes {
 /// You will have to interpret each byte and convert it into each field
 /// of your struct yourself.
 trait FromBytes {
+    /// Convert two u8's into a u16
+    ///
+    /// It is just a thin wrapper over [u16::from_be_bytes()]
     fn u8_to_u16(upper: u8, lower: u8) -> u16 {
         let bytes = [upper, lower];
         u16::from_be_bytes(bytes)
     }
+    /// Convert four u8's contained in a slice into a u32
+    ///
+    /// It is just a thin wrapper over [u32::from_be_bytes()] but also deals
+    /// with converting &\[u8\] (u8 slice) into [u8; 4] (a fixed size array of u8)
     fn u8_to_u32(bytes_slice: &[u8]) -> u32 {
         let mut bytes = [0u8; 4];
         for (i, val) in bytes_slice.iter().enumerate() {
