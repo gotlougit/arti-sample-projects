@@ -19,7 +19,19 @@ trait AsBytes {
     fn as_bytes(&self) -> Vec<u8>;
 }
 
-// Used to get a struct from raw bytes representation
+/// Used to convert raw bytes representation into a Rust struct
+///
+/// Example:
+/// ```
+/// let mut buf: Vec<u8> = Vec::new();
+/// // Read the response from a stream
+/// stream.read_to_end(&mut buf).await.unwrap();
+/// // Interpret the response into a struct S
+/// let resp = S::from_bytes(&buf);
+/// ```
+///
+/// You will have to interpret each byte and convert it into each field
+/// of your struct yourself.
 trait FromBytes {
     fn u8_to_u16(upper: u8, lower: u8) -> u16 {
         let bytes = [upper, lower];
