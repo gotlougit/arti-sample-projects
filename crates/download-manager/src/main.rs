@@ -21,6 +21,8 @@ const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 // Number of simultaneous connections that are made
 // TODO: make this user configurable
 const MAX_CONNECTIONS: usize = 6;
+// Number of retries to make if a particular request failed
+const MAX_RETRIES: usize = 6;
 
 // TODO: Handle all unwrap() effectively
 
@@ -93,7 +95,7 @@ async fn request(
     start: usize,
     end: usize,
     http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
-) -> Vec<u8> {
+) -> Result<Vec<u8>, hyper::Error> {
     let uri = Uri::from_static(url);
     let partial_req_value =
         String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
@@ -115,11 +117,10 @@ async fn request(
     }
 
     // Get the body of the response
-    let body = hyper::body::to_bytes(resp.body_mut())
-        .await
-        .unwrap()
-        .to_vec();
-    body
+    match hyper::body::to_bytes(resp.body_mut()).await {
+        Ok(bytes) => Ok(bytes.to_vec()),
+        Err(e) => Err(e),
+    }
 }
 
 // just write the bytes at the right position in the file
@@ -127,6 +128,29 @@ fn save_to_file(mut fd: File, start: usize, body: Vec<u8>) {
     warn!("Saving a chunk to disk...");
     fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
     fd.write_all(&body).unwrap();
+}
+
+async fn get_segment(
+    url: &'static str,
+    start: usize,
+    end: usize,
+    newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
+    fd: File,
+) {
+    for _ in 0..MAX_RETRIES {
+        // request via new Tor connection
+        match request(url, start, end, &newhttp).await {
+            // save to disk
+            Ok(body) => {
+                save_to_file(fd, start, body);
+                break;
+            }
+            // retry if we failed
+            Err(_) => {
+                warn!("Error while trying to get a segment, retrying...");
+            }
+        }
+    }
 }
 
 // Summary: create a new TorClient, determine the number of "chunks" to get
@@ -166,10 +190,7 @@ async fn main() {
             .clone();
         let fd_clone = fd.try_clone().unwrap();
         downloadtasks.push(tokio::spawn(async move {
-            // request via new Tor connection
-            let body = request(url, start, end, &newhttp).await;
-            // save to disk
-            save_to_file(fd_clone, start, body);
+            get_segment(url, start, end, newhttp, fd_clone).await;
         }));
         start = end + 1;
     }
@@ -177,7 +198,6 @@ async fn main() {
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
         let newhttp = get_new_connection(&baseconn).await;
-        let body = request(url, start, length as usize, &newhttp).await;
-        save_to_file(fd, start, body);
+        get_segment(url, start, length as usize, newhttp, fd).await;
     }
 }
