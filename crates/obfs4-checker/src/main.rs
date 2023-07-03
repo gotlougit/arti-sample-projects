@@ -58,7 +58,10 @@ fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
     builder
 }
 
-async fn controlled_test_function(node_lines: &[String], builder: TorClientConfigBuilder) -> u32 {
+async fn controlled_test_function(
+    node_lines: &[String],
+    common_tor_client: TorClient<PreferredRuntime>,
+) -> u32 {
     let mut number_online = 0;
     let mut counter: usize = 0;
     while counter < node_lines.len() {
@@ -70,17 +73,10 @@ async fn controlled_test_function(node_lines: &[String], builder: TorClientConfi
             }
             let bridge: BridgeConfigBuilder = node_lines[counter].parse().unwrap();
             let bridge_config = bridge.build().unwrap();
-            let config = builder.build().unwrap();
-            match TorClient::create_bootstrapped(config).await {
-                Ok(tor_client) => {
-                    tasks.push(tokio::spawn(async move {
-                        return is_bridge_online(&bridge_config, &tor_client).await;
-                    }));
-                }
-                Err(e) => {
-                    error!("{}", e.report());
-                }
-            };
+            let tor_client = common_tor_client.isolated_client();
+            tasks.push(tokio::spawn(async move {
+                return is_bridge_online(&bridge_config, &tor_client).await;
+            }));
             counter += 1;
         }
         println!("Now trying to get results of these connections");
@@ -131,9 +127,10 @@ async fn main() {
             end -= 1;
         }
         let cpy = guard_lines[start..end].to_vec();
-        let builder = build_entry_node_config();
+        let builder = build_entry_node_config().build().unwrap();
+        let common_tor_client = TorClient::create_bootstrapped(builder).await.unwrap();
         tokio::spawn(async move {
-            let number_online = controlled_test_function(&cpy, builder).await;
+            let number_online = controlled_test_function(&cpy, common_tor_client).await;
             println!(
                 "STATUS: {} out of {} online",
                 number_online,
