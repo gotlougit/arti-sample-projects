@@ -79,8 +79,8 @@ trait Len {
     fn len(&self) -> usize;
 }
 
-// DNS Header to be used by both Query and Response
-// The default values written below are from the perspective of the client
+/// DNS Header to be used by both Query and Response
+/// The default values written below are from the perspective of the client
 // TODO: For server we will have to interpret given values
 struct Header {
     identification: u16,
@@ -145,8 +145,8 @@ impl FromBytes for Header {
     }
 }
 
-// The actual query we will send to a DNS server
-// For now A records are fetched only
+/// The actual query we will send to a DNS server
+/// For now A records are fetched only
 // TODO: add support for different records to be fetched
 struct Query {
     header: Header,
@@ -229,7 +229,7 @@ impl FromBytes for Query {
     }
 }
 
-// A struct which represents one RR
+/// A struct which represents one RR
 struct ResourceRecord {
     rtype: u16,     // same as in Query
     class: u16,     // same as in Query
@@ -284,7 +284,7 @@ impl Display for ResourceRecord {
     }
 }
 
-// Stores the response in easy to interpret manner
+/// Stores the response in easy to interpret manner
 struct Response {
     query: Query,
     rr: Vec<ResourceRecord>,
@@ -339,7 +339,7 @@ impl Display for Response {
     }
 }
 
-// Craft the actual query by hardcoding some values
+/// Craft the actual query by hardcoding some values
 fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
