@@ -14,6 +14,14 @@
 //! query, and send it to a DNS server (right now, Cloudflare's 1.1.1.1)
 //!
 //! The response is then decoded into a struct and pretty printed to the user
+//!
+//! ### Note on DNS
+//! The DNS implementation showcased is not really meant for production. It is just
+//! a quick series of hacks to show you how, if you do have a very custom protocol
+//! that you need tunnelled over Tor, to use that protocol with Arti
+//!
+//! For more information on DNS, you can read [RFC 1035](https://datatracker.ietf.org/doc/html/rfc1035)
+//! or [this educational guide](https://mislove.org/teaching/cs4700/spring11/handouts/project1-primer.pdf)
 use arti_client::{TorClient, TorClientConfig};
 use std::env;
 use std::fmt::Display;
