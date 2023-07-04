@@ -4,6 +4,7 @@ use std::fmt::Display;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error};
 
+/// Hardcoded DNS server, stored as (&str, u16) detailing host and port
 const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
 
 /// Used to convert struct to raw bytes to be sent over the network
