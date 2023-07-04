@@ -72,7 +72,9 @@ trait FromBytes {
 }
 
 /// Report length of the struct as in byte stream
+///
 /// Note that this doesn't mean length of struct
+///
 /// It is simply used to denote how long the struct is if it were
 /// sent over the wire
 trait Len {
@@ -80,6 +82,7 @@ trait Len {
 }
 
 /// DNS Header to be used by both Query and Response
+///
 /// The default values written below are from the perspective of the client
 // TODO: For server we will have to interpret given values
 struct Header {
@@ -146,6 +149,7 @@ impl FromBytes for Header {
 }
 
 /// The actual query we will send to a DNS server
+///
 /// For now A records are fetched only
 // TODO: add support for different records to be fetched
 struct Query {
