@@ -351,7 +351,12 @@ impl Display for Response {
     }
 }
 
-/// Craft the actual query by hardcoding some values
+/// Craft the actual query for a particular domain and returns a Query object
+///
+/// The query is made for an A record of type Internet, ie, a normal IPv4 address
+/// should be returned from the DNS server.
+///
+/// Convert this Query into bytes to be sent over the network by calling [Query::as_bytes()]
 fn craft_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
