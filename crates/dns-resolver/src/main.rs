@@ -297,6 +297,11 @@ impl Display for ResourceRecord {
 }
 
 /// Stores the response in easy to interpret manner
+///
+/// A Response is made up of the query given to the server and a bunch of
+/// Resource Records (RR). Each RR will include the resource type, class, and
+/// name. For the A records we're requesting, we will get an A record, of Internet class,
+/// ie an IPv4 address
 struct Response {
     query: Query,
     rr: Vec<ResourceRecord>,
