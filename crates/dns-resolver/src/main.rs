@@ -91,7 +91,7 @@ trait Len {
 
 /// DNS Header to be used by both Query and Response
 ///
-/// The default values written below are from the perspective of the client
+/// The default values chosen are from the perspective of the client
 // TODO: For server we will have to interpret given values
 struct Header {
     identification: u16,
