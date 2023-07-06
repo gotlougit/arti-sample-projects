@@ -87,6 +87,10 @@ trait FromBytes {
         }
         u32::from_be_bytes(bytes)
     }
+    /// Try converting given bytes into the struct
+    ///
+    /// Returns an `Option<Box>` of the struct which implements
+    /// this trait to help denote parsing failures
     fn from_bytes(bytes: &[u8]) -> Option<Box<Self>>;
 }
 
