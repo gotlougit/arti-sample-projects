@@ -59,7 +59,7 @@ trait AsBytes {
 /// ```
 ///
 /// You will have to interpret each byte and convert it into each field
-/// of your struct yourself.
+/// of your struct yourself when implementing this trait.
 trait FromBytes {
     /// Convert two u8's into a u16
     ///
