@@ -97,13 +97,22 @@ trait Len {
 /// The default values chosen are from the perspective of the client
 // TODO: For server we will have to interpret given values
 struct Header {
+    /// Random 16 bit number used to identify the DNS request
     identification: u16,
+    /// Set of fields packed together into one 16 bit number
+    /// Refer to RFC 1035 for more info
     // TODO: don't rely on cryptic packed bits
     packed_second_row: u16, // set to 0x100
-    qdcount: u16,           // set to 1 since we have 1 question
-    ancount: u16,           // set to 0 since client doesn't have answers
-    nscount: u16,           // set to 0
-    arcount: u16,           // set to 0
+    /// Number of questions we have
+    /// Here, we set it to 1 since we only ask about one hostname in a query
+    qdcount: u16, // set to 1 since we have 1 question
+    /// Number of answers we have
+    /// For a query it will be zero, for a response hopefully it is >= 1
+    ancount: u16, // set to 0 since client doesn't have answers
+    /// Refer to RFC 1035 section 4.1.1, NSCOUNT
+    nscount: u16, // set to 0
+    /// Refer to RFC 1035 section 4.1.1, ARCOUNT
+    arcount: u16, // set to 0
 }
 
 // Ugly, repetitive code to convert all six 16-bit fields into Vec<u8>
@@ -165,10 +174,16 @@ impl FromBytes for Header {
 /// For now A records are fetched only
 // TODO: add support for different records to be fetched
 struct Query {
+    /// Header of the DNS packet, see [Header] for more info
     header: Header,
+    /// The domain name, stored as a Vec<u8>
     qname: Vec<u8>, // domain name
-    qtype: u16,     // set to 0x0001 for A records
-    qclass: u16,    // set to 1 for Internet addresses
+    /// Denotes the type of record to get.
+    /// Here we set to 1 to get an A record, ie, IPv4
+    qtype: u16, // set to 0x0001 for A records
+    /// Denotes the class of the record
+    /// Here we set to 1 to get an Internet address
+    qclass: u16, // set to 1 for Internet addresses
 }
 
 impl AsBytes for Query {
