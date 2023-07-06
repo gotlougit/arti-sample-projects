@@ -179,7 +179,7 @@ impl FromBytes for Header {
 struct Query {
     /// Header of the DNS packet, see [Header] for more info
     header: Header,
-    /// The domain name, stored as a Vec<u8>
+    /// The domain name, stored as a `Vec<u8>`
     qname: Vec<u8>, // domain name
     /// Denotes the type of record to get.
     ///
