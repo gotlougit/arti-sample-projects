@@ -284,10 +284,27 @@ impl FromBytes for Query {
 
 /// A struct which represents one RR
 struct ResourceRecord {
-    rtype: u16,     // same as in Query
-    class: u16,     // same as in Query
-    ttl: u32,       // number of seconds to cache the result
-    rdlength: u16,  // Length of RDATA
+    /// Denotes the record type
+    ///
+    /// It is similar to [Query::qtype]
+    rtype: u16, // same as in Query
+    /// Denotes the class of the record
+    ///
+    /// It is similar to [Query::qclass]
+    class: u16, // same as in Query
+    /// The TTL denotes the amount of time in seconds we can cache the result
+    ///
+    /// After the TTL expires, we have to make a fresh request since this
+    /// answer is not guaranteed to be correct
+    ttl: u32, // number of seconds to cache the result
+    /// Denotes the length of data
+    ///
+    /// For this implementation we only request IPv4 addresses, so its value
+    /// will be 4.
+    rdlength: u16, // Length of RDATA
+    /// The actual answer we need
+    ///
+    /// It is an IPv4 address for us in this case
     rdata: [u8; 4], // IP address
 }
 
