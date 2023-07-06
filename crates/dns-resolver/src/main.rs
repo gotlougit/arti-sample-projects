@@ -18,7 +18,9 @@
 //! ### Note on DNS
 //! The DNS implementation showcased is not really meant for production. It is just
 //! a quick series of hacks to show you how, if you do have a very custom protocol
-//! that you need tunnelled over Tor, to use that protocol with Arti
+//! that you need tunnelled over Tor, to use that protocol with Arti. For actually
+//! tunneling DNS requests over Tor, it is recommended to use a more tried-and-tested
+//! crate.
 //!
 //! For more information on DNS, you can read [RFC 1035](https://datatracker.ietf.org/doc/html/rfc1035)
 //! or [this educational guide](https://mislove.org/teaching/cs4700/spring11/handouts/project1-primer.pdf)
