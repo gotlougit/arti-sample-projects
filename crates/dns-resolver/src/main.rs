@@ -180,6 +180,10 @@ struct Query {
     /// Header of the DNS packet, see [Header] for more info
     header: Header,
     /// The domain name, stored as a `Vec<u8>`
+    ///
+    /// When we call [Query::from_bytes()], `qname` is automatically
+    /// converted into string stored in a `Vec<u8>` instead of the raw
+    /// byte format used for `qname`
     qname: Vec<u8>, // domain name
     /// Denotes the type of record to get.
     ///
