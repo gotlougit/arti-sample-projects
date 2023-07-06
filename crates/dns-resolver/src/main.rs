@@ -259,6 +259,7 @@ impl FromBytes for Query {
                             debug!("Parsed part successfully");
                         } else {
                             error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
+                            return None;
                         }
                         part_parsed = 0;
                         name.push('.');
