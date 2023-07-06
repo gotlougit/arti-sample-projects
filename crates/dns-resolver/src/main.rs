@@ -205,11 +205,11 @@ impl FromBytes for Query {
         let mut lastnamebyte = 0;
         let mut curcount = 0;
         let mut part_parsed = 0;
-        for i in 12..l {
-            if bytes[i] != 0 {
+        for (i, &byte) in bytes.iter().enumerate().take(l).skip(12) {
+            if byte != 0 {
                 // Allowed characters in domain name are appended to the string
-                if bytes[i].is_ascii_alphanumeric() || bytes[i] == 45 {
-                    name.push(bytes[i] as char);
+                if byte.is_ascii_alphanumeric() || byte == 45 {
+                    name.push(byte as char);
                     part_parsed += 1;
                 } else {
                     // Condition here is to prevent executing code at beginning of parsing
@@ -223,7 +223,7 @@ impl FromBytes for Query {
                         part_parsed = 0;
                         name.push('.');
                     }
-                    curcount = bytes[i];
+                    curcount = byte;
                 }
             } else {
                 // End of domain name, proceed to parse further fields
