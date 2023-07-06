@@ -97,6 +97,7 @@ trait FromBytes {
 /// It is simply used to denote how long the struct is if it were
 /// sent over the wire
 trait Len {
+    /// Report length of the struct as in byte stream
     fn len(&self) -> usize;
 }
 
