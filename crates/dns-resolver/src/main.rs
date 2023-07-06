@@ -76,7 +76,7 @@ trait FromBytes {
         }
         u32::from_be_bytes(bytes)
     }
-    fn from_bytes(bytes: &[u8]) -> Self;
+    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>>;
 }
 
 /// Report length of the struct as in byte stream
@@ -136,23 +136,24 @@ impl Display for Header {
 }
 
 impl FromBytes for Header {
-    fn from_bytes(bytes: &[u8]) -> Self {
+    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
         debug!("Parsing the header");
         let packed_second_row = Header::u8_to_u16(bytes[2], bytes[3]);
         if packed_second_row == 0x8180 {
             debug!("Correct flags set in response");
         } else {
             error!("Incorrect flags set in response");
+            return None;
         }
         // These offsets were determined by looking at RFC 1035
-        Header {
+        Some(Box::new(Header {
             identification: Header::u8_to_u16(bytes[0], bytes[1]),
             packed_second_row,
             qdcount: Header::u8_to_u16(bytes[4], bytes[5]),
             ancount: Header::u8_to_u16(bytes[6], bytes[7]),
             nscount: Header::u8_to_u16(bytes[8], bytes[9]),
             arcount: Header::u8_to_u16(bytes[10], bytes[11]),
-        }
+        }))
     }
 }
 
@@ -196,9 +197,9 @@ impl Len for Query {
 
 impl FromBytes for Query {
     // FIXME: the name struct isn't stored as it was sent over the wire
-    fn from_bytes(bytes: &[u8]) -> Self {
+    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
         let l = bytes.len();
-        let header = Header::from_bytes(&bytes[..12]);
+        let header = *Header::from_bytes(&bytes[..12])?;
         // Parse name
         let mut name = String::new();
         let mut lastnamebyte = 0;
@@ -232,12 +233,12 @@ impl FromBytes for Query {
             }
         }
         // These offsets were determined by looking at RFC 1035
-        Self {
+        Some(Box::new(Self {
             header,
             qname: name.as_bytes().to_vec(),
             qtype: Query::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             qclass: Query::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
-        }
+        }))
     }
 }
 
@@ -265,19 +266,22 @@ impl Len for ResourceRecord {
 }
 
 impl FromBytes for ResourceRecord {
-    fn from_bytes(bytes: &[u8]) -> Self {
+    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
         let lastnamebyte = 1;
         let mut rdata = [0u8; 4];
+        if bytes.len() < 15 {
+            return None;
+        }
         // Copy over IP address into rdata
         rdata.copy_from_slice(&bytes[lastnamebyte + 10..lastnamebyte + 14]);
         // These offsets were determined by looking at RFC 1035
-        Self {
+        Some(Box::new(Self {
             rtype: ResourceRecord::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: ResourceRecord::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
             ttl: ResourceRecord::u8_to_u32(&bytes[lastnamebyte + 4..lastnamebyte + 8]),
             rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
             rdata,
-        }
+        }))
     }
 }
 
@@ -310,7 +314,7 @@ struct Response {
 impl FromBytes for Response {
     // Try to construct Response from raw byte data from network
     // We will also try to check if a valid DNS response has been sent back to us
-    fn from_bytes(bytes: &[u8]) -> Self {
+    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
         debug!("Parsing response into struct");
         // Check message length
         let l = bytes.len();
@@ -326,15 +330,19 @@ impl FromBytes for Response {
         }
         // Start index at 2 to skip over message length bytes
         let mut index = 2;
-        let query = Query::from_bytes(&bytes[index..]);
+        let query = *Query::from_bytes(&bytes[index..])?;
         index += query.len() + 2; // TODO: needs explanation why it works
         let mut rrvec: Vec<ResourceRecord> = Vec::new();
         while index < l {
-            let rr = ResourceRecord::from_bytes(&bytes[index..]);
-            index += rr.len();
-            rrvec.push(rr);
+            match ResourceRecord::from_bytes(&bytes[index..]) {
+                Some(rr) => {
+                    index += rr.len();
+                    rrvec.push(*rr);
+                }
+                None => break,
+            }
         }
-        Response { query, rr: rrvec }
+        Some(Box::new(Response { query, rr: rrvec }))
     }
 }
 
@@ -415,6 +423,8 @@ async fn main() {
     // Read the response
     stream.read_to_end(&mut buf).await.unwrap();
     // Interpret the response
-    let resp = Response::from_bytes(&buf);
-    println!("{}", resp);
+    match Response::from_bytes(&buf) {
+        Some(resp) => println!("{}", resp),
+        None => eprintln!("No valid response!"),
+    };
 }
