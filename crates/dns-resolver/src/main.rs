@@ -62,6 +62,10 @@ trait AsBytes {
 /// let resp = S::from_bytes(&buf);
 /// ```
 ///
+/// In the above code, `resp` is `Option<Box<S>>` type, so you will have to
+/// deal with the `None` value appropriately. This helps denote invalid
+/// situations, ie, parse failures
+///
 /// You will have to interpret each byte and convert it into each field
 /// of your struct yourself when implementing this trait.
 trait FromBytes {
