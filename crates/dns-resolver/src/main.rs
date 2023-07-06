@@ -44,6 +44,10 @@ const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
 /// dbg!("{}", s.as_bytes());
 /// ```
 trait AsBytes {
+    /// Return a `Vec<u8>` of the same information stored in struct
+    ///
+    /// This is ideal to convert typed values into raw bytes to be sent
+    /// over the network.
     fn as_bytes(&self) -> Vec<u8>;
 }
 
