@@ -364,7 +364,10 @@ impl Display for ResourceRecord {
 /// name. For the A records we're requesting, we will get an A record, of Internet class,
 /// ie an IPv4 address
 struct Response {
+    /// The Query part of the response we obtain from the server
     query: Query,
+    /// A collection of resource records all parsed neatly and kept separately
+    /// for easy iteration
     rr: Vec<ResourceRecord>,
 }
 
