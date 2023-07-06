@@ -1,3 +1,4 @@
+#![warn(clippy::missing_docs_in_private_items)]
 //! # dns-resolver
 //! Use Tor to make a DNS over TCP request for a hostname, and get IP addresses back
 //!
