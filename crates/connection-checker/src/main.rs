@@ -56,10 +56,7 @@ async fn test_normal_connection() {
     test_connection(tor_client).await;
 }
 
-// FIXME: this doesn't work because Arti and bridges are somewhat broken right now
-// Watch for arti#611
-async fn test_snowflake_connection() {
-    info!("Testing a Snowflake Tor connection...");
+fn build_snowflake_config() -> TorClientConfig {
     let mut builder = TorClientConfig::builder();
     // Make sure it is up to date with
     // https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/common/bridges_list.snowflake.txt
@@ -75,7 +72,14 @@ async fn test_snowflake_connection() {
         .path(CfgPath::new(("client").into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
-    let config = builder.build().unwrap();
+    builder.build().unwrap()
+}
+
+// FIXME: this doesn't work because Arti and bridges are somewhat broken right now
+// Watch for arti#611
+async fn test_snowflake_connection() {
+    info!("Testing a Snowflake Tor connection...");
+    let config = build_snowflake_config();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     get_circuit(&tor_client).await;
     test_connection(tor_client).await;
