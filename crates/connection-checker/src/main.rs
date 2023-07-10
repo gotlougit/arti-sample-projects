@@ -16,12 +16,16 @@ async fn test_connection(tor_client: TorClient<PreferredRuntime>) {
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
     let tor_connector = ArtiHttpConnector::new(tor_client, tls_connector);
     let http = hyper::Client::builder().build::<_, hyper::Body>(tor_connector);
-    let resp = http.get(URL.try_into().unwrap()).await.unwrap();
-    let status = resp.status();
-    if status == 200 {
-        println!("Got 200 status code, we are successfully connected to resource!");
-    } else {
-        error!("Non 200 status code encountered! {}", status);
+    match http.get(URL.try_into().unwrap()).await {
+        Ok(resp) => {
+            let status = resp.status();
+            if status == 200 {
+                println!("Got 200 status code, we are successfully connected to resource!");
+            } else {
+                error!("Non 200 status code encountered! {}", status);
+            }
+        }
+        Err(e) => error!("{}", e.report()),
     }
 }
 
