@@ -48,12 +48,16 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
 }
 
 // Make a normal connection using publicly known Tor entry nodes
-async fn test_normal_connection() {
+async fn test_normal_connection(tor_client: TorClient<PreferredRuntime>) {
     info!("Testing a normal Tor connection...");
     let config = TorClientConfig::default();
-    let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
-    get_circuit(&tor_client).await;
-    test_connection(tor_client).await;
+    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::AllOrNothing) {
+        Ok(_) => {
+            get_circuit(&tor_client).await;
+            test_connection(tor_client).await;
+        }
+        Err(e) => error!("{}", e.report()),
+    }
 }
 
 fn build_snowflake_config() -> TorClientConfig {
@@ -75,17 +79,25 @@ fn build_snowflake_config() -> TorClientConfig {
     builder.build().unwrap()
 }
 
-async fn test_snowflake_connection() {
+async fn test_snowflake_connection(tor_client: TorClient<PreferredRuntime>) {
     info!("Testing a Snowflake Tor connection...");
     let config = build_snowflake_config();
-    let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
-    get_circuit(&tor_client).await;
-    test_connection(tor_client).await;
+    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::AllOrNothing) {
+        Ok(_) => {
+            get_circuit(&tor_client).await;
+            test_connection(tor_client).await;
+        }
+        Err(e) => error!("{}", e.report()),
+    }
 }
 
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    test_normal_connection().await;
-    test_snowflake_connection().await;
+    let initialconfig = TorClientConfig::default();
+    let tor_client = TorClient::create_bootstrapped(initialconfig).await.unwrap();
+    let isolated1 = tor_client.isolated_client();
+    test_normal_connection(isolated1).await;
+    let isolated2 = tor_client.isolated_client();
+    test_snowflake_connection(isolated2).await;
 }
