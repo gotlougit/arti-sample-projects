@@ -75,8 +75,6 @@ fn build_snowflake_config() -> TorClientConfig {
     builder.build().unwrap()
 }
 
-// FIXME: this doesn't work because Arti and bridges are somewhat broken right now
-// Watch for arti#611
 async fn test_snowflake_connection() {
     info!("Testing a Snowflake Tor connection...");
     let config = build_snowflake_config();
