@@ -1,4 +1,27 @@
 #![warn(clippy::missing_docs_in_private_items)]
+//! # download-manager
+//! Use Tor to download the Tor Browser Bundle
+//!
+//! ### Intro
+//! This is a project intended to illustrate how Arti can be used to tunnel an HTTPS
+//! based project through Tor and also some of the design choices that go into making that
+//! happen, most notably, the usage of isolated clients to create different connections
+//! which won't lock each other up or run into some Arti shared state issues.
+//!
+//! ### Usage
+//! Simply run the program:
+//! `cargo run`
+//!
+//! The program will then attempt to create new Tor connections and download the Linux version of
+//! the Tor Browser Bundle in chunks using [HTTP Range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests)
+//! in order to overcome the relatively slow connections that the Tor network provides.
+//! It is currently capped to six concurrent connections in order to respect the Tor network's bandwidth
+//! The Tor Browser Bundle is saved as `download.tar.xz`
+//!
+//! ### Disclaimer
+//! The download manager showcased is not really meant for production. It is simply an example of how Arti
+//! can be utilized. Many features, like resumeable downloads, aren't present. Don't use it for any real
+//! usage other than academic
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
