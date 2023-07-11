@@ -26,8 +26,12 @@ const MAX_RETRIES: usize = 6;
 
 // TODO: Handle all unwrap() effectively
 
-// Create a single TorClient which will be used to spawn isolated connections
-// This Client is configured to use Snowflake to connect to Tor
+/// Create a single TorClient which will be used to spawn isolated connections
+///
+/// This Client is configured to use Snowflake to connect to Tor
+///
+/// Note that the Snowflake client binary may be present under a different name
+/// on your machine and thus will need appropriate modifications
 async fn get_snowflake_tor_client() -> TorClient<PreferredRuntime> {
     let mut builder = TorClientConfig::builder();
     // Make sure it is up to date with
@@ -48,15 +52,18 @@ async fn get_snowflake_tor_client() -> TorClient<PreferredRuntime> {
     TorClient::create_bootstrapped(config).await.unwrap()
 }
 
-// Create a single TorClient which will be used to spawn isolated connections
-// This Client uses the default config with no other changes
+/// Create a single TorClient which will be used to spawn isolated connections
+///
+/// This Client uses the default config with no other changes
 async fn get_tor_client() -> TorClient<PreferredRuntime> {
     let config = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
     tor_client
 }
 
-// Create new HTTPS connection with a new circuit
+/// Create new HTTPS connection with a new, isolated circuit
+///
+/// This helps prevent shared state errors and is generally an Arti best practice
 async fn get_new_connection(
     baseconn: &TorClient<PreferredRuntime>,
 ) -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
@@ -68,7 +75,7 @@ async fn get_new_connection(
     http
 }
 
-// Get the size of file to be downloaded
+/// Get the size of file to be downloaded so we can prep main loop
 async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRuntime>) -> u64 {
     let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
