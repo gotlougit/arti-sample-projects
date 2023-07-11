@@ -11,17 +11,17 @@ use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
 use tracing::warn;
 
-// REQSIZE is just the size of each chunk we get from a particular circuit
+/// REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
-// TORURL is the particular Tor Browser Bundle URL
+/// TORURL is the particular Tor Browser Bundle URL
 const TORURL: &str =
     "https://dist.torproject.org/torbrowser/12.5.1/tor-browser-linux64-12.5.1_ALL.tar.xz";
-// Save the TBB with this filename
+/// Save the TBB with this filename
 const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
-// Number of simultaneous connections that are made
+/// Number of simultaneous connections that are made
 // TODO: make this user configurable
 const MAX_CONNECTIONS: usize = 6;
-// Number of retries to make if a particular request failed
+/// Number of retries to make if a particular request failed
 const MAX_RETRIES: usize = 6;
 
 // TODO: Handle all unwrap() effectively
