@@ -58,8 +58,7 @@ async fn get_snowflake_tor_client() -> TorClient<PreferredRuntime> {
 /// This Client uses the default config with no other changes
 async fn get_tor_client() -> TorClient<PreferredRuntime> {
     let config = TorClientConfig::default();
-    let tor_client = TorClient::create_bootstrapped(config).await.unwrap();
-    tor_client
+    TorClient::create_bootstrapped(config).await.unwrap()
 }
 
 /// Create new HTTPS connection with a new, isolated circuit
@@ -72,8 +71,7 @@ async fn get_new_connection(
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
 
     let connection = ArtiHttpConnector::new(tor_client, tls_connector);
-    let http = hyper::Client::builder().build::<_, Body>(connection);
-    http
+    hyper::Client::builder().build::<_, Body>(connection)
 }
 
 /// Get the size of file to be downloaded so we can prep main loop
