@@ -96,7 +96,9 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
     length
 }
 
-// Just get the file from the server and store it in a Vec
+/// Gets a portion of the file from the server and store it in a Vec if successful
+///
+/// Note that it returns a Result to denote any network issues that may have arisen from the request
 async fn request(
     url: &'static str,
     start: usize,
@@ -130,13 +132,18 @@ async fn request(
     }
 }
 
-// just write the bytes at the right position in the file
+/// Write the bytes at the right position in the file
 fn save_to_file(mut fd: File, start: usize, body: Vec<u8>) {
     warn!("Saving a chunk to disk...");
     fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
     fd.write_all(&body).unwrap();
 }
 
+/// Wrapper around [request] and [save_to_file] in order to overcome network issues
+///
+/// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
+///
+/// If we are successful, we write the bytes to the disk, else we simply give up
 async fn get_segment(
     url: &'static str,
     start: usize,
@@ -160,10 +167,21 @@ async fn get_segment(
     }
 }
 
-// Summary: create a new TorClient, determine the number of "chunks" to get
-// the Tor Browser Bundle in, create a new isolated circuit for each chunk,
-// get the chunk at that offset, save it to the disk
-
+/// Main method which brings it all together
+///
+/// Summary:
+///
+/// 1. Create the download file
+///
+/// 2. Create [MAX_CONNECTIONS] number of connections, these will be all that is used
+/// for the main loop of the program
+///
+/// 3. Get content length of the Tor Browser Bundle so we know how many loops to run
+///
+/// 4. Create the main loop of the program; it simply cycles through the connections we initialized
+/// step 2 and makes a request with them for the bulk of the payload we request from the network
+///
+/// 5. Request any leftover data and write that to disk
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
