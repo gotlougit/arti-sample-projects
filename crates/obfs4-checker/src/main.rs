@@ -75,7 +75,7 @@ async fn controlled_test_function(
             let bridge_config = bridge.build().unwrap();
             let tor_client = common_tor_client.isolated_client();
             tasks.push(tokio::spawn(async move {
-                return is_bridge_online(&bridge_config, &tor_client).await;
+                is_bridge_online(&bridge_config, &tor_client).await
             }));
             counter += 1;
         }
