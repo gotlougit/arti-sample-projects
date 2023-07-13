@@ -4,7 +4,6 @@ use arti_client::{TorClient, TorClientConfig};
 use futures::future::join_all;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use tor_chanmgr::ChannelUsage;
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::BridgeConfig;
 use tor_rtcompat::PreferredRuntime;
@@ -18,10 +17,7 @@ async fn is_bridge_online(
 ) -> bool {
     info!("Seeing if the bridge is online or not...");
     let chanmgr = tor_client.chanmgr();
-    match chanmgr
-        .get_or_launch(bridge_config, ChannelUsage::UserTraffic)
-        .await
-    {
+    match chanmgr.build_unmanaged_channel(bridge_config).await {
         Ok(_) => {
             println!("Bridge {} is online", bridge_config);
             true
