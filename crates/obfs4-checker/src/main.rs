@@ -122,6 +122,14 @@ async fn controlled_test_function(
     number_online
 }
 
+/// In summary,
+///
+/// 1. Load bridge lines into memory using [read_lines_from_file()]
+///
+/// 2. Give [controlled_test_function()] a set of 100 bridge lines at a time
+/// and await its results
+///
+/// 3. Repeat till all bridges are covered
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
