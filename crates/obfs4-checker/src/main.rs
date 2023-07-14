@@ -162,15 +162,13 @@ async fn main() {
         let cpy = guard_lines[start..end].to_vec();
         let builder = build_entry_node_config().build().unwrap();
         let common_tor_client = TorClient::create_bootstrapped(builder).await.unwrap();
-        tokio::spawn(async move {
-            let number_online = controlled_test_function(&cpy, common_tor_client).await;
-            println!(
-                "STATUS: {} out of {} online",
-                number_online,
-                //bridge_lines.len()
-                //guard_lines.len()
-                100
-            );
-        });
+        let number_online = controlled_test_function(&cpy, common_tor_client).await;
+        println!(
+            "STATUS: {} out of {} online",
+            number_online,
+            //bridge_lines.len()
+            //guard_lines.len()
+            100
+        );
     }
 }
