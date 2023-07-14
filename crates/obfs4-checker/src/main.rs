@@ -122,6 +122,8 @@ async fn controlled_test_function(
     number_online
 }
 
+/// Main function to unite everything together
+///
 /// In summary,
 ///
 /// 1. Load bridge lines into memory using [read_lines_from_file()]
