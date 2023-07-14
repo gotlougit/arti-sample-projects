@@ -9,8 +9,16 @@ use tor_guardmgr::bridge::BridgeConfig;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
+/// The maximum number of open connections to relays at any given time
 const MAX_CONNECTIONS: usize = 10;
 
+/// Attempt to create a Channel to a provided bridge
+///
+/// If successful, we will obtain a Channel, if not we get an error.
+/// Based on this operation we simply return a boolean.
+///
+/// The channel is created using [tor_chanmgr::ChanMgr], accessed using
+/// [TorClient::chanmgr()]
 async fn is_bridge_online(
     bridge_config: &BridgeConfig,
     tor_client: &TorClient<PreferredRuntime>,
