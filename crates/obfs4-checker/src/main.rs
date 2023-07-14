@@ -75,6 +75,14 @@ fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
     builder
 }
 
+/// Contains the main logic for testing each bridge.
+///
+/// It ends up taking in a slice of bridge lines, and creates [MAX_CONNECTIONS]
+/// number of connections as tasks, then waits for these requests to be resolved,
+/// either by successfully connecting or not (for a variety of reasons). The
+/// actual work to check each single bridge is done by [is_bridge_online()]
+///
+/// This is done up until all the bridges in the slice are covered
 async fn controlled_test_function(
     node_lines: &[String],
     common_tor_client: TorClient<PreferredRuntime>,
