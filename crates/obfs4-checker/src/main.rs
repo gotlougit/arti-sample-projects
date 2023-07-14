@@ -1,4 +1,32 @@
 #![warn(clippy::missing_docs_in_private_items)]
+//! # obfs4-checker
+//! Check the state of the obfs4 bridges present in the Tor Network
+//!
+//! ### Intro
+//! The obfs4 bridges are a vital part of the Tor Network, obfuscating the Tor
+//! protocol so that censors are unable to block Tor connections in repressive
+//! regimes or for customers of opressive Internet Service Providers.
+//!
+//! It would be wise to have a fast, secure tool which can be used by the Tor
+//! Project to montior the health of these bridges, one aspect of which is to know
+//! how many nodes and which nodes are online at a given moment in time.
+//!
+//! This tool aims to take a complete list of bridges and try to connect to several
+//! at a time in a controlled but still fast manner in order to try and ascertain their
+//! status.
+//!
+//! ### Usage
+//! Have a file `list_of_entry_nodes` which has one bridge line on each line
+//! Run `cargo run` in this folder to let the program pick up this file
+//! and test connections to the bridges contained in this file
+//!
+//! Note that for testing purposes right now the program is only configured to
+//! make connections to regular, public Tor entry nodes instead, hence the naming
+//! differences here.
+//!
+//! ### Disclaimer
+//! This tool is currently in active development and needs further work and feedback
+//! from the Tor Project devs in order to one day make it to production
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
