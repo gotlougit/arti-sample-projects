@@ -1,3 +1,4 @@
+#![warn(clippy::missing_docs_in_private_items)]
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
