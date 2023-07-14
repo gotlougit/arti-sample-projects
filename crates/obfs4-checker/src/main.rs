@@ -37,6 +37,11 @@ async fn is_bridge_online(
     }
 }
 
+/// Helper function to read all the bridge lines from a file
+///
+/// This is mostly intended for testing purposes and may be removed later on.
+/// It also helps keep test data separate from code for greater security,
+/// code cleanliness and generally preventing private bridges from being hardcoded
 fn read_lines_from_file(fname: &str) -> Vec<String> {
     let file = File::open(fname).unwrap();
     let reader = BufReader::new(file);
@@ -44,10 +49,18 @@ fn read_lines_from_file(fname: &str) -> Vec<String> {
     lines
 }
 
+/// Just a small alias for building a default [TorClient] config. It will likely
+/// be removed later
 fn build_entry_node_config() -> TorClientConfigBuilder {
     TorClientConfig::builder()
 }
 
+/// Return a [TorClientConfigBuilder] which is set to use obfs4 pluggable transport
+/// for all connections
+///
+/// Note that the `obfs4proxy` binaru may go by a different name depending on
+/// which system you are using. This code is configured to find `obfs4proxy` in
+/// $PATH, but it may need alterations if this isn't working on your system
 fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
     let mut builder = TorClientConfig::builder();
     let mut transport = ManagedTransportConfigBuilder::default();
