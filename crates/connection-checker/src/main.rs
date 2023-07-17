@@ -25,18 +25,6 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
     }
 }
 
-// Make a normal connection using publicly known Tor entry nodes
-async fn test_normal_connection(tor_client: TorClient<PreferredRuntime>) {
-    println!("Testing a normal Tor connection...");
-    let config = TorClientConfig::default();
-    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::WarnOnFailures) {
-        Ok(_) => {
-            get_circuit(&tor_client).await;
-        }
-        Err(e) => error!("{}", e.report()),
-    }
-}
-
 fn build_snowflake_config() -> TorClientConfig {
     let mut builder = TorClientConfig::builder();
     // Make sure it is up to date with
@@ -56,9 +44,12 @@ fn build_snowflake_config() -> TorClientConfig {
     builder.build().unwrap()
 }
 
-async fn test_snowflake_connection(tor_client: TorClient<PreferredRuntime>) {
-    println!("Testing a Snowflake Tor connection...");
-    let config = build_snowflake_config();
+async fn test_connection_via_config(
+    tor_client: TorClient<PreferredRuntime>,
+    config: TorClientConfig,
+    msg: &str,
+) {
+    println!("{}", msg);
     match tor_client.reconfigure(&config, arti_client::config::Reconfigure::WarnOnFailures) {
         Ok(_) => {
             get_circuit(&tor_client).await;
@@ -73,7 +64,18 @@ async fn main() {
     let initialconfig = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(initialconfig).await.unwrap();
     let isolated1 = tor_client.isolated_client();
-    test_normal_connection(isolated1).await;
+    test_connection_via_config(
+        isolated1,
+        TorClientConfig::default(),
+        "Testing normal Tor connection",
+    )
+    .await;
     let isolated2 = tor_client.isolated_client();
-    test_snowflake_connection(isolated2).await;
+    let snowflakeconfig = build_snowflake_config();
+    test_connection_via_config(
+        isolated2,
+        snowflakeconfig,
+        "Testing Snowflake Tor connection",
+    )
+    .await;
 }
