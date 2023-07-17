@@ -1,5 +1,5 @@
 use arti_client::config::pt::ManagedTransportConfigBuilder;
-use arti_client::config::{BridgeConfigBuilder, CfgPath};
+use arti_client::config::{BridgeConfigBuilder, CfgPath, Reconfigure};
 use arti_client::{TorClient, TorClientConfig};
 use tor_error::ErrorReport;
 use tor_rtcompat::PreferredRuntime;
@@ -50,7 +50,7 @@ async fn test_connection_via_config(
     msg: &str,
 ) {
     println!("{}", msg);
-    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::WarnOnFailures) {
+    match tor_client.reconfigure(&config, Reconfigure::WarnOnFailures) {
         Ok(_) => {
             get_circuit(&tor_client).await;
         }
