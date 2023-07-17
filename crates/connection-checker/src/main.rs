@@ -84,7 +84,7 @@ async fn test_connection_via_config(
     msg: &str,
 ) {
     let isolated = tor_client.isolated_client();
-    println!("Testing {}", msg);
+    println!("Testing {}...", msg);
     match isolated.reconfigure(&config, Reconfigure::WarnOnFailures) {
         Ok(_) => match get_circuit(&isolated).await {
             true => println!("{} successful!", msg),
@@ -105,16 +105,11 @@ async fn main() {
     test_connection_via_config(
         &tor_client,
         TorClientConfig::default(),
-        "Testing normal Tor connection",
+        "normal Tor connection",
     )
     .await;
     let snowflakeconfig = build_snowflake_config();
-    test_connection_via_config(
-        &tor_client,
-        snowflakeconfig,
-        "Testing Snowflake Tor connection",
-    )
-    .await;
+    test_connection_via_config(&tor_client, snowflakeconfig, "Snowflake Tor connection").await;
     let obfs4config = build_obfs4_connection();
     test_connection_via_config(&tor_client, obfs4config, "obfs4 Tor connection").await;
 }
