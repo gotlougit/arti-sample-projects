@@ -52,6 +52,31 @@ fn build_snowflake_config() -> TorClientConfig {
     builder.build().unwrap()
 }
 
+/// Use a hardcoded obfs4 bridge with broker info to generate a [TorClientConfig]
+/// which uses the obfs4 binary on the user's computer to connect to the Tor
+/// network via obfs4.
+///
+/// Note that the binary name is hardcoded as "obfs4proxy" in the code, and may be different
+/// depending upon your system.
+fn build_obfs4_connection() -> TorClientConfig {
+    let mut builder = TorClientConfig::builder();
+    // Make sure it is up to date with
+    // https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/common/bridges_list.obfs4.txt
+    let bridge_line: &str = "obfs4 193.11.166.194:27025 1AE2C08904527FEA90C4C4F8C1083EA59FBC6FAF cert=ItvYZzW5tn6v3G4UnQa6Qz04Npro6e81AP70YujmK/KXwDFPTs3aHXcHp4n8Vt6w/bv8cA iat-mode=0";
+    let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
+    builder.bridges().bridges().push(bridge);
+    let mut transport = ManagedTransportConfigBuilder::default();
+    transport
+        .protocols(vec!["obfs4".parse().unwrap()])
+        // THIS IS DISTRO SPECIFIC
+        // If this function doesn't work, check by what name snowflake client
+        // goes by on your system
+        .path(CfgPath::new(("obfs4proxy").into()))
+        .run_on_startup(true);
+    builder.bridges().transports().push(transport);
+    builder.build().unwrap()
+}
+
 /// Reconfigure a given [TorClient] and try getting the circuit
 async fn test_connection_via_config(
     tor_client: &TorClient<PreferredRuntime>,
@@ -90,4 +115,6 @@ async fn main() {
         "Testing Snowflake Tor connection",
     )
     .await;
+    let obfs4config = build_obfs4_connection();
+    test_connection_via_config(&tor_client, obfs4config, "obfs4 Tor connection").await;
 }
