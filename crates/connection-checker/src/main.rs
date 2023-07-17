@@ -29,7 +29,7 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
 async fn test_normal_connection(tor_client: TorClient<PreferredRuntime>) {
     info!("Testing a normal Tor connection...");
     let config = TorClientConfig::default();
-    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::AllOrNothing) {
+    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::WarnOnFailures) {
         Ok(_) => {
             get_circuit(&tor_client).await;
         }
@@ -59,7 +59,7 @@ fn build_snowflake_config() -> TorClientConfig {
 async fn test_snowflake_connection(tor_client: TorClient<PreferredRuntime>) {
     info!("Testing a Snowflake Tor connection...");
     let config = build_snowflake_config();
-    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::AllOrNothing) {
+    match tor_client.reconfigure(&config, arti_client::config::Reconfigure::WarnOnFailures) {
         Ok(_) => {
             get_circuit(&tor_client).await;
         }
