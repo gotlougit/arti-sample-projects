@@ -25,6 +25,12 @@ async fn get_circuit(tor_client: &TorClient<PreferredRuntime>) {
     }
 }
 
+/// Use a hardcoded Snowflake bridge with broker info to generate a [TorClientConfig]
+/// which uses the Snowflake binary on the user's computer to connect to the Tor
+/// network via Snowflake.
+///
+/// Note that the binary name is hardcoded as "client" in the code, and may be different
+/// depending upon your system.
 fn build_snowflake_config() -> TorClientConfig {
     let mut builder = TorClientConfig::builder();
     // Make sure it is up to date with
