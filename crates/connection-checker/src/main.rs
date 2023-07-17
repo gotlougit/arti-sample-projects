@@ -1,33 +1,11 @@
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
-use arti_hyper::*;
-use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
-use tls_api_native_tls::TlsConnector;
 use tor_error::ErrorReport;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
-const URL: &str = "https://www.torproject.org";
 const HOST_PORT: &str = "torproject.org:80";
-
-// Generic function to test HTTPS request to a particular host
-async fn test_connection(tor_client: TorClient<PreferredRuntime>) {
-    let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
-    let tor_connector = ArtiHttpConnector::new(tor_client, tls_connector);
-    let http = hyper::Client::builder().build::<_, hyper::Body>(tor_connector);
-    match http.get(URL.try_into().unwrap()).await {
-        Ok(resp) => {
-            let status = resp.status();
-            if status == 200 {
-                println!("Got 200 status code, we are successfully connected to resource!");
-            } else {
-                error!("Non 200 status code encountered! {}", status);
-            }
-        }
-        Err(e) => error!("{}", e.report()),
-    }
-}
 
 // Connect to a sample host and print the path it used to get there
 // Note that due to the way Tor works, we can't guarantee this is the only
@@ -54,7 +32,6 @@ async fn test_normal_connection(tor_client: TorClient<PreferredRuntime>) {
     match tor_client.reconfigure(&config, arti_client::config::Reconfigure::AllOrNothing) {
         Ok(_) => {
             get_circuit(&tor_client).await;
-            test_connection(tor_client).await;
         }
         Err(e) => error!("{}", e.report()),
     }
@@ -85,7 +62,6 @@ async fn test_snowflake_connection(tor_client: TorClient<PreferredRuntime>) {
     match tor_client.reconfigure(&config, arti_client::config::Reconfigure::AllOrNothing) {
         Ok(_) => {
             get_circuit(&tor_client).await;
-            test_connection(tor_client).await;
         }
         Err(e) => error!("{}", e.report()),
     }
