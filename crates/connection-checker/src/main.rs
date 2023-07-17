@@ -50,6 +50,7 @@ fn build_snowflake_config() -> TorClientConfig {
     builder.build().unwrap()
 }
 
+/// Reconfigure a given [TorClient] and try getting the circuit
 async fn test_connection_via_config(
     tor_client: TorClient<PreferredRuntime>,
     config: TorClientConfig,
