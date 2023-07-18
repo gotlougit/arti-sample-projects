@@ -105,7 +105,7 @@ async fn main() {
     test_connection_via_config(
         &tor_client,
         TorClientConfig::default(),
-        "normal Tor connection",
+        "Normal Tor connection",
     )
     .await;
     let snowflakeconfig = build_snowflake_config();
