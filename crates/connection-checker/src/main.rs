@@ -56,7 +56,7 @@ fn build_snowflake_config() -> TorClientConfig {
 /// which uses the obfs4 binary on the user's computer to connect to the Tor
 /// network via obfs4.
 ///
-/// Note that the binary name is hardcoded as "obfs4proxy" in the code, and may be different
+/// Note that the binary name is hardcoded as "lyrebird" in the code, and may be different
 /// depending upon your system.
 fn build_obfs4_connection() -> TorClientConfig {
     let mut builder = TorClientConfig::builder();
@@ -71,7 +71,7 @@ fn build_obfs4_connection() -> TorClientConfig {
         // THIS IS DISTRO SPECIFIC
         // If this function doesn't work, check by what name snowflake client
         // goes by on your system
-        .path(CfgPath::new(("obfs4proxy").into()))
+        .path(CfgPath::new(("lyrebird").into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
     builder.build().unwrap()
