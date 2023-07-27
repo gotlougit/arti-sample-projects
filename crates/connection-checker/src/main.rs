@@ -77,6 +77,31 @@ fn build_obfs4_connection() -> TorClientConfig {
     builder.build().unwrap()
 }
 
+/// Use a hardcoded meek bridge with broker info to generate a [TorClientConfig]
+/// which uses the meek-client binary on the user's computer to connect to the Tor
+/// network via meek.
+///
+/// Note that the binary name is hardcoded as "meek-client" in the code, and may be different
+/// depending upon your system.
+fn build_meek_connection() -> TorClientConfig {
+    let mut builder = TorClientConfig::builder();
+    // Make sure it is up to date with
+    // https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/common/bridges_list.meek-azure.txt
+    let bridge_line: &str = "meek_lite 192.0.2.18:80 BE776A53492E1E044A26F17306E1BC46A55A1625 url=https://meek.azureedge.net/ front=ajax.aspnetcdn.com";
+    let bridge: BridgeConfigBuilder = bridge_line.parse().unwrap();
+    builder.bridges().bridges().push(bridge);
+    let mut transport = ManagedTransportConfigBuilder::default();
+    transport
+        .protocols(vec!["meek".parse().unwrap()])
+        // THIS IS DISTRO SPECIFIC
+        // If this function doesn't work, check by what name snowflake client
+        // goes by on your system
+        .path(CfgPath::new(("meek-client").into()))
+        .run_on_startup(true);
+    builder.bridges().transports().push(transport);
+    builder.build().unwrap()
+}
+
 /// Reconfigure a given [TorClient] and try getting the circuit
 async fn test_connection_via_config(
     tor_client: &TorClient<PreferredRuntime>,
@@ -112,4 +137,9 @@ async fn main() {
     test_connection_via_config(&tor_client, snowflakeconfig, "Snowflake Tor connection").await;
     let obfs4config = build_obfs4_connection();
     test_connection_via_config(&tor_client, obfs4config, "obfs4 Tor connection").await;
+    // meek is usually overloaded these days
+    // by default we don't test meek; it is more efficient to check the other two
+    // transports since they are more widely used
+    //let meekconfig = build_meek_connection();
+    //test_connection_via_config(&tor_client, meekconfig, "meek Tor connection").await;
 }
