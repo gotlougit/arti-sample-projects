@@ -104,7 +104,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/bridge-state", post(check_bridges))
-        .route("/updates", post(check_bridges));
+        .route("/updates", post(updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     debug!("listening on {}", addr);
