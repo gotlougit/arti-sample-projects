@@ -10,7 +10,7 @@ use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
 use tor_proto::channel::Channel;
 use tor_rtcompat::PreferredRuntime;
-use tracing::{error, info};
+use tracing::error;
 
 use crate::BridgeResult;
 
@@ -28,15 +28,10 @@ async fn is_bridge_online(
     bridge_config: &BridgeConfig,
     tor_client: &TorClient<PreferredRuntime>,
 ) -> (Option<Channel>, Option<String>) {
-    info!("Seeing if the bridge is online or not...");
     let chanmgr = tor_client.chanmgr();
     match chanmgr.build_unmanaged_channel(bridge_config).await {
-        Ok(chan) => {
-            println!("Bridge {} is online", bridge_config);
-            (Some(chan), None)
-        }
+        Ok(chan) => (Some(chan), None),
         Err(e) => {
-            error!("For bridge {}, {}", bridge_config, e.report());
             let report = e.report().to_string();
             (None, Some(report))
         }
@@ -85,7 +80,6 @@ async fn controlled_test_function(
     let mut channels: HashMap<String, Channel> = HashMap::new();
     for mut counter in 0..node_lines.len() {
         let mut tasks = Vec::with_capacity(MAX_CONNECTIONS);
-        println!("Getting more descriptors to test...");
         for _ in 0..MAX_CONNECTIONS {
             if counter >= node_lines.len() {
                 break;
@@ -121,7 +115,6 @@ async fn controlled_test_function(
             }
             counter += 1;
         }
-        println!("Now trying to get results of these connections");
         let task_results = join_all(tasks).await;
         for task in task_results {
             match task {
