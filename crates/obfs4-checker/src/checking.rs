@@ -82,7 +82,7 @@ async fn controlled_test_function(
 ) -> (HashMap<String, BridgeResult>, HashMap<String, Channel>) {
     let mut results: HashMap<String, BridgeResult> = HashMap::new();
     let mut channels: HashMap<String, Channel> = HashMap::new();
-    for counter in 0..node_lines.len() {
+    for mut counter in 0..node_lines.len() {
         let mut tasks = Vec::with_capacity(MAX_CONNECTIONS);
         println!("Getting more descriptors to test...");
         for _ in 0..MAX_CONNECTIONS {
@@ -118,6 +118,7 @@ async fn controlled_test_function(
                     }));
                 }
             }
+            counter += 1;
         }
         println!("Now trying to get results of these connections");
         let task_results = join_all(tasks).await;
