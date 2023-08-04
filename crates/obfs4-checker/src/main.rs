@@ -70,14 +70,14 @@ struct BridgesResult {
 async fn check_bridges(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let bridge_lines = payload.bridge_lines;
-    let bridge_results = crate::checking::main_test(bridge_lines).await;
+    let results = crate::checking::main_test(bridge_lines).await;
     let end_time = Utc::now();
     let diff = end_time
         .signed_duration_since(commencement_time)
         .num_seconds() as f64;
-    let finalresult = match bridge_results {
-        Ok(results) => BridgesResult {
-            bridge_results: results,
+    let finalresult = match results {
+        Ok((bridge_results, _)) => BridgesResult {
+            bridge_results,
             error: None,
             time: diff,
         },
