@@ -143,6 +143,20 @@ async fn controlled_test_function(
     (results, channels)
 }
 
+/// Calculates a list of bridge lines that have no channels
+pub fn get_failed_bridges(
+    guard_lines: &Vec<String>,
+    channels: &HashMap<String, Channel>,
+) -> Vec<String> {
+    let mut failed_lines = Vec::new();
+    for guard_line in guard_lines.iter() {
+        if !channels.contains_key(guard_line) {
+            failed_lines.push(guard_line.clone());
+        }
+    }
+    failed_lines
+}
+
 /// Main function to unite everything together
 ///
 /// In summary,
@@ -160,5 +174,7 @@ pub async fn main_test(
     let common_tor_client = TorClient::create_bootstrapped(builder).await?;
     let (bridge_results, channels) =
         controlled_test_function(&guard_lines, common_tor_client).await;
+    let failed_bridges = get_failed_bridges(&guard_lines, &channels);
+    println!("We have {} failed bridges as of now", failed_bridges.len());
     Ok((bridge_results, channels))
 }
