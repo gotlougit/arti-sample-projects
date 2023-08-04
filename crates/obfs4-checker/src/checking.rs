@@ -191,19 +191,25 @@ pub async fn detect_bridges_going_down(
     once_online_bridges: Sender<Vec<String>>,
     mut now_online_bridges: Receiver<HashMap<String, Channel>>,
 ) {
-    let channels = initial_channels;
+    let mut channels = initial_channels;
     let open_channels = Vec::from_iter(channels.keys().map(|line| line.to_owned()));
     loop {
-        let (_, mut channels) =
-            controlled_test_function(&open_channels, common_tor_client.clone()).await;
-        // these need to stay and be re-checked
-        let failed_bridges = get_failed_bridges(&open_channels, &channels);
+        let mut failed_bridges = Vec::new();
+        let mut new_channels = HashMap::new();
+        for (bridgeline, channel) in channels.iter() {
+            if channel.is_closing() {
+                failed_bridges.push(bridgeline.to_string());
+            } else {
+                new_channels.insert(bridgeline.to_string(), channel.clone());
+            }
+        }
         // report failures to the appropriate task
         once_online_bridges.send(failed_bridges).await.unwrap();
         // get new channels from the other task
-        while let Some(new_channels) = now_online_bridges.recv().await {
-            channels.extend(new_channels);
+        while let Some(just_online_bridges) = now_online_bridges.recv().await {
+            new_channels.extend(just_online_bridges);
         }
+        channels = new_channels;
     }
 }
 
