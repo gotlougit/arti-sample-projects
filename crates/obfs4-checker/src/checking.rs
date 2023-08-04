@@ -5,8 +5,7 @@ use chrono::prelude::*;
 use futures::future::join_all;
 use std::collections::HashMap;
 use std::error::Error;
-use std::sync::mpsc::Receiver;
-use tokio::sync::mpsc::{self, Sender};
+use tokio::sync::mpsc::{self, Receiver, Sender};
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
 use tor_proto::channel::Channel;
@@ -163,9 +162,9 @@ pub fn get_failed_bridges(
 /// Task which checks if failed bridges have come up online
 pub async fn check_failed_bridges_task(
     initial_failed_bridges: Vec<String>,
-    common_tor_client: &TorClient<PreferredRuntime>,
-    now_online_bridges: &mut Sender<HashMap<String, Channel>>,
-    once_online_bridges: &mut Receiver<Vec<String>>,
+    common_tor_client: TorClient<PreferredRuntime>,
+    now_online_bridges: Sender<HashMap<String, Channel>>,
+    mut once_online_bridges: Receiver<Vec<String>>,
 ) {
     let mut failed_bridges = initial_failed_bridges;
     loop {
@@ -176,7 +175,7 @@ pub async fn check_failed_bridges_task(
         // report online bridges to the appropriate task
         now_online_bridges.send(channels).await.unwrap();
         // get new failures from the other task
-        while let Ok(new_failures) = once_online_bridges.recv() {
+        while let Some(new_failures) = once_online_bridges.recv().await {
             failed_bridges.splice(..0, new_failures.iter().cloned());
         }
     }
@@ -188,12 +187,12 @@ pub async fn check_failed_bridges_task(
 /// new channels
 pub async fn detect_bridges_going_down(
     initial_channels: HashMap<String, Channel>,
-    common_tor_client: &TorClient<PreferredRuntime>,
-    once_online_bridges: &mut Sender<Vec<String>>,
-    now_online_bridges: &mut Receiver<HashMap<String, Channel>>,
+    common_tor_client: TorClient<PreferredRuntime>,
+    once_online_bridges: Sender<Vec<String>>,
+    mut now_online_bridges: Receiver<HashMap<String, Channel>>,
 ) {
-    let mut channels = initial_channels;
-    let mut open_channels = Vec::from_iter(channels.keys().map(|line| line.to_owned()));
+    let channels = initial_channels;
+    let open_channels = Vec::from_iter(channels.keys().map(|line| line.to_owned()));
     loop {
         let (_, mut channels) =
             controlled_test_function(&open_channels, common_tor_client.clone()).await;
@@ -202,9 +201,29 @@ pub async fn detect_bridges_going_down(
         // report failures to the appropriate task
         once_online_bridges.send(failed_bridges).await.unwrap();
         // get new channels from the other task
-        while let Ok(new_channels) = now_online_bridges.recv() {
+        while let Some(new_channels) = now_online_bridges.recv().await {
             channels.extend(new_channels);
         }
+    }
+}
+
+/// Function which keeps track of the state of all the bridges given to it
+pub async fn continuous_check(guard_lines: Vec<String>) {
+    if let Ok((_, channels)) = main_test(guard_lines.clone()).await {
+        let (once_online_sender, once_online_recv) = mpsc::channel(100);
+        let (now_online_sender, now_online_recv) = mpsc::channel(100);
+        let builder = build_entry_node_config().build().unwrap();
+        // let builder = build_obfs4_bridge_config().build()?;
+        let common_tor_client = TorClient::create_bootstrapped(builder).await.unwrap();
+        let failed_bridges = get_failed_bridges(&guard_lines, &channels);
+        let c1 = common_tor_client.isolated_client();
+        let c2 = common_tor_client.isolated_client();
+        tokio::spawn(async move {
+            detect_bridges_going_down(channels, c1, once_online_sender, now_online_recv)
+        });
+        tokio::spawn(async move {
+            check_failed_bridges_task(failed_bridges, c2, now_online_sender, once_online_recv)
+        });
     }
 }
 
@@ -225,7 +244,5 @@ pub async fn main_test(
     let common_tor_client = TorClient::create_bootstrapped(builder).await?;
     let (bridge_results, channels) =
         controlled_test_function(&guard_lines, common_tor_client).await;
-    let failed_bridges = get_failed_bridges(&guard_lines, &channels);
-    println!("We have {} failed bridges as of now", failed_bridges.len());
     Ok((bridge_results, channels))
 }
