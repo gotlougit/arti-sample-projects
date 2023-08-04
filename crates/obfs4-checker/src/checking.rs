@@ -5,6 +5,8 @@ use chrono::prelude::*;
 use futures::future::join_all;
 use std::collections::HashMap;
 use std::error::Error;
+use std::sync::mpsc::Receiver;
+use tokio::sync::mpsc::{self, Sender};
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
 use tor_proto::channel::Channel;
@@ -156,6 +158,54 @@ pub fn get_failed_bridges(
         }
     }
     failed_lines
+}
+
+/// Task which checks if failed bridges have come up online
+pub async fn check_failed_bridges_task(
+    initial_failed_bridges: Vec<String>,
+    common_tor_client: &TorClient<PreferredRuntime>,
+    now_online_bridges: &mut Sender<HashMap<String, Channel>>,
+    once_online_bridges: &mut Receiver<Vec<String>>,
+) {
+    let mut failed_bridges = initial_failed_bridges;
+    loop {
+        let (_, channels) =
+            controlled_test_function(&failed_bridges, common_tor_client.clone()).await;
+        // detect which bridges failed again
+        failed_bridges = get_failed_bridges(&failed_bridges, &channels);
+        // report online bridges to the appropriate task
+        now_online_bridges.send(channels).await.unwrap();
+        // get new failures from the other task
+        while let Ok(new_failures) = once_online_bridges.recv() {
+            failed_bridges.splice(..0, new_failures.iter().cloned());
+        }
+    }
+}
+
+/// Task which checks if online bridges have gone down
+///
+/// TODO: needs more work to detect channels going down instead of making
+/// new channels
+pub async fn detect_bridges_going_down(
+    initial_channels: HashMap<String, Channel>,
+    common_tor_client: &TorClient<PreferredRuntime>,
+    once_online_bridges: &mut Sender<Vec<String>>,
+    now_online_bridges: &mut Receiver<HashMap<String, Channel>>,
+) {
+    let mut channels = initial_channels;
+    let mut open_channels = Vec::from_iter(channels.keys().map(|line| line.to_owned()));
+    loop {
+        let (_, mut channels) =
+            controlled_test_function(&open_channels, common_tor_client.clone()).await;
+        // these need to stay and be re-checked
+        let failed_bridges = get_failed_bridges(&open_channels, &channels);
+        // report failures to the appropriate task
+        once_online_bridges.send(failed_bridges).await.unwrap();
+        // get new channels from the other task
+        while let Ok(new_channels) = now_online_bridges.recv() {
+            channels.extend(new_channels);
+        }
+    }
 }
 
 /// Main function to unite everything together
