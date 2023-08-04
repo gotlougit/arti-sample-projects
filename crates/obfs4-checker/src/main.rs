@@ -90,12 +90,21 @@ async fn check_bridges(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<Br
     (StatusCode::OK, Json(finalresult))
 }
 
+/// Wrapper around the main testing function
+async fn updates(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<&'static str>) {
+    let bridge_lines = payload.bridge_lines;
+    crate::checking::continuous_check(bridge_lines).await;
+    (StatusCode::OK, Json("hello"))
+}
+
 /// Run the HTTP server and call the required methods to initialize the testing
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let app = Router::new().route("/bridge-state", post(check_bridges));
+    let app = Router::new()
+        .route("/bridge-state", post(check_bridges))
+        .route("/updates", post(check_bridges));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     debug!("listening on {}", addr);
