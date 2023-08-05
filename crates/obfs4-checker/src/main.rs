@@ -35,12 +35,8 @@ use axum::{
 };
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 use std::{collections::HashMap, net::SocketAddr};
-use tokio::sync::Mutex;
 use tor_error::ErrorReport;
-use tor_proto::channel::Channel;
-use tracing::debug;
 
 mod checking;
 
@@ -124,28 +120,7 @@ async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesRe
 }
 
 /// Wrapper around the main testing function
-async fn updates(
-    channels_mutex: Arc<Mutex<HashMap<String, Channel>>>,
-    failed_bridges_mutex: Arc<Mutex<Vec<String>>>,
-) -> (StatusCode, Json<Updates>) {
-    let channels_lock = channels_mutex.lock().await;
-    let failed_bridges_lock = failed_bridges_mutex.lock().await;
-    let online_bridges: Vec<String> = (*channels_lock)
-        .keys()
-        .map(|s| s.to_owned())
-        .collect::<Vec<_>>()
-        .to_vec();
-    let offline_bridges = (*failed_bridges_lock).clone();
-    let result = Updates {
-        online: CurrentOnline {
-            bridges: online_bridges,
-        },
-        offline: CurrentOffline {
-            bridges: offline_bridges,
-        },
-    };
-    (StatusCode::OK, Json(result))
-}
+async fn updates() {}
 
 /// Run the HTTP server and call the required methods to initialize the testing
 #[tokio::main]
@@ -160,7 +135,6 @@ async fn main() {
     // .route("/updates", get(wrapped_updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
-    debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
