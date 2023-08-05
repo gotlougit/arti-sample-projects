@@ -93,7 +93,7 @@ async fn check_bridges(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<Br
 /// Wrapper around the main testing function
 async fn updates(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<&'static str>) {
     let bridge_lines = payload.bridge_lines;
-    crate::checking::continuous_check(bridge_lines).await;
+    // crate::checking::continuous_check(bridge_lines).await;
     (StatusCode::OK, Json("hello"))
 }
 
@@ -102,9 +102,8 @@ async fn updates(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<&'static
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let app = Router::new()
-        .route("/bridge-state", post(check_bridges))
-        .route("/updates", post(updates));
+    let app = Router::new().route("/bridge-state", post(check_bridges));
+    // .route("/updates", post(updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     debug!("listening on {}", addr);

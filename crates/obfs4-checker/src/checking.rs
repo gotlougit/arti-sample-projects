@@ -183,8 +183,7 @@ pub async fn check_failed_bridges_task(
 
 /// Task which checks if online bridges have gone down
 ///
-/// TODO: needs more work to detect channels going down instead of making
-/// new channels
+/// TODO: use new Arti APIs for detecting bridges going down
 pub async fn detect_bridges_going_down(
     initial_channels: HashMap<String, Channel>,
     once_online_bridges: Sender<Vec<String>>,
@@ -213,17 +212,21 @@ pub async fn detect_bridges_going_down(
 }
 
 /// Function which keeps track of the state of all the bridges given to it
-pub async fn continuous_check(guard_lines: Vec<String>) {
+pub async fn continuous_check(
+    guard_lines: Vec<String>,
+    channels: HashMap<String, Channel>,
+    common_tor_client: TorClient<PreferredRuntime>,
+) {
     let (once_online_sender, once_online_recv) = mpsc::channel(100);
     let (now_online_sender, now_online_recv) = mpsc::channel(100);
-    let builder = build_entry_node_config().build().unwrap();
-    // let builder = build_obfs4_bridge_config().build()?;
-    let common_tor_client = TorClient::create_bootstrapped(builder).await.unwrap();
-    let c1 = common_tor_client.isolated_client();
-    let (_, channels) = controlled_test_function(&guard_lines, common_tor_client).await;
     let failed_bridges = get_failed_bridges(&guard_lines, &channels);
     let task1 = detect_bridges_going_down(channels, once_online_sender, now_online_recv);
-    let task2 = check_failed_bridges_task(failed_bridges, c1, now_online_sender, once_online_recv);
+    let task2 = check_failed_bridges_task(
+        failed_bridges,
+        common_tor_client,
+        now_online_sender,
+        once_online_recv,
+    );
     join!(task1, task2);
 }
 
@@ -242,7 +245,12 @@ pub async fn main_test(
     let builder = build_entry_node_config().build()?;
     // let builder = build_obfs4_bridge_config().build()?;
     let common_tor_client = TorClient::create_bootstrapped(builder).await?;
+    let common_isolated = common_tor_client.isolated_client();
     let (bridge_results, channels) =
         controlled_test_function(&guard_lines, common_tor_client).await;
+    let channelscopy = channels.clone();
+    tokio::spawn(async move {
+        continuous_check(guard_lines, channelscopy, common_isolated).await;
+    });
     Ok((bridge_results, channels))
 }
