@@ -70,23 +70,11 @@ struct BridgesResult {
     time: f64,
 }
 
-/// One of the outputs to our `updates` handler
-#[derive(Serialize)]
-struct CurrentOnline {
-    bridges: Vec<String>,
-}
-
-/// One of the outputs to our `updates` handler
-#[derive(Serialize)]
-struct CurrentOffline {
-    bridges: Vec<String>,
-}
-
 /// Wrapper for `updates` handler output
 #[derive(Serialize)]
 struct Updates {
-    online: CurrentOnline,
-    offline: CurrentOffline,
+    online: Vec<String>,
+    offline: Vec<String>,
 }
 
 /// Wrapper around the main testing function
