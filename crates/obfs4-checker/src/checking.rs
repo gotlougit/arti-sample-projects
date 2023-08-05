@@ -155,7 +155,7 @@ pub async fn check_failed_bridges_task(
     let mut failed_bridges = initial_failed_bridges;
     loop {
         let (_, channels) =
-            controlled_test_function(&failed_bridges, common_tor_client.clone()).await;
+            controlled_test_function(&failed_bridges, common_tor_client.isolated_client()).await;
         // detect which bridges failed again
         failed_bridges = get_failed_bridges(&failed_bridges, &channels);
         for failed_bridge in failed_bridges.iter() {
