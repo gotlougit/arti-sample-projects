@@ -3,8 +3,11 @@ use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
 use chrono::prelude::*;
 use std::collections::HashMap;
-use std::error::Error;
-use tokio::sync::mpsc::{self, Receiver, Sender};
+use std::sync::Arc;
+use tokio::sync::{
+    mpsc::{self, Receiver, Sender},
+    Mutex,
+};
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
 use tor_proto::channel::Channel;
@@ -148,17 +151,17 @@ pub fn get_failed_bridges(
 
 /// Task which checks if failed bridges have come up online
 pub async fn check_failed_bridges_task(
-    initial_failed_bridges: Vec<String>,
+    initial_failed_bridges: Arc<Mutex<Vec<String>>>,
     common_tor_client: TorClient<PreferredRuntime>,
     now_online_bridges: Sender<HashMap<String, Channel>>,
     mut once_online_bridges: Receiver<Vec<String>>,
 ) {
-    let mut failed_bridges = initial_failed_bridges;
+    let mut failed_bridges = initial_failed_bridges.lock().await;
     loop {
         let (_, channels) =
             controlled_test_function(&failed_bridges, common_tor_client.clone()).await;
         // detect which bridges failed again
-        failed_bridges = get_failed_bridges(&failed_bridges, &channels);
+        *failed_bridges = get_failed_bridges(&failed_bridges, &channels);
         for failed_bridge in failed_bridges.iter() {
             println!("{} failed to get new channel", failed_bridge);
         }
@@ -178,15 +181,15 @@ pub async fn check_failed_bridges_task(
 ///
 /// TODO: use new Arti APIs for detecting bridges going down
 pub async fn detect_bridges_going_down(
-    initial_channels: HashMap<String, Channel>,
+    initial_channels: Arc<Mutex<HashMap<String, Channel>>>,
     once_online_bridges: Sender<Vec<String>>,
     mut now_online_bridges: Receiver<HashMap<String, Channel>>,
 ) {
-    let mut channels = initial_channels;
+    let mut channels = initial_channels.lock().await;
     loop {
         let mut failed_bridges = Vec::new();
         let mut new_channels = HashMap::new();
-        for (bridgeline, channel) in channels.iter() {
+        for (bridgeline, channel) in (*channels).iter() {
             if channel.is_closing() {
                 failed_bridges.push(bridgeline.to_string());
                 println!("{}: existing channel has failed", bridgeline);
@@ -200,19 +203,18 @@ pub async fn detect_bridges_going_down(
         while let Some(just_online_bridges) = now_online_bridges.recv().await {
             new_channels.extend(just_online_bridges);
         }
-        channels = new_channels;
+        *channels = new_channels;
     }
 }
 
 /// Function which keeps track of the state of all the bridges given to it
 pub async fn continuous_check(
-    guard_lines: Vec<String>,
-    channels: HashMap<String, Channel>,
+    channels: Arc<Mutex<HashMap<String, Channel>>>,
+    failed_bridges: Arc<Mutex<Vec<String>>>,
     common_tor_client: TorClient<PreferredRuntime>,
 ) {
     let (once_online_sender, once_online_recv) = mpsc::channel(100);
     let (now_online_sender, now_online_recv) = mpsc::channel(100);
-    let failed_bridges = get_failed_bridges(&guard_lines, &channels);
     let task1 = detect_bridges_going_down(channels, once_online_sender, now_online_recv);
     let task2 = check_failed_bridges_task(
         failed_bridges,
@@ -221,6 +223,12 @@ pub async fn continuous_check(
         once_online_recv,
     );
     tokio::join!(task1, task2);
+}
+
+pub async fn build_common_tor_client() -> Result<TorClient<PreferredRuntime>, arti_client::Error> {
+    let builder = build_entry_node_config().build().unwrap();
+    // let builder = build_obfs4_bridge_config().build()?;
+    TorClient::create_bootstrapped(builder).await
 }
 
 /// Main function to unite everything together
@@ -234,16 +242,7 @@ pub async fn continuous_check(
 /// 3. Return the results
 pub async fn main_test(
     guard_lines: Vec<String>,
-) -> Result<(HashMap<String, BridgeResult>, HashMap<String, Channel>), Box<dyn Error>> {
-    let builder = build_entry_node_config().build()?;
-    // let builder = build_obfs4_bridge_config().build()?;
-    let common_tor_client = TorClient::create_bootstrapped(builder).await?;
-    let common_isolated = common_tor_client.isolated_client();
-    let (bridge_results, channels) =
-        controlled_test_function(&guard_lines, common_tor_client).await;
-    let channelscopy = channels.clone();
-    tokio::spawn(async move {
-        continuous_check(guard_lines, channelscopy, common_isolated).await;
-    });
-    Ok((bridge_results, channels))
+) -> Result<(HashMap<String, BridgeResult>, HashMap<String, Channel>), arti_client::Error> {
+    let common_tor_client = build_common_tor_client().await?;
+    Ok(controlled_test_function(&guard_lines, common_tor_client).await)
 }

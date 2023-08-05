@@ -28,10 +28,18 @@
 //! ### Disclaimer
 //! This tool is currently in active development and needs further work and feedback
 //! from the Tor Project devs in order to one day make it to production
-use axum::{http::StatusCode, routing::post, Json, Router};
+use axum::{
+    http::StatusCode,
+    routing::{get, post},
+    Json, Router,
+};
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use std::{collections::HashMap, net::SocketAddr};
+use tokio::sync::Mutex;
+use tor_error::ErrorReport;
+use tor_proto::channel::Channel;
 use tracing::debug;
 
 mod checking;
@@ -45,7 +53,7 @@ struct BridgeLines {
 }
 
 /// Struct which represents one bridge's result
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct BridgeResult {
     functional: bool,
     last_tested: String,
@@ -66,35 +74,99 @@ struct BridgesResult {
     time: f64,
 }
 
-/// Wrapper around the main testing function
-async fn check_bridges(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<BridgesResult>) {
-    let commencement_time = Utc::now();
-    let bridge_lines = payload.bridge_lines;
-    let results = crate::checking::main_test(bridge_lines).await;
-    let end_time = Utc::now();
-    let diff = end_time
-        .signed_duration_since(commencement_time)
-        .num_seconds() as f64;
-    let finalresult = match results {
-        Ok((bridge_results, _)) => BridgesResult {
-            bridge_results,
-            error: None,
-            time: diff,
-        },
-        Err(error) => BridgesResult {
-            bridge_results: HashMap::new(),
-            error: Some(format!("{:#?}", error)),
-            time: diff,
-        },
-    };
-    (StatusCode::OK, Json(finalresult))
+/// One of the outputs to our `updates` handler
+#[derive(Serialize)]
+struct CurrentOnline {
+    bridges: Vec<String>,
+}
+
+/// One of the outputs to our `updates` handler
+#[derive(Serialize)]
+struct CurrentOffline {
+    bridges: Vec<String>,
+}
+
+/// Wrapper for `updates` handler output
+#[derive(Serialize)]
+struct Updates {
+    online: CurrentOnline,
+    offline: CurrentOffline,
 }
 
 /// Wrapper around the main testing function
-async fn updates(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<&'static str>) {
-    let bridge_lines = payload.bridge_lines;
-    // crate::checking::continuous_check(bridge_lines).await;
-    (StatusCode::OK, Json("hello"))
+async fn check_bridges(
+    bridge_lines: Vec<String>,
+    channels_mutex: Arc<Mutex<HashMap<String, Channel>>>,
+    failed_bridges_mutex: Arc<Mutex<Vec<String>>>,
+) -> (StatusCode, Json<BridgesResult>) {
+    let commencement_time = Utc::now();
+
+    match crate::checking::main_test(bridge_lines.clone()).await {
+        Ok((bridge_results, channels)) => {
+            let end_time = Utc::now();
+            let diff = end_time
+                .signed_duration_since(commencement_time)
+                .num_seconds() as f64;
+            let failed_bridges = crate::checking::get_failed_bridges(&bridge_lines, &channels);
+            let channel_mutex_clone = Arc::clone(&channels_mutex);
+            let failed_mutex_clone = Arc::clone(&failed_bridges_mutex);
+            let mut channels_mutex_lock = channels_mutex.lock().await;
+            *channels_mutex_lock = channels;
+            let mut failed_bridges_lock = failed_bridges_mutex.lock().await;
+            *failed_bridges_lock = failed_bridges;
+            let common_tor_client = crate::checking::build_common_tor_client().await.unwrap();
+            tokio::spawn(async move {
+                crate::checking::continuous_check(
+                    channel_mutex_clone,
+                    failed_mutex_clone,
+                    common_tor_client,
+                )
+                .await
+            });
+            let finalresult = BridgesResult {
+                bridge_results,
+                error: None,
+                time: diff,
+            };
+            return (StatusCode::OK, Json(finalresult));
+        }
+        Err(e) => {
+            let end_time = Utc::now();
+            let diff = end_time
+                .signed_duration_since(commencement_time)
+                .num_seconds() as f64;
+            let finalresult = BridgesResult {
+                bridge_results: HashMap::new(),
+                error: Some(e.report().to_string()),
+                time: diff,
+            };
+            return (StatusCode::OK, Json(finalresult));
+        }
+    }
+}
+
+/// Wrapper around the main testing function
+async fn updates(
+    channels_mutex: Arc<Mutex<HashMap<String, Channel>>>,
+    failed_bridges_mutex: Arc<Mutex<Vec<String>>>,
+) -> (StatusCode, Json<Updates>) {
+    let channels_lock = channels_mutex.lock().await;
+    let failed_bridges_lock = failed_bridges_mutex.lock().await;
+    let online_bridges: Vec<String> = (*channels_lock)
+        .keys()
+        .map(|s| s.to_owned())
+        .collect::<Vec<_>>()
+        .to_vec();
+    let offline_bridges = (*failed_bridges_lock).clone();
+    let result = Updates {
+        online: CurrentOnline {
+            bridges: online_bridges,
+        },
+        offline: CurrentOffline {
+            bridges: offline_bridges,
+        },
+    };
+    (StatusCode::OK, Json(result))
 }
 
 /// Run the HTTP server and call the required methods to initialize the testing
@@ -102,8 +174,19 @@ async fn updates(Json(payload): Json<BridgeLines>) -> (StatusCode, Json<&'static
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let app = Router::new().route("/bridge-state", post(check_bridges));
-    // .route("/updates", post(updates));
+    let channels_mutex_shared = Arc::new(Mutex::new(HashMap::new()));
+    let failed_bridges_mutex_shared = Arc::new(Mutex::new(Vec::new()));
+    let channels_cpy = Arc::clone(&channels_mutex_shared);
+    let failed_cpy = Arc::clone(&failed_bridges_mutex_shared);
+    let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
+        check_bridges(payload.bridge_lines, channels_cpy, failed_cpy).await
+    };
+
+    let wrapped_updates =
+        move || async { updates(channels_mutex_shared, failed_bridges_mutex_shared).await };
+    let app = Router::new()
+        .route("/bridge-state", post(wrapped_bridge_check))
+        .route("/updates", get(wrapped_updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     debug!("listening on {}", addr);
