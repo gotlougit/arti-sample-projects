@@ -77,8 +77,8 @@ async fn controlled_test_function(
     node_lines: &[String],
     common_tor_client: TorClient<PreferredRuntime>,
 ) -> (HashMap<String, BridgeResult>, HashMap<String, Channel>) {
-    let mut results: HashMap<String, BridgeResult> = HashMap::new();
-    let mut channels: HashMap<String, Channel> = HashMap::new();
+    let mut results = HashMap::new();
+    let mut channels = HashMap::new();
     for mut counter in 0..node_lines.len() {
         let mut tasks = Vec::with_capacity(MAX_CONNECTIONS);
         for _ in 0..MAX_CONNECTIONS {
