@@ -5,6 +5,7 @@ use chrono::prelude::*;
 use futures::future::join_all;
 use std::collections::HashMap;
 use std::error::Error;
+use tokio::join;
 use tokio::sync::mpsc::{self, Receiver, Sender};
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
@@ -186,12 +187,10 @@ pub async fn check_failed_bridges_task(
 /// new channels
 pub async fn detect_bridges_going_down(
     initial_channels: HashMap<String, Channel>,
-    common_tor_client: TorClient<PreferredRuntime>,
     once_online_bridges: Sender<Vec<String>>,
     mut now_online_bridges: Receiver<HashMap<String, Channel>>,
 ) {
     let mut channels = initial_channels;
-    let open_channels = Vec::from_iter(channels.keys().map(|line| line.to_owned()));
     loop {
         let mut failed_bridges = Vec::new();
         let mut new_channels = HashMap::new();
@@ -215,22 +214,17 @@ pub async fn detect_bridges_going_down(
 
 /// Function which keeps track of the state of all the bridges given to it
 pub async fn continuous_check(guard_lines: Vec<String>) {
-    if let Ok((_, channels)) = main_test(guard_lines.clone()).await {
-        let (once_online_sender, once_online_recv) = mpsc::channel(100);
-        let (now_online_sender, now_online_recv) = mpsc::channel(100);
-        let builder = build_entry_node_config().build().unwrap();
-        // let builder = build_obfs4_bridge_config().build()?;
-        let common_tor_client = TorClient::create_bootstrapped(builder).await.unwrap();
-        let failed_bridges = get_failed_bridges(&guard_lines, &channels);
-        let c1 = common_tor_client.isolated_client();
-        let c2 = common_tor_client.isolated_client();
-        tokio::spawn(async move {
-            detect_bridges_going_down(channels, c1, once_online_sender, now_online_recv)
-        });
-        tokio::spawn(async move {
-            check_failed_bridges_task(failed_bridges, c2, now_online_sender, once_online_recv)
-        });
-    }
+    let (once_online_sender, once_online_recv) = mpsc::channel(100);
+    let (now_online_sender, now_online_recv) = mpsc::channel(100);
+    let builder = build_entry_node_config().build().unwrap();
+    // let builder = build_obfs4_bridge_config().build()?;
+    let common_tor_client = TorClient::create_bootstrapped(builder).await.unwrap();
+    let c1 = common_tor_client.isolated_client();
+    let (_, channels) = controlled_test_function(&guard_lines, common_tor_client).await;
+    let failed_bridges = get_failed_bridges(&guard_lines, &channels);
+    let task1 = detect_bridges_going_down(channels, once_online_sender, now_online_recv);
+    let task2 = check_failed_bridges_task(failed_bridges, c1, now_online_sender, once_online_recv);
+    join!(task1, task2);
 }
 
 /// Main function to unite everything together
