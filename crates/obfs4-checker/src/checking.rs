@@ -11,7 +11,6 @@ use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
 use tor_proto::channel::Channel;
 use tor_rtcompat::PreferredRuntime;
-use tracing::error;
 
 use crate::BridgeResult;
 
@@ -118,20 +117,15 @@ async fn controlled_test_function(
         }
         let task_results = join_all(tasks).await;
         for task in task_results {
-            match task {
-                Ok((bridgeline, chan, time, error)) => {
-                    let res = BridgeResult {
-                        functional: chan.is_some(),
-                        last_tested: time,
-                        error,
-                    };
-                    results.insert(bridgeline.clone(), res);
-                    if let Some(channel) = chan {
-                        channels.insert(bridgeline, channel);
-                    }
-                }
-                Err(e) => {
-                    error!("{}", e.report());
+            if let Ok((bridgeline, chan, time, error)) = task {
+                let res = BridgeResult {
+                    functional: chan.is_some(),
+                    last_tested: time,
+                    error,
+                };
+                results.insert(bridgeline.clone(), res);
+                if let Some(channel) = chan {
+                    channels.insert(bridgeline, channel);
                 }
             }
         }
