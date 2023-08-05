@@ -108,7 +108,7 @@ async fn controlled_test_function(
                             rawbridgeline,
                             None,
                             formatted_time,
-                            Some(format!("{}", e.report())),
+                            Some(e.report().to_string()),
                         )
                     }));
                 }
