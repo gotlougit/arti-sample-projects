@@ -96,38 +96,31 @@ struct Updates {
 /// Wrapper around the main testing function
 async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
-
-    match crate::checking::main_test(bridge_lines.clone()).await {
+    let mainop = crate::checking::main_test(bridge_lines.clone()).await;
+    let end_time = Utc::now();
+    let diff = end_time
+        .signed_duration_since(commencement_time)
+        .num_seconds() as f64;
+    let finalresult = match mainop {
         Ok((bridge_results, channels)) => {
-            let end_time = Utc::now();
-            let diff = end_time
-                .signed_duration_since(commencement_time)
-                .num_seconds() as f64;
             let failed_bridges = crate::checking::get_failed_bridges(&bridge_lines, &channels);
             let common_tor_client = crate::checking::build_common_tor_client().await.unwrap();
             tokio::spawn(async move {
                 crate::checking::continuous_check(channels, failed_bridges, common_tor_client).await
             });
-            let finalresult = BridgesResult {
+            BridgesResult {
                 bridge_results,
                 error: None,
                 time: diff,
-            };
-            return (StatusCode::OK, Json(finalresult));
+            }
         }
-        Err(e) => {
-            let end_time = Utc::now();
-            let diff = end_time
-                .signed_duration_since(commencement_time)
-                .num_seconds() as f64;
-            let finalresult = BridgesResult {
-                bridge_results: HashMap::new(),
-                error: Some(e.report().to_string()),
-                time: diff,
-            };
-            return (StatusCode::OK, Json(finalresult));
-        }
-    }
+        Err(e) => BridgesResult {
+            bridge_results: HashMap::new(),
+            error: Some(e.report().to_string()),
+            time: diff,
+        },
+    };
+    (StatusCode::OK, Json(finalresult))
 }
 
 /// Wrapper around the main testing function
