@@ -94,10 +94,7 @@ struct Updates {
 }
 
 /// Wrapper around the main testing function
-async fn check_bridges(
-    bridge_lines: Vec<String>,
-    channels: HashMap<String, Channel>,
-) -> (StatusCode, Json<BridgesResult>) {
+async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
 
     match crate::checking::main_test(bridge_lines.clone()).await {
@@ -162,9 +159,8 @@ async fn updates(
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
-        check_bridges(payload.bridge_lines, HashMap::new()).await
-    };
+    let wrapped_bridge_check =
+        move |Json(payload): Json<BridgeLines>| async { check_bridges(payload.bridge_lines).await };
 
     //let wrapped_updates = move || async { updates(HashMap::new(), Vec::new()).await };
     let app = Router::new().route("/bridge-state", post(wrapped_bridge_check));
