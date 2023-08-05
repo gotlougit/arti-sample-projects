@@ -85,24 +85,21 @@ async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesRe
     let diff = end_time
         .signed_duration_since(commencement_time)
         .num_seconds() as f64;
-    let finalresult = match mainop {
+    let (bridge_results, error) = match mainop {
         Ok((bridge_results, channels)) => {
             let failed_bridges = crate::checking::get_failed_bridges(&bridge_lines, &channels);
             let common_tor_client = crate::checking::build_common_tor_client().await.unwrap();
             tokio::spawn(async move {
                 crate::checking::continuous_check(channels, failed_bridges, common_tor_client).await
             });
-            BridgesResult {
-                bridge_results,
-                error: None,
-                time: diff,
-            }
+            (bridge_results, None)
         }
-        Err(e) => BridgesResult {
-            bridge_results: HashMap::new(),
-            error: Some(e.report().to_string()),
-            time: diff,
-        },
+        Err(e) => (HashMap::new(), Some(e.report().to_string())),
+    };
+    let finalresult = BridgesResult {
+        bridge_results,
+        error,
+        time: diff,
     };
     (StatusCode::OK, Json(finalresult))
 }
