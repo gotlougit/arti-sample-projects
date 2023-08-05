@@ -2,10 +2,8 @@ use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
 use chrono::prelude::*;
-use futures::future::join_all;
 use std::collections::HashMap;
 use std::error::Error;
-use tokio::join;
 use tokio::sync::mpsc::{self, Receiver, Sender};
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
@@ -115,7 +113,8 @@ async fn controlled_test_function(
             }
             counter += 1;
         }
-        let task_results = join_all(tasks).await;
+
+        let task_results = futures::future::join_all(tasks).await;
         for task in task_results {
             if let Ok((bridgeline, chan, time, error)) = task {
                 let res = BridgeResult {
@@ -221,7 +220,7 @@ pub async fn continuous_check(
         now_online_sender,
         once_online_recv,
     );
-    join!(task1, task2);
+    tokio::join!(task1, task2);
 }
 
 /// Main function to unite everything together
