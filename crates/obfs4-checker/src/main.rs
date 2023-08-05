@@ -96,8 +96,7 @@ struct Updates {
 /// Wrapper around the main testing function
 async fn check_bridges(
     bridge_lines: Vec<String>,
-    channels_mutex: Arc<Mutex<HashMap<String, Channel>>>,
-    failed_bridges_mutex: Arc<Mutex<Vec<String>>>,
+    channels: HashMap<String, Channel>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
 
@@ -108,20 +107,9 @@ async fn check_bridges(
                 .signed_duration_since(commencement_time)
                 .num_seconds() as f64;
             let failed_bridges = crate::checking::get_failed_bridges(&bridge_lines, &channels);
-            let channel_mutex_clone = Arc::clone(&channels_mutex);
-            let failed_mutex_clone = Arc::clone(&failed_bridges_mutex);
-            let mut channels_mutex_lock = channels_mutex.lock().await;
-            *channels_mutex_lock = channels;
-            let mut failed_bridges_lock = failed_bridges_mutex.lock().await;
-            *failed_bridges_lock = failed_bridges;
             let common_tor_client = crate::checking::build_common_tor_client().await.unwrap();
             tokio::spawn(async move {
-                crate::checking::continuous_check(
-                    channel_mutex_clone,
-                    failed_mutex_clone,
-                    common_tor_client,
-                )
-                .await
+                crate::checking::continuous_check(channels, failed_bridges, common_tor_client).await
             });
             let finalresult = BridgesResult {
                 bridge_results,
@@ -174,19 +162,13 @@ async fn updates(
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let channels_mutex_shared = Arc::new(Mutex::new(HashMap::new()));
-    let failed_bridges_mutex_shared = Arc::new(Mutex::new(Vec::new()));
-    let channels_cpy = Arc::clone(&channels_mutex_shared);
-    let failed_cpy = Arc::clone(&failed_bridges_mutex_shared);
     let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
-        check_bridges(payload.bridge_lines, channels_cpy, failed_cpy).await
+        check_bridges(payload.bridge_lines, HashMap::new()).await
     };
 
-    let wrapped_updates =
-        move || async { updates(channels_mutex_shared, failed_bridges_mutex_shared).await };
-    let app = Router::new()
-        .route("/bridge-state", post(wrapped_bridge_check))
-        .route("/updates", get(wrapped_updates));
+    //let wrapped_updates = move || async { updates(HashMap::new(), Vec::new()).await };
+    let app = Router::new().route("/bridge-state", post(wrapped_bridge_check));
+    // .route("/updates", get(wrapped_updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     debug!("listening on {}", addr);

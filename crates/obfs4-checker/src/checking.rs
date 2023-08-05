@@ -151,17 +151,17 @@ pub fn get_failed_bridges(
 
 /// Task which checks if failed bridges have come up online
 pub async fn check_failed_bridges_task(
-    initial_failed_bridges: Arc<Mutex<Vec<String>>>,
+    initial_failed_bridges: Vec<String>,
     common_tor_client: TorClient<PreferredRuntime>,
     now_online_bridges: Sender<HashMap<String, Channel>>,
     mut once_online_bridges: Receiver<Vec<String>>,
 ) {
-    let mut failed_bridges = initial_failed_bridges.lock().await;
+    let mut failed_bridges = initial_failed_bridges;
     loop {
         let (_, channels) =
             controlled_test_function(&failed_bridges, common_tor_client.clone()).await;
         // detect which bridges failed again
-        *failed_bridges = get_failed_bridges(&failed_bridges, &channels);
+        failed_bridges = get_failed_bridges(&failed_bridges, &channels);
         for failed_bridge in failed_bridges.iter() {
             println!("{} failed to get new channel", failed_bridge);
         }
@@ -181,15 +181,15 @@ pub async fn check_failed_bridges_task(
 ///
 /// TODO: use new Arti APIs for detecting bridges going down
 pub async fn detect_bridges_going_down(
-    initial_channels: Arc<Mutex<HashMap<String, Channel>>>,
+    initial_channels: HashMap<String, Channel>,
     once_online_bridges: Sender<Vec<String>>,
     mut now_online_bridges: Receiver<HashMap<String, Channel>>,
 ) {
-    let mut channels = initial_channels.lock().await;
+    let mut channels = initial_channels;
     loop {
         let mut failed_bridges = Vec::new();
         let mut new_channels = HashMap::new();
-        for (bridgeline, channel) in (*channels).iter() {
+        for (bridgeline, channel) in channels.iter() {
             if channel.is_closing() {
                 failed_bridges.push(bridgeline.to_string());
                 println!("{}: existing channel has failed", bridgeline);
@@ -203,14 +203,14 @@ pub async fn detect_bridges_going_down(
         while let Some(just_online_bridges) = now_online_bridges.recv().await {
             new_channels.extend(just_online_bridges);
         }
-        *channels = new_channels;
+        channels = new_channels;
     }
 }
 
 /// Function which keeps track of the state of all the bridges given to it
 pub async fn continuous_check(
-    channels: Arc<Mutex<HashMap<String, Channel>>>,
-    failed_bridges: Arc<Mutex<Vec<String>>>,
+    channels: HashMap<String, Channel>,
+    failed_bridges: Vec<String>,
     common_tor_client: TorClient<PreferredRuntime>,
 ) {
     let (once_online_sender, once_online_recv) = mpsc::channel(100);
