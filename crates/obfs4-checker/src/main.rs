@@ -35,9 +35,10 @@ use axum::{
 };
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use std::{collections::HashMap, net::SocketAddr};
+use tokio::sync::Mutex;
 use tor_error::ErrorReport;
-
 mod checking;
 
 /// The input to our `bridge-state` handler
@@ -78,7 +79,10 @@ struct Updates {
 }
 
 /// Wrapper around the main testing function
-async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesResult>) {
+async fn check_bridges(
+    bridge_lines: Vec<String>,
+    updates_status_mutex: Arc<Mutex<HashMap<String, BridgeResult>>>,
+) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let mainop = crate::checking::main_test(bridge_lines.clone()).await;
     let end_time = Utc::now();
@@ -90,7 +94,13 @@ async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesRe
             let failed_bridges = crate::checking::get_failed_bridges(&bridge_lines, &channels);
             let common_tor_client = crate::checking::build_common_tor_client().await.unwrap();
             tokio::spawn(async move {
-                crate::checking::continuous_check(channels, failed_bridges, common_tor_client).await
+                crate::checking::continuous_check(
+                    channels,
+                    failed_bridges,
+                    common_tor_client,
+                    updates_status_mutex,
+                )
+                .await
             });
             (bridge_results, None)
         }
@@ -105,19 +115,33 @@ async fn check_bridges(bridge_lines: Vec<String>) -> (StatusCode, Json<BridgesRe
 }
 
 /// Wrapper around the main testing function
-async fn updates() {}
+async fn updates(
+    updates_status_mutex: Arc<Mutex<HashMap<String, BridgeResult>>>,
+) -> (StatusCode, Json<BridgesResult>) {
+    let bridge_results_lock = updates_status_mutex.lock().await;
+    let bridge_results = (*bridge_results_lock).clone();
+    let finalresult = BridgesResult {
+        bridge_results,
+        error: None,
+        time: 0.0,
+    };
+    (StatusCode::OK, Json(finalresult))
+}
 
 /// Run the HTTP server and call the required methods to initialize the testing
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
+    let updates_status_mutex = Arc::new(Mutex::new(HashMap::new()));
+    let updates_mutex_copy = Arc::clone(&updates_status_mutex);
+    let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
+        check_bridges(payload.bridge_lines, updates_mutex_copy).await
+    };
 
-    let wrapped_bridge_check =
-        move |Json(payload): Json<BridgeLines>| async { check_bridges(payload.bridge_lines).await };
-
-    //let wrapped_updates = move || async { updates(HashMap::new(), Vec::new()).await };
-    let app = Router::new().route("/bridge-state", post(wrapped_bridge_check));
-    // .route("/updates", get(wrapped_updates));
+    let wrapped_updates = move || async { updates(updates_status_mutex).await };
+    let app = Router::new()
+        .route("/bridge-state", post(wrapped_bridge_check))
+        .route("/updates", get(wrapped_updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     axum::Server::bind(&addr)
