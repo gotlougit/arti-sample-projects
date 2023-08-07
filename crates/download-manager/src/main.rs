@@ -241,7 +241,7 @@ async fn main() -> anyhow::Result<()> {
         }
         start = end + 1;
     }
-    let results_options: Vec<Result<(usize, Vec<u8>), DownloadError>> = join_all(downloadtasks)
+    let results_options: Vec<Result<_, _>> = join_all(downloadtasks)
         .await
         .into_iter()
         .flatten()
@@ -254,7 +254,7 @@ async fn main() -> anyhow::Result<()> {
         remove_file(DOWNLOAD_FILE_NAME)?;
         return Ok(());
     }
-    let mut results: Vec<(usize, Vec<u8>)> = results_options
+    let mut results: Vec<_> = results_options
         .into_iter()
         .filter_map(|result| result.ok())
         .collect();
