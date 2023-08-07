@@ -50,8 +50,6 @@ const MAX_RETRIES: usize = 6;
 #[error("Download failed due to unspecified reason")]
 struct DownloadError;
 
-// TODO: Handle all unwrap() effectively
-
 /// Create a single TorClient which will be used to spawn isolated connections
 ///
 /// This Client uses the default config with no other changes
@@ -208,16 +206,18 @@ async fn main() -> anyhow::Result<()> {
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
-        let newhttp = connections
-            .get(i as usize % MAX_CONNECTIONS)
-            .unwrap()
-            .clone();
-        downloadtasks.push(tokio::spawn(async move {
-            match download_segment(url, start, end, newhttp).await {
-                Ok(body) => Ok((start, body)),
-                Err(e) => Err(e),
+        match connections.get(i as usize % MAX_CONNECTIONS) {
+            Some(http) => {
+                let newhttp = http.clone();
+                downloadtasks.push(tokio::spawn(async move {
+                    match download_segment(url, start, end, newhttp).await {
+                        Ok(body) => Ok((start, body)),
+                        Err(e) => Err(e),
+                    }
+                }));
             }
-        }));
+            None => {}
+        }
         start = end + 1;
     }
     let results_options: Vec<Result<(usize, Vec<u8>), DownloadError>> = join_all(downloadtasks)
