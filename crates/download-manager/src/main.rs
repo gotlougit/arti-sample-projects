@@ -79,7 +79,7 @@ async fn get_snowflake_tor_client() -> TorClient<PreferredRuntime> {
 /// Create a single TorClient which will be used to spawn isolated connections
 ///
 /// This Client uses the default config with no other changes
-async fn get_tor_client() -> TorClient<PreferredRuntime> {
+async fn create_tor_client() -> TorClient<PreferredRuntime> {
     let config = TorClientConfig::default();
     TorClient::create_bootstrapped(config).await.unwrap()
 }
@@ -208,7 +208,7 @@ async fn main() {
         .open(DOWNLOAD_FILE_NAME)
         .unwrap();
     let url = TORURL;
-    let baseconn = get_tor_client().await;
+    let baseconn = create_tor_client().await;
     let length = get_content_length(url, &baseconn).await;
 
     // Initialize the connections we will use for this download
