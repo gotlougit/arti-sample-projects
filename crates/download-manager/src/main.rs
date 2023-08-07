@@ -28,6 +28,8 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
+use std::error::Error;
+use std::fmt::Display;
 use std::fs::OpenOptions;
 use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
@@ -47,6 +49,27 @@ const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 const MAX_CONNECTIONS: usize = 6;
 /// Number of retries to make if a particular request failed
 const MAX_RETRIES: usize = 6;
+
+#[derive(Debug)]
+struct PartialError {
+    message: String,
+}
+
+impl PartialError {
+    fn new() -> Self {
+        Self {
+            message: "Non partial content status code obtained!".to_string(),
+        }
+    }
+}
+
+impl Display for PartialError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
+}
+
+impl Error for PartialError {}
 
 // TODO: Handle all unwrap() effectively
 
@@ -127,7 +150,7 @@ async fn request_range(
     start: usize,
     end: usize,
     http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
-) -> Result<Vec<u8>, hyper::Error> {
+) -> Result<Vec<u8>, Box<dyn Error>> {
     let uri = Uri::from_static(url);
     let partial_req_value = format!("bytes={}-{}", start, end);
     warn!("Requesting {} via Tor...", url);
@@ -136,22 +159,20 @@ async fn request_range(
         .method(Method::GET)
         .uri(uri)
         .header("Range", partial_req_value)
-        .body(Body::default())
-        .unwrap();
-    let mut resp = http.request(req).await.unwrap();
+        .body(Body::default())?;
+    let mut resp = http.request(req).await?;
 
     // Got partial content, this is good
     if resp.status() == hyper::StatusCode::PARTIAL_CONTENT {
         debug!("Good request, getting partial content...");
-    } else {
-        warn!("Non 206 Status code: {}", resp.status());
+        // Get the body of the response
+        return match hyper::body::to_bytes(resp.body_mut()).await {
+            Ok(bytes) => Ok(bytes.to_vec()),
+            Err(e) => Err(Box::new(e)),
+        };
     }
-
-    // Get the body of the response
-    match hyper::body::to_bytes(resp.body_mut()).await {
-        Ok(bytes) => Ok(bytes.to_vec()),
-        Err(e) => Err(e),
-    }
+    warn!("Non 206 Status code: {}", resp.status());
+    Err(Box::new(PartialError::new()))
 }
 
 /// Wrapper around [request_range] in order to overcome network issues
