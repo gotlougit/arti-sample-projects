@@ -260,11 +260,20 @@ async fn main() {
         }));
         start = end + 1;
     }
-    let mut results: Vec<(usize, Vec<u8>)> = join_all(downloadtasks)
+    let results_options: Vec<Option<(usize, Vec<u8>)>> = join_all(downloadtasks)
         .await
         .into_iter()
-        .filter_map(|result_option| result_option.ok())
         .flatten()
+        .collect();
+    let has_none = results_options.iter().any(|result_op| result_op.is_none());
+    if has_none {
+        error!("Possible missing chunk! Aborting");
+        std::fs::remove_file(DOWNLOAD_FILE_NAME).unwrap();
+        return;
+    }
+    let mut results: Vec<(usize, Vec<u8>)> = results_options
+        .iter()
+        .filter_map(|result| result.to_owned())
         .collect();
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
