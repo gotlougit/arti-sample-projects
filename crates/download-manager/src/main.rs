@@ -84,10 +84,11 @@ async fn get_tor_client() -> TorClient<PreferredRuntime> {
     TorClient::create_bootstrapped(config).await.unwrap()
 }
 
-/// Create new HTTPS connection with a new, isolated circuit
+/// Creates a `hyper::Client` for sending HTTPS requests over Tor
 ///
-/// This helps prevent shared state errors and is generally an Arti best practice
-async fn get_new_connection(
+/// Note that it first creates an isolated circuit from the `TorClient`
+/// passed into it, this is generally an Arti best practice
+async fn build_tor_hyper_client(
     baseconn: &TorClient<PreferredRuntime>,
 ) -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
     let tor_client = baseconn.isolated_client();
@@ -99,7 +100,7 @@ async fn get_new_connection(
 
 /// Get the size of file to be downloaded so we can prep main loop
 async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRuntime>) -> u64 {
-    let http = get_new_connection(baseconn).await;
+    let http = build_tor_hyper_client(baseconn).await;
     let uri = Uri::from_static(url);
     debug!("Requesting content length of {} via Tor...", url);
     // Create a new request
@@ -219,7 +220,7 @@ async fn main() {
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
     for _ in 0..MAX_CONNECTIONS {
-        let newhttp = get_new_connection(&baseconn).await;
+        let newhttp = build_tor_hyper_client(&baseconn).await;
         connections.push(newhttp);
     }
 
@@ -243,7 +244,7 @@ async fn main() {
     join_all(downloadtasks).await;
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
-        let newhttp = get_new_connection(&baseconn).await;
+        let newhttp = build_tor_hyper_client(&baseconn).await;
         get_segment(url, start, length as usize, newhttp, fd).await;
     }
 }
