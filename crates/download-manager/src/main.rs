@@ -84,9 +84,9 @@ async fn get_snowflake_tor_client() -> TorClient<PreferredRuntime> {
 /// Create a single TorClient which will be used to spawn isolated connections
 ///
 /// This Client uses the default config with no other changes
-async fn create_tor_client() -> TorClient<PreferredRuntime> {
+async fn create_tor_client() -> Result<TorClient<PreferredRuntime>, arti_client::Error> {
     let config = TorClientConfig::default();
-    TorClient::create_bootstrapped(config).await.unwrap()
+    TorClient::create_bootstrapped(config).await
 }
 
 /// Creates a `hyper::Client` for sending HTTPS requests over Tor
@@ -104,7 +104,10 @@ async fn build_tor_hyper_client(
 }
 
 /// Get the size of file to be downloaded so we can prep main loop
-async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRuntime>) -> u64 {
+async fn get_content_length(
+    url: &'static str,
+    baseconn: &TorClient<PreferredRuntime>,
+) -> Result<u64, Box<dyn Error>> {
     let http = build_tor_hyper_client(baseconn).await;
     let uri = Uri::from_static(url);
     debug!("Requesting content length of {} via Tor...", url);
@@ -112,16 +115,15 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
     let req = Request::builder()
         .method(Method::HEAD)
         .uri(uri)
-        .body(Body::empty())
-        .unwrap();
+        .body(Body::empty())?;
 
-    let resp = http.request(req).await.unwrap();
+    let resp = http.request(req).await?;
     // Get Content-Length
     let raw_length = resp.headers().get("Content-Length").unwrap();
-    let length = raw_length.to_str().unwrap().parse::<u64>().unwrap();
+    let length = raw_length.to_str().unwrap().parse::<u64>()?;
     debug!("Content-Length of resource: {}", length);
     // Return it after a suitable typecast
-    length
+    Ok(length)
 }
 
 /// Gets a portion of the file from the server and store it in a Vec if successful
@@ -215,8 +217,8 @@ async fn main() {
         .open(DOWNLOAD_FILE_NAME)
         .unwrap();
     let url = TORURL;
-    let baseconn = create_tor_client().await;
-    let length = get_content_length(url, &baseconn).await;
+    let baseconn = create_tor_client().await.unwrap();
+    let length = get_content_length(url, &baseconn).await.unwrap();
 
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
