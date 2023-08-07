@@ -28,8 +28,8 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
-use std::fs::{File, OpenOptions};
-use std::io::{Seek, Write};
+use std::fs::OpenOptions;
+use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
@@ -154,13 +154,6 @@ async fn request_range(
     }
 }
 
-/// Write the bytes at the right position in the file
-fn save_to_file(mut fd: File, start: usize, body: Vec<u8>) {
-    warn!("Saving a chunk to disk...");
-    fd.seek(std::io::SeekFrom::Start(start as u64)).unwrap();
-    fd.write_all(&body).unwrap();
-}
-
 /// Wrapper around [request] and [save_to_file] in order to overcome network issues
 ///
 /// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
@@ -171,8 +164,7 @@ async fn download_segment(
     start: usize,
     end: usize,
     newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
-    fd: File,
-) {
+) -> Option<Vec<u8>> {
     let base: u64 = 10;
     for trial in 0..MAX_RETRIES as u32 {
         tokio::time::sleep(std::time::Duration::from_millis(base.pow(trial) - 1)).await;
@@ -180,8 +172,7 @@ async fn download_segment(
         match request_range(url, start, end, &newhttp).await {
             // save to disk
             Ok(body) => {
-                save_to_file(fd, start, body);
-                break;
+                return Some(body);
             }
             // retry if we failed
             Err(_) => {
@@ -189,6 +180,7 @@ async fn download_segment(
             }
         }
     }
+    None
 }
 
 /// Main method which brings it all together
@@ -210,7 +202,7 @@ async fn download_segment(
 async fn main() {
     tracing_subscriber::fmt::init();
     info!("Creating download file");
-    let fd = OpenOptions::new()
+    let mut fd = OpenOptions::new()
         .write(true)
         .create(true)
         .open(DOWNLOAD_FILE_NAME)
@@ -237,16 +229,31 @@ async fn main() {
             .get(i as usize % MAX_CONNECTIONS)
             .unwrap()
             .clone();
-        let fd_clone = fd.try_clone().unwrap();
         downloadtasks.push(tokio::spawn(async move {
-            download_segment(url, start, end, newhttp, fd_clone).await;
+            match download_segment(url, start, end, newhttp).await {
+                Some(body) => Some((start, body)),
+                None => None,
+            }
         }));
         start = end + 1;
     }
-    join_all(downloadtasks).await;
+    let mut results: Vec<(usize, Vec<u8>)> = join_all(downloadtasks)
+        .await
+        .into_iter()
+        .filter_map(|result_option| result_option.ok())
+        .flatten()
+        .collect();
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
         let newhttp = build_tor_hyper_client(&baseconn).await;
-        download_segment(url, start, length as usize, newhttp, fd).await;
+        match download_segment(url, start, length as usize, newhttp).await {
+            Some(body) => results.push((start, body)),
+            None => {}
+        };
+    }
+    results.sort_by(|a, b| a.0.cmp(&b.0));
+    for (start, chunk) in results.iter() {
+        debug!("Saving chunk offset {} to disk...", start);
+        fd.write_all(chunk).unwrap();
     }
 }
