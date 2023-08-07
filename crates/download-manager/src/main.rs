@@ -173,7 +173,9 @@ async fn download_segment(
     newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
     fd: File,
 ) {
-    for _ in 0..MAX_RETRIES {
+    let base: u64 = 10;
+    for trial in 0..MAX_RETRIES as u32 {
+        tokio::time::sleep(std::time::Duration::from_millis(base.pow(trial) - 1)).await;
         // request via new Tor connection
         match request_range(url, start, end, &newhttp).await {
             // save to disk
