@@ -22,8 +22,6 @@
 //! The download manager showcased is not really meant for production. It is simply an example of how Arti
 //! can be utilized. Many features, like resumeable downloads, aren't present. Don't use it for any real
 //! usage other than academic
-use arti_client::config::pt::ManagedTransportConfigBuilder;
-use arti_client::config::{BridgeConfigBuilder, CfgPath};
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
@@ -182,16 +180,15 @@ async fn download_segment(
 ///
 /// 6. Write all that data to the disk
 #[tokio::main]
-async fn main() {
+async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
     info!("Creating download file");
     let mut fd = OpenOptions::new()
         .write(true)
         .create(true)
-        .open(DOWNLOAD_FILE_NAME)
-        .unwrap();
+        .open(DOWNLOAD_FILE_NAME)?;
     let url = TORURL;
-    let baseconn = create_tor_client().await.unwrap();
+    let baseconn = create_tor_client().await?;
     let length = get_content_length(url, &baseconn).await.unwrap();
 
     // Initialize the connections we will use for this download
@@ -230,8 +227,8 @@ async fn main() {
     let has_err = results_options.iter().any(|result_op| result_op.is_err());
     if has_err {
         error!("Possible missing chunk! Aborting");
-        std::fs::remove_file(DOWNLOAD_FILE_NAME).unwrap();
-        return;
+        std::fs::remove_file(DOWNLOAD_FILE_NAME)?;
+        return Ok(());
     }
     let mut results: Vec<(usize, Vec<u8>)> = results_options
         .into_iter()
@@ -252,12 +249,13 @@ async fn main() {
     for (start, chunk) in results.iter() {
         if *start != start_check {
             error!("Mismatch in expected and observed offset! Aborting");
-            std::fs::remove_file(DOWNLOAD_FILE_NAME).unwrap();
-            return;
+            std::fs::remove_file(DOWNLOAD_FILE_NAME)?;
+            return Ok(());
         }
         let end_check = start_check + (REQSIZE as usize) - 1;
         debug!("Saving chunk offset {} to disk...", start);
-        fd.write_all(chunk).unwrap();
+        fd.write_all(chunk)?;
         start_check = end_check + 1;
     }
+    Ok(())
 }
