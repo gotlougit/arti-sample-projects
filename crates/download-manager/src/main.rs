@@ -192,7 +192,7 @@ async fn main() -> anyhow::Result<()> {
         .open(DOWNLOAD_FILE_NAME)?;
     let url = TORURL;
     let baseconn = create_tor_client().await?;
-    let length = get_content_length(url, &baseconn).await.unwrap();
+    let length = get_content_length(url, &baseconn).await?;
 
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
