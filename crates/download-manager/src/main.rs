@@ -166,7 +166,7 @@ fn save_to_file(mut fd: File, start: usize, body: Vec<u8>) {
 /// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
 ///
 /// If we are successful, we write the bytes to the disk, else we simply give up
-async fn get_segment(
+async fn download_segment(
     url: &'static str,
     start: usize,
     end: usize,
@@ -237,7 +237,7 @@ async fn main() {
             .clone();
         let fd_clone = fd.try_clone().unwrap();
         downloadtasks.push(tokio::spawn(async move {
-            get_segment(url, start, end, newhttp, fd_clone).await;
+            download_segment(url, start, end, newhttp, fd_clone).await;
         }));
         start = end + 1;
     }
@@ -245,6 +245,6 @@ async fn main() {
     // if last portion of file is left, request it and write to disk
     if start < length as usize {
         let newhttp = build_tor_hyper_client(&baseconn).await;
-        get_segment(url, start, length as usize, newhttp, fd).await;
+        download_segment(url, start, length as usize, newhttp, fd).await;
     }
 }
