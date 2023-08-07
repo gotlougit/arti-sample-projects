@@ -48,7 +48,7 @@ const MAX_CONNECTIONS: usize = 6;
 const MAX_RETRIES: usize = 6;
 
 #[derive(thiserror::Error, Debug)]
-#[error("download failed")]
+#[error("Download failed due to unspecified reason")]
 struct DownloadError;
 
 // TODO: Handle all unwrap() effectively
