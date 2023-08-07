@@ -154,11 +154,11 @@ async fn request_range(
     }
 }
 
-/// Wrapper around [request] and [save_to_file] in order to overcome network issues
+/// Wrapper around [request_range] in order to overcome network issues
 ///
 /// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
 ///
-/// If we are successful, we write the bytes to the disk, else we simply give up
+/// If we are successful, we return the bytes to be later written to disk, else we simply give up
 async fn download_segment(
     url: &'static str,
     start: usize,
@@ -197,7 +197,9 @@ async fn download_segment(
 /// 4. Create the main loop of the program; it simply cycles through the connections we initialized
 /// step 2 and makes a request with them for the bulk of the payload we request from the network
 ///
-/// 5. Request any leftover data and write that to disk
+/// 5. Request any leftover data
+///
+/// 6. Write all that data to the disk
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
