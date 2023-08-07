@@ -264,7 +264,8 @@ async fn main() -> anyhow::Result<()> {
     let sha_http_client = build_tor_hyper_client(&baseconn).await?;
     let expected_sha256sum =
         request_sha256_sum(verification_url, &sha_http_client, &download_file_name).await?;
-    error!("Expected SHA256 sum of file: {}", expected_sha256sum);
+    debug!("Expected SHA256 sum of file: {}", expected_sha256sum);
+
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
     for _ in 0..MAX_CONNECTIONS {
