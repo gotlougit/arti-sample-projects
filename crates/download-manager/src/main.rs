@@ -26,8 +26,9 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, StatusCode, Uri};
-use std::fs::{remove_file, OpenOptions};
-use std::io::Write;
+use sha2::{Digest, Sha256};
+use std::fs::{remove_file, File, OpenOptions};
+use std::io::{self, Write};
 use std::str::FromStr;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
@@ -306,7 +307,7 @@ async fn main() -> anyhow::Result<()> {
     let has_err = results_options.iter().any(|result_op| result_op.is_err());
     if has_err {
         error!("Possible missing chunk! Aborting");
-        remove_file(download_file_name)?;
+        remove_file(&download_file_name)?;
         return Ok(());
     }
     let mut results: Vec<_> = results_options
@@ -329,13 +330,24 @@ async fn main() -> anyhow::Result<()> {
     for (start, chunk) in results.iter() {
         if *start != start_check {
             error!("Mismatch in expected and observed offset! Aborting");
-            remove_file(download_file_name)?;
+            remove_file(&download_file_name)?;
             return Ok(());
         }
         let end_check = start_check + (REQSIZE as usize) - 1;
         debug!("Saving chunk offset {} to disk...", start);
         fd.write_all(chunk)?;
         start_check = end_check + 1;
+    }
+
+    // Independently read the file and verify its checksum
+    let mut ro_file = File::open(&download_file_name)?;
+    let mut sha256 = Sha256::new();
+    io::copy(&mut ro_file, &mut sha256)?;
+    let hash_result = sha256.finalize();
+    let observed_hash = format!("{:x}", hash_result);
+    if observed_hash != expected_sha256sum {
+        error!("Incorrect SHA 256 sum in download! Aborting");
+        remove_file(&download_file_name)?;
     }
     Ok(())
 }
