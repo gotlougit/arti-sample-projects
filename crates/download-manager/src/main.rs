@@ -25,7 +25,7 @@
 use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
-use hyper::{Body, Client, Method, Request, Uri};
+use hyper::{Body, Client, Method, Request, StatusCode, Uri};
 use std::fs::{remove_file, OpenOptions};
 use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
@@ -49,6 +49,18 @@ const MAX_RETRIES: usize = 6;
 #[derive(thiserror::Error, Debug)]
 #[error("Download failed due to unspecified reason")]
 struct DownloadError;
+
+#[derive(thiserror::Error, Debug)]
+#[error("Got unexpected status code")]
+struct RequestFailed {
+    status: StatusCode,
+}
+
+#[derive(thiserror::Error, Debug)]
+#[error("Error while reading body into bytes")]
+struct BodyDownload {
+    error: hyper::Error,
+}
 
 /// Create a single TorClient which will be used to spawn isolated connections
 ///
@@ -125,12 +137,15 @@ async fn request_range(
         // Get the body of the response
         return match hyper::body::to_bytes(resp.body_mut()).await {
             Ok(bytes) => Ok(bytes.to_vec()),
-            Err(e) => Err(e.into()),
+            Err(e) => Err(BodyDownload { error: e }.into()),
         };
     }
     // Got something else, return an Error
     warn!("Non 206 Status code: {}", resp.status());
-    Err(DownloadError.into())
+    Err(RequestFailed {
+        status: resp.status(),
+    }
+    .into())
 }
 
 /// Wrapper around [request_range] in order to overcome network issues
