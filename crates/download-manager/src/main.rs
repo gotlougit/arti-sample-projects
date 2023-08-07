@@ -104,7 +104,7 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
     debug!("Requesting content length of {} via Tor...", url);
     // Create a new request
     let req = Request::builder()
-        .method(Method::GET)
+        .method(Method::HEAD)
         .uri(uri)
         .body(Body::empty())
         .unwrap();
@@ -113,7 +113,7 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
     // Get Content-Length
     let raw_length = resp.headers().get("Content-Length").unwrap();
     let length = raw_length.to_str().unwrap().parse::<u64>().unwrap();
-    warn!("Content-Length of resource: {}", length);
+    debug!("Content-Length of resource: {}", length);
     // Return it after a suitable typecast
     length
 }
