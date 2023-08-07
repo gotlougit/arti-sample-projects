@@ -39,7 +39,7 @@ use tracing::{debug, error, info, warn};
 const REQSIZE: u64 = 1024 * 1024;
 /// This denotes the version of Tor Browser to get
 ///
-/// It also helps us create the URL to get the SHA265 sums for the browser we download
+/// It also helps us create the URL to get the SHA256 sums for the browser we download
 const TOR_VERSION: &str = "12.5.2";
 /// Number of simultaneous connections that are made
 // TODO: make this user configurable
