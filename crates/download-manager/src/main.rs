@@ -29,7 +29,6 @@ use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
 use std::error::Error;
-use std::fmt::Display;
 use std::fs::OpenOptions;
 use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
@@ -50,26 +49,9 @@ const MAX_CONNECTIONS: usize = 6;
 /// Number of retries to make if a particular request failed
 const MAX_RETRIES: usize = 6;
 
-#[derive(Debug)]
-struct PartialError {
-    message: String,
-}
-
-impl PartialError {
-    fn new() -> Self {
-        Self {
-            message: "Non partial content status code obtained!".to_string(),
-        }
-    }
-}
-
-impl Display for PartialError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.message)
-    }
-}
-
-impl Error for PartialError {}
+#[derive(thiserror::Error, Debug)]
+#[error("download failed")]
+struct DownloadError;
 
 // TODO: Handle all unwrap() effectively
 
@@ -173,7 +155,7 @@ async fn request_range(
     }
     // Got something else, return an Error
     warn!("Non 206 Status code: {}", resp.status());
-    Err(Box::new(PartialError::new()))
+    Err(Box::new(DownloadError))
 }
 
 /// Wrapper around [request_range] in order to overcome network issues
@@ -186,7 +168,7 @@ async fn download_segment(
     start: usize,
     end: usize,
     newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
-) -> Option<Vec<u8>> {
+) -> Result<Vec<u8>, DownloadError> {
     let base: u64 = 10;
     for trial in 0..MAX_RETRIES as u32 {
         tokio::time::sleep(std::time::Duration::from_millis(base.pow(trial) - 1)).await;
@@ -194,15 +176,16 @@ async fn download_segment(
         match request_range(url, start, end, &newhttp).await {
             // save to disk
             Ok(body) => {
-                return Some(body);
+                return Ok(body);
             }
             // retry if we failed
             Err(_) => {
                 warn!("Error while trying to get a segment, retrying...");
+                return Err(DownloadError);
             }
         }
     }
-    None
+    Err(DownloadError)
 }
 
 /// Main method which brings it all together
@@ -255,35 +238,35 @@ async fn main() {
             .clone();
         downloadtasks.push(tokio::spawn(async move {
             match download_segment(url, start, end, newhttp).await {
-                Some(body) => Some((start, body)),
-                None => None,
+                Ok(body) => Ok((start, body)),
+                Err(e) => Err(e),
             }
         }));
         start = end + 1;
     }
-    let results_options: Vec<Option<(usize, Vec<u8>)>> = join_all(downloadtasks)
+    let results_options: Vec<Result<(usize, Vec<u8>), DownloadError>> = join_all(downloadtasks)
         .await
         .into_iter()
         .flatten()
         .collect();
-    // if we got None from network operations, that means we don't have entire file
+    // if we got an Error from network operations, that means we don't have entire file
     // thus we delete the partial file and print an error
-    let has_none = results_options.iter().any(|result_op| result_op.is_none());
-    if has_none {
+    let has_err = results_options.iter().any(|result_op| result_op.is_err());
+    if has_err {
         error!("Possible missing chunk! Aborting");
         std::fs::remove_file(DOWNLOAD_FILE_NAME).unwrap();
         return;
     }
     let mut results: Vec<(usize, Vec<u8>)> = results_options
-        .iter()
-        .filter_map(|result| result.to_owned())
+        .into_iter()
+        .filter_map(|result| result.ok())
         .collect();
     // if last portion of file is left, request it
     if start < length as usize {
         let newhttp = build_tor_hyper_client(&baseconn).await;
         match download_segment(url, start, length as usize, newhttp).await {
-            Some(body) => results.push((start, body)),
-            None => {}
+            Ok(body) => results.push((start, body)),
+            Err(_) => {}
         };
     }
     results.sort_by(|a, b| a.0.cmp(&b.0));
