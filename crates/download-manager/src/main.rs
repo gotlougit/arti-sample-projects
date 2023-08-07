@@ -256,6 +256,7 @@ async fn main() {
     for (start, chunk) in results.iter() {
         if *start != start_check {
             error!("Mismatch in expected and observed offset! Aborting");
+            std::fs::remove_file(DOWNLOAD_FILE_NAME).unwrap();
             return;
         }
         let end_check = start_check + (REQSIZE as usize) - 1;
