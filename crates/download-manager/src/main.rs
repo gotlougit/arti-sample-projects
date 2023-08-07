@@ -171,6 +171,7 @@ async fn request_range(
             Err(e) => Err(Box::new(e)),
         };
     }
+    // Got something else, return an Error
     warn!("Non 206 Status code: {}", resp.status());
     Err(Box::new(PartialError::new()))
 }
@@ -179,7 +180,7 @@ async fn request_range(
 ///
 /// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
 ///
-/// If we are successful, we return the bytes to be later written to disk, else we simply give up
+/// If we are successful, we return the bytes to be later written to disk, else we simply return None
 async fn download_segment(
     url: &'static str,
     start: usize,
@@ -265,6 +266,8 @@ async fn main() {
         .into_iter()
         .flatten()
         .collect();
+    // if we got None from network operations, that means we don't have entire file
+    // thus we delete the partial file and print an error
     let has_none = results_options.iter().any(|result_op| result_op.is_none());
     if has_none {
         error!("Possible missing chunk! Aborting");
@@ -275,7 +278,7 @@ async fn main() {
         .iter()
         .filter_map(|result| result.to_owned())
         .collect();
-    // if last portion of file is left, request it and write to disk
+    // if last portion of file is left, request it
     if start < length as usize {
         let newhttp = build_tor_hyper_client(&baseconn).await;
         match download_segment(url, start, length as usize, newhttp).await {
@@ -284,6 +287,8 @@ async fn main() {
         };
     }
     results.sort_by(|a, b| a.0.cmp(&b.0));
+    // write all chunks to disk, checking along the way if the offsets match our
+    // expectations
     let mut start_check = 0;
     for (start, chunk) in results.iter() {
         if *start != start_check {
