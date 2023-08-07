@@ -241,6 +241,9 @@ async fn download_segment(
 /// 5. Request any leftover data
 ///
 /// 6. Write all that data to the disk
+///
+/// 7. Check SHA256 checksum of the file on disk and compare it to the expected value
+/// from the Tor Project's website
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
