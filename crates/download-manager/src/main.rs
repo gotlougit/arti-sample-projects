@@ -33,7 +33,7 @@ use std::io::{Seek, Write};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
-use tracing::{debug, warn};
+use tracing::{debug, info, warn};
 
 /// REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
@@ -207,7 +207,7 @@ async fn get_segment(
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    warn!("Creating download file");
+    info!("Creating download file");
     let fd = OpenOptions::new()
         .write(true)
         .create(true)
