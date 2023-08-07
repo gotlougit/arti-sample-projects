@@ -27,7 +27,7 @@ use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
 use std::error::Error;
-use std::fs::OpenOptions;
+use std::fs::{remove_file, OpenOptions};
 use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
@@ -227,7 +227,7 @@ async fn main() -> anyhow::Result<()> {
     let has_err = results_options.iter().any(|result_op| result_op.is_err());
     if has_err {
         error!("Possible missing chunk! Aborting");
-        std::fs::remove_file(DOWNLOAD_FILE_NAME)?;
+        remove_file(DOWNLOAD_FILE_NAME)?;
         return Ok(());
     }
     let mut results: Vec<(usize, Vec<u8>)> = results_options
@@ -249,7 +249,7 @@ async fn main() -> anyhow::Result<()> {
     for (start, chunk) in results.iter() {
         if *start != start_check {
             error!("Mismatch in expected and observed offset! Aborting");
-            std::fs::remove_file(DOWNLOAD_FILE_NAME)?;
+            remove_file(DOWNLOAD_FILE_NAME)?;
             return Ok(());
         }
         let end_check = start_check + (REQSIZE as usize) - 1;
