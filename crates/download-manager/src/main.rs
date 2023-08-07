@@ -26,7 +26,6 @@ use arti_client::{TorClient, TorClientConfig};
 use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, Uri};
-use std::error::Error;
 use std::fs::{remove_file, OpenOptions};
 use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
@@ -79,7 +78,7 @@ async fn build_tor_hyper_client(
 async fn get_content_length(
     url: &'static str,
     baseconn: &TorClient<PreferredRuntime>,
-) -> Result<u64, Box<dyn Error>> {
+) -> anyhow::Result<u64> {
     let http = build_tor_hyper_client(baseconn).await?;
     let uri = Uri::from_static(url);
     debug!("Requesting content length of {} via Tor...", url);
@@ -98,7 +97,7 @@ async fn get_content_length(
             // Return it after a suitable typecast
             Ok(length)
         }
-        None => Err(Box::new(DownloadError)),
+        None => Err(DownloadError.into()),
     }
 }
 
@@ -110,7 +109,7 @@ async fn request_range(
     start: usize,
     end: usize,
     http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
-) -> Result<Vec<u8>, Box<dyn Error>> {
+) -> anyhow::Result<Vec<u8>> {
     let uri = Uri::from_static(url);
     let partial_req_value = format!("bytes={}-{}", start, end);
     warn!("Requesting {} via Tor...", url);
@@ -128,12 +127,12 @@ async fn request_range(
         // Get the body of the response
         return match hyper::body::to_bytes(resp.body_mut()).await {
             Ok(bytes) => Ok(bytes.to_vec()),
-            Err(e) => Err(Box::new(e)),
+            Err(e) => Err(e.into()),
         };
     }
     // Got something else, return an Error
     warn!("Non 206 Status code: {}", resp.status());
-    Err(Box::new(DownloadError))
+    Err(DownloadError.into())
 }
 
 /// Wrapper around [request_range] in order to overcome network issues
