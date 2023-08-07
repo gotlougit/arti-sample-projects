@@ -33,7 +33,7 @@ use std::io::{Seek, Write};
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
-use tracing::warn;
+use tracing::{debug, warn};
 
 /// REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
@@ -121,15 +121,14 @@ async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRun
 /// Gets a portion of the file from the server and store it in a Vec if successful
 ///
 /// Note that it returns a Result to denote any network issues that may have arisen from the request
-async fn request(
+async fn request_range(
     url: &'static str,
     start: usize,
     end: usize,
     http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> Result<Vec<u8>, hyper::Error> {
     let uri = Uri::from_static(url);
-    let partial_req_value =
-        String::from("bytes=") + &start.to_string() + &String::from("-") + &end.to_string();
+    let partial_req_value = format!("bytes={}-{}", start, end);
     warn!("Requesting {} via Tor...", url);
     // GET the contents of URL from byte offset "start" to "end"
     let req = Request::builder()
@@ -142,7 +141,7 @@ async fn request(
 
     // Got partial content, this is good
     if resp.status() == hyper::StatusCode::PARTIAL_CONTENT {
-        warn!("Good request, getting partial content...");
+        debug!("Good request, getting partial content...");
     } else {
         warn!("Non 206 Status code: {}", resp.status());
     }
@@ -175,7 +174,7 @@ async fn get_segment(
 ) {
     for _ in 0..MAX_RETRIES {
         // request via new Tor connection
-        match request(url, start, end, &newhttp).await {
+        match request_range(url, start, end, &newhttp).await {
             // save to disk
             Ok(body) => {
                 save_to_file(fd, start, body);
