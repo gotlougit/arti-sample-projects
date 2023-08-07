@@ -154,8 +154,11 @@ async fn download_segment(
                 return Ok(body);
             }
             // retry if we failed
-            Err(_) => {
-                warn!("Error while trying to get a segment, retrying...");
+            Err(e) => {
+                warn!(
+                    "Error while trying to get a segment: {}, retrying...",
+                    e.to_string()
+                );
                 return Err(DownloadError);
             }
         }
@@ -206,6 +209,9 @@ async fn main() -> anyhow::Result<()> {
     for i in 0..steps {
         // the upper bound of what block we need from the server
         let end = start + (REQSIZE as usize) - 1;
+        if end >= length as usize {
+            break;
+        }
         match connections.get(i as usize % MAX_CONNECTIONS) {
             Some(http) => {
                 let newhttp = http.clone();
