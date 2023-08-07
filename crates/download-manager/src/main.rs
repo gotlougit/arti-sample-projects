@@ -40,8 +40,6 @@ const REQSIZE: u64 = 1024 * 1024;
 ///
 /// It also helps us create the URL to get the SHA265 sums for the browser we download
 const TOR_VERSION: &str = "12.5.2";
-/// Save the TBB with this filename
-const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 /// Number of simultaneous connections that are made
 // TODO: make this user configurable
 const MAX_CONNECTIONS: usize = 6;
@@ -204,14 +202,15 @@ async fn download_segment(
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
     info!("Creating download file");
+    let download_file_name = format!("tor-browser-linux64-{}_ALL.tar.xz", TOR_VERSION);
+    let url = format!(
+        "https://dist.torproject.org/torbrowser/{}/{}",
+        TOR_VERSION, download_file_name
+    );
     let mut fd = OpenOptions::new()
         .write(true)
         .create(true)
-        .open(DOWNLOAD_FILE_NAME)?;
-    let url = format!(
-        "https://dist.torproject.org/torbrowser/{}/tor-browser-linux64-{}_ALL.tar.xz",
-        TOR_VERSION, TOR_VERSION
-    );
+        .open(&download_file_name)?;
     let baseconn = create_tor_client().await?;
     let length = get_content_length(url.clone(), &baseconn).await?;
 
@@ -257,7 +256,7 @@ async fn main() -> anyhow::Result<()> {
     let has_err = results_options.iter().any(|result_op| result_op.is_err());
     if has_err {
         error!("Possible missing chunk! Aborting");
-        remove_file(DOWNLOAD_FILE_NAME)?;
+        remove_file(download_file_name)?;
         return Ok(());
     }
     let mut results: Vec<_> = results_options
@@ -280,7 +279,7 @@ async fn main() -> anyhow::Result<()> {
     for (start, chunk) in results.iter() {
         if *start != start_check {
             error!("Mismatch in expected and observed offset! Aborting");
-            remove_file(DOWNLOAD_FILE_NAME)?;
+            remove_file(download_file_name)?;
             return Ok(());
         }
         let end_check = start_check + (REQSIZE as usize) - 1;
