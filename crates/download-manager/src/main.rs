@@ -252,8 +252,15 @@ async fn main() {
         };
     }
     results.sort_by(|a, b| a.0.cmp(&b.0));
+    let mut start_check = 0;
     for (start, chunk) in results.iter() {
+        if *start != start_check {
+            error!("Mismatch in expected and observed offset! Aborting");
+            return;
+        }
+        let end_check = start_check + (REQSIZE as usize) - 1;
         debug!("Saving chunk offset {} to disk...", start);
         fd.write_all(chunk).unwrap();
+        start_check = end_check + 1;
     }
 }
