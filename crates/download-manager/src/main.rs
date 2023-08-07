@@ -148,6 +148,48 @@ async fn request_range(
     .into())
 }
 
+/// Gets the expected SHA256 sum of the download file from the server
+///
+/// Note that it returns a Result to denote any network issues that may have arisen from the request
+async fn request_sha256_sum(
+    url: String,
+    http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
+    file_name: &str,
+) -> anyhow::Result<String> {
+    let uri = Uri::from_str(url.as_str())?;
+    // GET the contents of URL from byte offset "start" to "end"
+    let req = Request::builder()
+        .method(Method::GET)
+        .uri(uri)
+        .body(Body::default())?;
+    let mut resp = http.request(req).await?;
+
+    if resp.status() == hyper::StatusCode::OK {
+        debug!("Good request, getting content...");
+        // Get the body of the response
+        return match hyper::body::to_bytes(resp.body_mut()).await {
+            Ok(bytes) => {
+                let bytes_vec = bytes.to_vec();
+                let str_body = std::str::from_utf8(&bytes_vec)?;
+                for line in str_body.lines() {
+                    let parts: Vec<&str> = line.splitn(2, "  ").collect();
+                    if parts[1] == file_name {
+                        return Ok(parts[0].to_string());
+                    }
+                }
+                Err(DownloadError.into())
+            }
+            Err(e) => Err(BodyDownload { error: e }.into()),
+        };
+    }
+    // Got something else, return an Error
+    warn!("Non 200 Status code: {}", resp.status());
+    Err(RequestFailed {
+        status: resp.status(),
+    }
+    .into())
+}
+
 /// Wrapper around [request_range] in order to overcome network issues
 ///
 /// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
@@ -207,6 +249,10 @@ async fn main() -> anyhow::Result<()> {
         "https://dist.torproject.org/torbrowser/{}/{}",
         TOR_VERSION, download_file_name
     );
+    let verification_url = format!(
+        "https://dist.torproject.org/torbrowser/{}/sha256sums-signed-build.txt",
+        TOR_VERSION
+    );
     let mut fd = OpenOptions::new()
         .write(true)
         .create(true)
@@ -214,6 +260,10 @@ async fn main() -> anyhow::Result<()> {
     let baseconn = create_tor_client().await?;
     let length = get_content_length(url.clone(), &baseconn).await?;
 
+    let sha_http_client = build_tor_hyper_client(&baseconn).await?;
+    let expected_sha256sum =
+        request_sha256_sum(verification_url, &sha_http_client, &download_file_name).await?;
+    error!("Expected SHA256 sum of file: {}", expected_sha256sum);
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
     for _ in 0..MAX_CONNECTIONS {
