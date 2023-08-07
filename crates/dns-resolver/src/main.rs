@@ -39,7 +39,7 @@ async fn main() {
     tracing_subscriber::fmt::init();
     // Get and check CLI arguments
     let args: Vec<String> = env::args().collect();
-    if args.len() == 2 {
+    if args.len() != 2 {
         eprintln!("Usage: dns-resolver <hostname-to-lookup>");
         return;
     }
