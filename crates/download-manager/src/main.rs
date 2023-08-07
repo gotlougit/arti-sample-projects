@@ -28,6 +28,7 @@ use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, StatusCode, Uri};
 use std::fs::{remove_file, OpenOptions};
 use std::io::Write;
+use std::str::FromStr;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
@@ -35,9 +36,10 @@ use tracing::{debug, error, info, warn};
 
 /// REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
-/// TORURL is the particular Tor Browser Bundle URL
-const TORURL: &str =
-    "https://dist.torproject.org/torbrowser/12.5.2/tor-browser-linux64-12.5.2_ALL.tar.xz";
+/// This denotes the version of Tor Browser to get
+///
+/// It also helps us create the URL to get the SHA265 sums for the browser we download
+const TOR_VERSION: &str = "12.5.2";
 /// Save the TBB with this filename
 const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 /// Number of simultaneous connections that are made
@@ -86,11 +88,11 @@ async fn build_tor_hyper_client(
 
 /// Get the size of file to be downloaded so we can prep main loop
 async fn get_content_length(
-    url: &'static str,
+    url: String,
     baseconn: &TorClient<PreferredRuntime>,
 ) -> anyhow::Result<u64> {
     let http = build_tor_hyper_client(baseconn).await?;
-    let uri = Uri::from_static(url);
+    let uri = Uri::from_str(url.as_str())?;
     debug!("Requesting content length of {} via Tor...", url);
     // Create a new request
     let req = Request::builder()
@@ -115,14 +117,14 @@ async fn get_content_length(
 ///
 /// Note that it returns a Result to denote any network issues that may have arisen from the request
 async fn request_range(
-    url: &'static str,
+    url: String,
     start: usize,
     end: usize,
     http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> anyhow::Result<Vec<u8>> {
-    let uri = Uri::from_static(url);
-    let partial_req_value = format!("bytes={}-{}", start, end);
     warn!("Requesting {} via Tor...", url);
+    let uri = Uri::from_str(url.as_str())?;
+    let partial_req_value = format!("bytes={}-{}", start, end);
     // GET the contents of URL from byte offset "start" to "end"
     let req = Request::builder()
         .method(Method::GET)
@@ -154,7 +156,7 @@ async fn request_range(
 ///
 /// If we are successful, we return the bytes to be later written to disk, else we simply return None
 async fn download_segment(
-    url: &'static str,
+    url: String,
     start: usize,
     end: usize,
     newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
@@ -206,9 +208,12 @@ async fn main() -> anyhow::Result<()> {
         .write(true)
         .create(true)
         .open(DOWNLOAD_FILE_NAME)?;
-    let url = TORURL;
+    let url = format!(
+        "https://dist.torproject.org/torbrowser/{}/tor-browser-linux64-{}_ALL.tar.xz",
+        TOR_VERSION, TOR_VERSION
+    );
     let baseconn = create_tor_client().await?;
-    let length = get_content_length(url, &baseconn).await?;
+    let length = get_content_length(url.clone(), &baseconn).await?;
 
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
@@ -230,8 +235,9 @@ async fn main() -> anyhow::Result<()> {
         match connections.get(i as usize % MAX_CONNECTIONS) {
             Some(http) => {
                 let newhttp = http.clone();
+                let urlclone = url.clone();
                 downloadtasks.push(tokio::spawn(async move {
-                    match download_segment(url, start, end, newhttp).await {
+                    match download_segment(urlclone, start, end, newhttp).await {
                         Ok(body) => Ok((start, body)),
                         Err(e) => Err(e),
                     }
@@ -261,7 +267,8 @@ async fn main() -> anyhow::Result<()> {
     // if last portion of file is left, request it
     if start < length as usize {
         let newhttp = build_tor_hyper_client(&baseconn).await?;
-        match download_segment(url, start, length as usize, newhttp).await {
+        let urlclone = url.clone();
+        match download_segment(urlclone, start, length as usize, newhttp).await {
             Ok(body) => results.push((start, body)),
             Err(_) => {}
         };
