@@ -141,7 +141,7 @@ async fn request(
     let mut resp = http.request(req).await.unwrap();
 
     // Got partial content, this is good
-    if resp.status() == 206 {
+    if resp.status() == hyper::StatusCode::PARTIAL_CONTENT {
         warn!("Good request, getting partial content...");
     } else {
         warn!("Non 206 Status code: {}", resp.status());
