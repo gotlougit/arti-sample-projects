@@ -218,7 +218,7 @@ async fn main() {
     let length = get_content_length(url, &baseconn).await;
 
     // Initialize the connections we will use for this download
-    let mut connections: Vec<Client<_>> = Vec::new();
+    let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
     for _ in 0..MAX_CONNECTIONS {
         let newhttp = get_new_connection(&baseconn).await;
         connections.push(newhttp);
@@ -226,7 +226,7 @@ async fn main() {
 
     // determine the amount of iterations required
     let steps = length / REQSIZE;
-    let mut downloadtasks = Vec::new();
+    let mut downloadtasks = Vec::with_capacity(steps as usize);
     let mut start = 0;
     for i in 0..steps {
         // the upper bound of what block we need from the server
