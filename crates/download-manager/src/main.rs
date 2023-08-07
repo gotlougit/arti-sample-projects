@@ -93,15 +93,15 @@ async fn get_new_connection(
     let tor_client = baseconn.isolated_client();
     let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
 
-    let connection = ArtiHttpConnector::new(tor_client, tls_connector);
-    hyper::Client::builder().build::<_, Body>(connection)
+    let connector = ArtiHttpConnector::new(tor_client, tls_connector);
+    hyper::Client::builder().build::<_, Body>(connector)
 }
 
 /// Get the size of file to be downloaded so we can prep main loop
 async fn get_content_length(url: &'static str, baseconn: &TorClient<PreferredRuntime>) -> u64 {
     let http = get_new_connection(baseconn).await;
     let uri = Uri::from_static(url);
-    warn!("Requesting content length of {} via Tor...", url);
+    debug!("Requesting content length of {} via Tor...", url);
     // Create a new request
     let req = Request::builder()
         .method(Method::GET)
