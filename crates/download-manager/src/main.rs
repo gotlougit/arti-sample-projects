@@ -67,12 +67,12 @@ async fn create_tor_client() -> Result<TorClient<PreferredRuntime>, arti_client:
 /// passed into it, this is generally an Arti best practice
 async fn build_tor_hyper_client(
     baseconn: &TorClient<PreferredRuntime>,
-) -> Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>> {
+) -> anyhow::Result<Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>> {
     let tor_client = baseconn.isolated_client();
-    let tls_connector = TlsConnector::builder().unwrap().build().unwrap();
+    let tls_connector = TlsConnector::builder()?.build()?;
 
     let connector = ArtiHttpConnector::new(tor_client, tls_connector);
-    hyper::Client::builder().build::<_, Body>(connector)
+    Ok(hyper::Client::builder().build::<_, Body>(connector))
 }
 
 /// Get the size of file to be downloaded so we can prep main loop
@@ -80,7 +80,7 @@ async fn get_content_length(
     url: &'static str,
     baseconn: &TorClient<PreferredRuntime>,
 ) -> Result<u64, Box<dyn Error>> {
-    let http = build_tor_hyper_client(baseconn).await;
+    let http = build_tor_hyper_client(baseconn).await?;
     let uri = Uri::from_static(url);
     debug!("Requesting content length of {} via Tor...", url);
     // Create a new request
@@ -91,11 +91,15 @@ async fn get_content_length(
 
     let resp = http.request(req).await?;
     // Get Content-Length
-    let raw_length = resp.headers().get("Content-Length").unwrap();
-    let length = raw_length.to_str().unwrap().parse::<u64>()?;
-    debug!("Content-Length of resource: {}", length);
-    // Return it after a suitable typecast
-    Ok(length)
+    match resp.headers().get("Content-Length") {
+        Some(raw_length) => {
+            let length = raw_length.to_str()?.parse::<u64>()?;
+            debug!("Content-Length of resource: {}", length);
+            // Return it after a suitable typecast
+            Ok(length)
+        }
+        None => Err(Box::new(DownloadError)),
+    }
 }
 
 /// Gets a portion of the file from the server and store it in a Vec if successful
@@ -194,7 +198,7 @@ async fn main() -> anyhow::Result<()> {
     // Initialize the connections we will use for this download
     let mut connections: Vec<Client<_>> = Vec::with_capacity(MAX_CONNECTIONS);
     for _ in 0..MAX_CONNECTIONS {
-        let newhttp = build_tor_hyper_client(&baseconn).await;
+        let newhttp = build_tor_hyper_client(&baseconn).await?;
         connections.push(newhttp);
     }
 
@@ -236,7 +240,7 @@ async fn main() -> anyhow::Result<()> {
         .collect();
     // if last portion of file is left, request it
     if start < length as usize {
-        let newhttp = build_tor_hyper_client(&baseconn).await;
+        let newhttp = build_tor_hyper_client(&baseconn).await?;
         match download_segment(url, start, length as usize, newhttp).await {
             Ok(body) => results.push((start, body)),
             Err(_) => {}
