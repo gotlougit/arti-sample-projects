@@ -1,5 +1,4 @@
 use std::fmt::Display;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tracing::{debug, error};
 
 /// Hardcoded DNS server, stored as (&str, u16) detailing host and port
