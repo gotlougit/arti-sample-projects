@@ -33,13 +33,13 @@ use std::io::Write;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
 use tor_rtcompat::PreferredRuntime;
-use tracing::{debug, info, warn};
+use tracing::{debug, error, info, warn};
 
 /// REQSIZE is just the size of each chunk we get from a particular circuit
 const REQSIZE: u64 = 1024 * 1024;
 /// TORURL is the particular Tor Browser Bundle URL
 const TORURL: &str =
-    "https://dist.torproject.org/torbrowser/12.5.1/tor-browser-linux64-12.5.1_ALL.tar.xz";
+    "https://dist.torproject.org/torbrowser/12.5.2/tor-browser-linux64-12.5.2_ALL.tar.xz";
 /// Save the TBB with this filename
 const DOWNLOAD_FILE_NAME: &str = "download.tar.xz";
 /// Number of simultaneous connections that are made
