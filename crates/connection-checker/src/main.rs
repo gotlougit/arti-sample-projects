@@ -71,7 +71,7 @@ struct TestValues {
 
 impl FromStr for TestValues {
     type Err = anyhow::Error;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+    fn from_str(s: &str) -> anyhow::Result<Self> {
         let mut values = HashMap::new();
         for pair in s.split(',') {
             let parts: Vec<&str> = pair.split(':').collect();
