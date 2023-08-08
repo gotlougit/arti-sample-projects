@@ -14,10 +14,23 @@
 //!
 //! ### Usage
 //! Run the program:
-//! `cargo run`
+//! `cargo run -- --test <TEST>`
 //!
-//! The program tests connections using snowflake, obfs4, and meek,
-//! and thus requires the pluggable transports are installed.
+//! where <TEST> is a comma separated string made up of <protocol>:<pt-binary-path>
+//! values
+//!
+//! For example, if you wished to test a direct connection,
+//! <TEST> would be "direct:", if you wished to test an obfs4 and snowflake connection,
+//! <TEST> would be "obfs4:lyrebird,snowflake:snowflake-client", where `lyrebird` is
+//! the obfs4 pluggable transport binary and `snowflake-client` is the Snowflake counterpart
+//!
+//! You can also optionally specify a different host:port than the default `torproject.org:80`
+//! to be tested by passing the value using the `--connect-to` argument.
+//!
+//! For more information please refer to `cargo run -- --help`
+//!
+//! The program can test connections using snowflake, obfs4, and meek,
+//! and thus requires the pluggable transports which are to be tested are already installed.
 //! To install the pluggable transports, you can check your package manager
 //! or build "lyrebird", "meek" and "snowflake" from source, obtainable
 //! from the [corresponding Tor Project's GitLab repositories](https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/)
