@@ -123,9 +123,6 @@ fn build_pt_config(
     let mut transport = ManagedTransportConfigBuilder::default();
     transport
         .protocols(vec![protocol_name.parse()?])
-        // THIS IS DISTRO SPECIFIC
-        // If this function doesn't work, check by what name snowflake client
-        // goes by on your system
         .path(CfgPath::new(client_path.into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
