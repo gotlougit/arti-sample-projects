@@ -158,23 +158,16 @@ async fn main() -> anyhow::Result<()> {
     let tor_client = TorClient::create_bootstrapped(initialconfig).await?;
 
     for (connection_type, connection_bin) in opts.test.values.iter() {
-        let (config, msg) = match connection_type.as_str() {
-            "obfs4" => {
-                let config = build_pt_config(bridge_lines_map["obfs4"], "obfs4", &connection_bin)?;
-                (config, "obfs4 Tor connection")
-            }
+        let config = match connection_type.as_str() {
+            "obfs4" => build_pt_config(bridge_lines_map["obfs4"], "obfs4", &connection_bin)?,
             "snowflake" => {
-                let config =
-                    build_pt_config(bridge_lines_map["snowflake"], "snowflake", &connection_type)?;
-                (config, "snowflake Tor connection")
+                build_pt_config(bridge_lines_map["snowflake"], "snowflake", &connection_type)?
             }
-            "meek" => {
-                let config = build_pt_config(bridge_lines_map["meek"], "meek", &connection_type)?;
-                (config, "meek Tor connection")
-            }
-            _ => (TorClientConfig::default(), "Normal Tor connection"),
+            "meek" => build_pt_config(bridge_lines_map["meek"], "meek", &connection_type)?,
+            _ => TorClientConfig::default(),
         };
-        test_connection_via_config(&tor_client, config, msg, &opts.connect_to).await;
+        let msg = format!("{} Tor connection", connection_type);
+        test_connection_via_config(&tor_client, config, &msg, &opts.connect_to).await;
     }
     Ok(())
 }
