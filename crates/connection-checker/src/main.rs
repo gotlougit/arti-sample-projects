@@ -64,7 +64,7 @@ impl FromStr for TestValues {
                     "meek" => "meek",
                     "snowflake" => "snowflake",
                     "obfs4" => "obfs4",
-                    _ => "",
+                    _ => "direct",
                 }
                 .to_string();
                 let pt_binary_path = parts[1].to_string();
@@ -143,39 +143,38 @@ async fn test_connection_via_config(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
+    // TODO: use include-str to simplify this
+    let mut bridge_lines_map = HashMap::new();
+    bridge_lines_map.insert("direct", "");
+    let obfs4_bridge_line = "obfs4 193.11.166.194:27025 1AE2C08904527FEA90C4C4F8C1083EA59FBC6FAF cert=ItvYZzW5tn6v3G4UnQa6Qz04Npro6e81AP70YujmK/KXwDFPTs3aHXcHp4n8Vt6w/bv8cA iat-mode=0";
+    bridge_lines_map.insert("obfs4", obfs4_bridge_line);
+    let snowflake_bridge_line = "snowflake 192.0.2.4:80 8838024498816A039FCBBAB14E6F40A0843051FA fingerprint=8838024498816A039FCBBAB14E6F40A0843051FA url=https://snowflake-broker.torproject.net.global.prod.fastly.net/ front=cdn.sstatic.net ice=stun:stun.l.google.com:19302,stun:stun.antisip.com:3478,stun:stun.bluesip.net:3478,stun:stun.dus.net:3478,stun:stun.epygi.com:3478,stun:stun.sonetel.net:3478,stun:stun.uls.co.za:3478,stun:stun.voipgate.com:3478,stun:stun.voys.nl:3478 utls-imitate=hellorandomizedalpn";
+    bridge_lines_map.insert("snowflake", snowflake_bridge_line);
+    let meek_bridge_line = "meek_lite 192.0.2.18:80 BE776A53492E1E044A26F17306E1BC46A55A1625 url=https://meek.azureedge.net/ front=ajax.aspnetcdn.com";
+    bridge_lines_map.insert("meek", meek_bridge_line);
+
     let opts = Opts::parse();
     let initialconfig = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(initialconfig).await?;
-    test_connection_via_config(
-        &tor_client,
-        TorClientConfig::default(),
-        "Normal Tor connection",
-        &opts.connect_to,
-    )
-    .await;
-    let snowflake_bridge_line = "snowflake 192.0.2.4:80 8838024498816A039FCBBAB14E6F40A0843051FA fingerprint=8838024498816A039FCBBAB14E6F40A0843051FA url=https://snowflake-broker.torproject.net.global.prod.fastly.net/ front=cdn.sstatic.net ice=stun:stun.l.google.com:19302,stun:stun.antisip.com:3478,stun:stun.bluesip.net:3478,stun:stun.dus.net:3478,stun:stun.epygi.com:3478,stun:stun.sonetel.net:3478,stun:stun.uls.co.za:3478,stun:stun.voipgate.com:3478,stun:stun.voys.nl:3478 utls-imitate=hellorandomizedalpn";
-    let snowflakeconfig = build_pt_config(snowflake_bridge_line, "snowflake", "client")?;
-    test_connection_via_config(
-        &tor_client,
-        snowflakeconfig,
-        "Snowflake Tor connection",
-        &opts.connect_to,
-    )
-    .await;
-    let obfs4_bridge_line = "obfs4 193.11.166.194:27025 1AE2C08904527FEA90C4C4F8C1083EA59FBC6FAF cert=ItvYZzW5tn6v3G4UnQa6Qz04Npro6e81AP70YujmK/KXwDFPTs3aHXcHp4n8Vt6w/bv8cA iat-mode=0";
-    let obfs4config = build_pt_config(obfs4_bridge_line, "obfs4", "lyrebird")?;
-    test_connection_via_config(
-        &tor_client,
-        obfs4config,
-        "obfs4 Tor connection",
-        &opts.connect_to,
-    )
-    .await;
-    // meek is usually overloaded these days
-    // by default we don't test meek; it is more efficient to check the other two
-    // transports since they are more widely used
-    // let meek_bridge_line = "meek_lite 192.0.2.18:80 BE776A53492E1E044A26F17306E1BC46A55A1625 url=https://meek.azureedge.net/ front=ajax.aspnetcdn.com";
-    // let meekconfig = build_pt_config(meek_bridge_line, "meek", "meek-client")?;
-    // test_connection_via_config(&tor_client, meekconfig, "meek Tor connection").await;
+
+    for (connection_type, connection_bin) in opts.test.values.iter() {
+        let (config, msg) = match connection_type.as_str() {
+            "obfs4" => {
+                let config = build_pt_config(bridge_lines_map["obfs4"], "obfs4", &connection_bin)?;
+                (config, "obfs4 Tor connection")
+            }
+            "snowflake" => {
+                let config =
+                    build_pt_config(bridge_lines_map["snowflake"], "snowflake", &connection_type)?;
+                (config, "snowflake Tor connection")
+            }
+            "meek" => {
+                let config = build_pt_config(bridge_lines_map["meek"], "meek", &connection_type)?;
+                (config, "meek Tor connection")
+            }
+            _ => (TorClientConfig::default(), "Normal Tor connection"),
+        };
+        test_connection_via_config(&tor_client, config, msg, &opts.connect_to).await;
+    }
     Ok(())
 }
