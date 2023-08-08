@@ -9,6 +9,11 @@ struct FromBytesError;
 /// Hardcoded DNS server, stored as (&str, u16) detailing host and port
 pub const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
 
+/// Default value for QTYPE field
+const QTYPE: u16 = 0x0001;
+/// Default value for QCLASS field
+const QCLASS: u16 = 0x0001;
+
 /// Used to convert struct to raw bytes to be sent over the network
 ///
 /// Example:
@@ -441,7 +446,7 @@ pub fn craft_query(domain: &str) -> Query {
     Query {
         header,
         qname,
-        qtype: 0x0001,
-        qclass: 0x0001,
+        qtype: QTYPE,
+        qclass: QCLASS,
     }
 }
