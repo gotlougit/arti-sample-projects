@@ -143,10 +143,9 @@ async fn test_connection_via_config(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
-    // TODO: use include-str to simplify this
-    let obfs4_bridge_line = "obfs4 193.11.166.194:27025 1AE2C08904527FEA90C4C4F8C1083EA59FBC6FAF cert=ItvYZzW5tn6v3G4UnQa6Qz04Npro6e81AP70YujmK/KXwDFPTs3aHXcHp4n8Vt6w/bv8cA iat-mode=0";
-    let snowflake_bridge_line = "snowflake 192.0.2.4:80 8838024498816A039FCBBAB14E6F40A0843051FA fingerprint=8838024498816A039FCBBAB14E6F40A0843051FA url=https://snowflake-broker.torproject.net.global.prod.fastly.net/ front=cdn.sstatic.net ice=stun:stun.l.google.com:19302,stun:stun.antisip.com:3478,stun:stun.bluesip.net:3478,stun:stun.dus.net:3478,stun:stun.epygi.com:3478,stun:stun.sonetel.net:3478,stun:stun.uls.co.za:3478,stun:stun.voipgate.com:3478,stun:stun.voys.nl:3478 utls-imitate=hellorandomizedalpn";
-    let meek_bridge_line = "meek_lite 192.0.2.18:80 BE776A53492E1E044A26F17306E1BC46A55A1625 url=https://meek.azureedge.net/ front=ajax.aspnetcdn.com";
+    let obfs4_bridge_line: &str = include_str!("../bridges/bridge_obfs4.txt");
+    let snowflake_bridge_line: &str = include_str!("../bridges/bridge_snowflake.txt");
+    let meek_bridge_line: &str = include_str!("../bridges/bridge_meek.txt");
 
     let opts = Opts::parse();
     let initialconfig = TorClientConfig::default();
