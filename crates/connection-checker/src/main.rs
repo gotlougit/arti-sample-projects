@@ -36,6 +36,7 @@ use tor_error::ErrorReport;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
+/// Test connections to the Tor network via different methods
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Opts {
@@ -43,7 +44,7 @@ struct Opts {
     #[clap(long, required = true)]
     test: TestValues,
 
-    /// Specify a custom upstream
+    /// Specify a custom host:port to connect to for testing purposes
     #[clap(long, required = false, default_value = "torproject.org:80")]
     connect_to: String,
 }
