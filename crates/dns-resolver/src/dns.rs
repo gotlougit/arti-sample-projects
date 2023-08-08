@@ -241,38 +241,26 @@ impl FromBytes for Query {
     // FIXME: the name struct isn't stored as it was sent over the wire
     fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
         let header = *Header::from_bytes(&bytes[..12])?;
+        if bytes.len() < 12 {
+            error!("Mismatch between expected number of bytes and given number of bytes!");
+            return Err(FromBytesError.into());
+        }
         // Parse name
         let mut name = String::new();
-        let mut lastnamebyte = 0;
-        let mut curcount = 0;
-        let mut part_parsed = 0;
-        for (i, &byte) in bytes.iter().enumerate().skip(12) {
-            if byte != 0 {
-                // Allowed characters in domain name are appended to the string
-                if byte.is_ascii_alphanumeric() || byte == 45 {
-                    name.push(byte as char);
-                    part_parsed += 1;
-                } else {
-                    // Condition here is to prevent executing code at beginning of parsing
-                    if i != 12 {
-                        // We have parsed one part of the domain
-                        if part_parsed == curcount {
-                            debug!("Parsed part successfully");
-                        } else {
-                            error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
-                            return Err(FromBytesError.into());
-                        }
-                        part_parsed = 0;
-                        name.push('.');
-                    }
-                    curcount = byte;
-                }
-            } else {
+        let mut lastnamebyte = 12;
+        loop {
+            // byte denotes the prefix length, we read that many bytes into name
+            name.extend(std::str::from_utf8(
+                &bytes[lastnamebyte + 1..lastnamebyte + 1 + bytes[lastnamebyte] as usize],
+            ));
+            lastnamebyte += 1 + bytes[lastnamebyte] as usize;
+            if lastnamebyte >= bytes.len() || bytes[lastnamebyte] == 0 {
                 // End of domain name, proceed to parse further fields
                 debug!("Reached end of name, moving on to parse other fields");
-                lastnamebyte = i + 1;
+                lastnamebyte += 1;
                 break;
             }
+            name.push('.');
         }
         // These offsets were determined by looking at RFC 1035
         Ok(Box::new(Self {
