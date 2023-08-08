@@ -166,8 +166,8 @@ async fn main() -> anyhow::Result<()> {
     for (connection_type, connection_bin) in opts.test.values.iter() {
         let config = match connection_type.as_str() {
             "obfs4" => build_pt_config(obfs4_bridge_line, "obfs4", &connection_bin)?,
-            "snowflake" => build_pt_config(snowflake_bridge_line, "snowflake", &connection_type)?,
-            "meek" => build_pt_config(meek_bridge_line, "meek", &connection_type)?,
+            "snowflake" => build_pt_config(snowflake_bridge_line, "snowflake", &connection_bin)?,
+            "meek" => build_pt_config(meek_bridge_line, "meek", &connection_bin)?,
             _ => TorClientConfig::default(),
         };
         let msg = format!("{} Tor connection", connection_type);
