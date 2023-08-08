@@ -147,10 +147,17 @@ impl FromBytes for Header {
     fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
         debug!("Parsing the header");
         let packed_second_row = Header::u8_to_u16(bytes[2], bytes[3]);
+        // 0x8180 denotes we have a response to a standard query,
+        // that isn't truncated, and has recursion requested to a server
+        // that can do recursion, with some bits reserved for future use
+        // and some that are not relavent for our purposes
         if packed_second_row == 0x8180 {
             debug!("Correct flags set in response");
         } else {
-            error!("Incorrect flags set in response");
+            error!(
+                "Incorrect flags set in response, we got {}",
+                packed_second_row
+            );
             return Err(FromBytesError.into());
         }
         // These offsets were determined by looking at RFC 1035
