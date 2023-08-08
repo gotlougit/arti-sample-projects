@@ -98,6 +98,7 @@ async fn test_connection_via_config(
     }
 }
 
+/// Main function ends up running most of the tests one by one
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
