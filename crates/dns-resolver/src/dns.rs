@@ -7,6 +7,7 @@
 //! values and is intended only for demonstration purposes on how even custom
 //! protocols over TCP can be tunnelled through Tor. It is not meant for any
 //! real production usage.
+use anyhow::Result;
 use std::fmt::Display;
 use thiserror::Error;
 use tracing::{debug, error};
@@ -70,7 +71,7 @@ pub trait FromBytes {
     ///
     /// It is just a thin wrapper over [u32::from_be_bytes()] but also deals
     /// with converting &\[u8\] (u8 slice) into [u8; 4] (a fixed size array of u8)
-    fn u8_to_u32(bytes_slice: &[u8]) -> anyhow::Result<u32> {
+    fn u8_to_u32(bytes_slice: &[u8]) -> Result<u32> {
         let bytes: [u8; 4] = bytes_slice.try_into()?;
         Ok(u32::from_be_bytes(bytes))
     }
@@ -78,7 +79,7 @@ pub trait FromBytes {
     ///
     /// Returns an `Option<Box>` of the struct which implements
     /// this trait to help denote parsing failures
-    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>>;
+    fn from_bytes(bytes: &[u8]) -> Result<Box<Self>>;
 }
 
 /// Report length of the struct as in byte stream
@@ -159,7 +160,7 @@ impl Display for Header {
 }
 
 impl FromBytes for Header {
-    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> Result<Box<Self>> {
         debug!("Parsing the header");
         let packed_second_row = Header::u8_to_u16(bytes[2], bytes[3]);
         // 0x8180 denotes we have a response to a standard query,
@@ -239,7 +240,7 @@ impl Len for Query {
 
 impl FromBytes for Query {
     // FIXME: the name struct isn't stored as it was sent over the wire
-    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> Result<Box<Self>> {
         let header = *Header::from_bytes(&bytes[..12])?;
         if bytes.len() < 12 {
             error!("Mismatch between expected number of bytes and given number of bytes!");
@@ -313,7 +314,7 @@ impl Len for ResourceRecord {
 }
 
 impl FromBytes for ResourceRecord {
-    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> Result<Box<Self>> {
         let lastnamebyte = 1;
         let mut rdata = [0u8; 4];
         if bytes.len() < 15 {
@@ -364,7 +365,7 @@ pub struct Response {
 impl FromBytes for Response {
     // Try to construct Response from raw byte data from network
     // We will also try to check if a valid DNS response has been sent back to us
-    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> Result<Box<Self>> {
         debug!("Parsing response into struct");
         // Check message length
         let l = bytes.len();
