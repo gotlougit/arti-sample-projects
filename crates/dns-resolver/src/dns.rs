@@ -86,8 +86,16 @@ struct Header {
     identification: u16,
     /// Set of fields packed together into one 16 bit number
     ///
-    /// Refer to RFC 1035 for more info
-    // TODO: don't rely on cryptic packed bits
+    /// Refer to RFC 1035 for more info, but here's a small
+    /// layout of what is packed into this row:
+    ///
+    ///
+    ///   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+    /// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    /// |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+    /// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    ///
+    /// TODO: don't rely on cryptic packed bits
     packed_second_row: u16, // set to 0x100
     /// Number of questions we have
     ///
