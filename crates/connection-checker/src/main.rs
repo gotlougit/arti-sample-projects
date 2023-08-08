@@ -29,20 +29,59 @@
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, Reconfigure};
 use arti_client::{TorClient, TorClientConfig};
+use clap::Parser;
+use std::collections::HashMap;
+use std::str::FromStr;
 use tor_error::ErrorReport;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
 
-/// The host and port we will attempt to connect to for testing purposes
-const HOST_PORT: &str = "torproject.org:80";
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Opts {
+    /// List of tests to run
+    #[clap(long, required = true)]
+    test: TestValues,
+
+    /// Specify a custom upstream
+    #[clap(long, required = false, default_value = "torproject.org:80")]
+    connect_to: String,
+}
+
+#[derive(Clone)]
+struct TestValues {
+    values: HashMap<String, String>,
+}
+
+impl FromStr for TestValues {
+    type Err = anyhow::Error;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut values = HashMap::new();
+        for pair in s.split(',') {
+            let parts: Vec<&str> = pair.split(':').collect();
+            if parts.len() == 2 {
+                let protocol_name = match parts[0] {
+                    "meek" => "meek",
+                    "snowflake" => "snowflake",
+                    "obfs4" => "obfs4",
+                    _ => "",
+                }
+                .to_string();
+                let pt_binary_path = parts[1].to_string();
+                values.insert(protocol_name, pt_binary_path);
+            }
+        }
+        Ok(TestValues { values })
+    }
+}
 
 /// Connect to a sample host and print the path it used to get there.
 /// Note that due to the way Tor works, other requests may use a different
 /// path than the one we obtain using this function, so this is mostly
 /// for demonstration purposes.
-async fn build_circuit(tor_client: &TorClient<PreferredRuntime>) -> bool {
+async fn build_circuit(tor_client: &TorClient<PreferredRuntime>, remote: &str) -> bool {
     info!("Attempting to build circuit...");
-    match tor_client.connect(HOST_PORT).await {
+    match tor_client.connect(remote).await {
         Ok(stream) => {
             let circ = stream.circuit().path_ref();
             for node in circ.iter() {
@@ -84,11 +123,12 @@ async fn test_connection_via_config(
     tor_client: &TorClient<PreferredRuntime>,
     config: TorClientConfig,
     msg: &str,
+    remote_url: &str,
 ) {
     let isolated = tor_client.isolated_client();
     println!("Testing {}...", msg);
     match isolated.reconfigure(&config, Reconfigure::WarnOnFailures) {
-        Ok(_) => match build_circuit(&isolated).await {
+        Ok(_) => match build_circuit(&isolated, remote_url).await {
             true => println!("{} successful!", msg),
             false => println!("{} FAILED", msg),
         },
@@ -103,20 +143,34 @@ async fn test_connection_via_config(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
+    let opts = Opts::parse();
     let initialconfig = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(initialconfig).await?;
     test_connection_via_config(
         &tor_client,
         TorClientConfig::default(),
         "Normal Tor connection",
+        &opts.connect_to,
     )
     .await;
     let snowflake_bridge_line = "snowflake 192.0.2.4:80 8838024498816A039FCBBAB14E6F40A0843051FA fingerprint=8838024498816A039FCBBAB14E6F40A0843051FA url=https://snowflake-broker.torproject.net.global.prod.fastly.net/ front=cdn.sstatic.net ice=stun:stun.l.google.com:19302,stun:stun.antisip.com:3478,stun:stun.bluesip.net:3478,stun:stun.dus.net:3478,stun:stun.epygi.com:3478,stun:stun.sonetel.net:3478,stun:stun.uls.co.za:3478,stun:stun.voipgate.com:3478,stun:stun.voys.nl:3478 utls-imitate=hellorandomizedalpn";
     let snowflakeconfig = build_pt_config(snowflake_bridge_line, "snowflake", "client")?;
-    test_connection_via_config(&tor_client, snowflakeconfig, "Snowflake Tor connection").await;
+    test_connection_via_config(
+        &tor_client,
+        snowflakeconfig,
+        "Snowflake Tor connection",
+        &opts.connect_to,
+    )
+    .await;
     let obfs4_bridge_line = "obfs4 193.11.166.194:27025 1AE2C08904527FEA90C4C4F8C1083EA59FBC6FAF cert=ItvYZzW5tn6v3G4UnQa6Qz04Npro6e81AP70YujmK/KXwDFPTs3aHXcHp4n8Vt6w/bv8cA iat-mode=0";
     let obfs4config = build_pt_config(obfs4_bridge_line, "obfs4", "lyrebird")?;
-    test_connection_via_config(&tor_client, obfs4config, "obfs4 Tor connection").await;
+    test_connection_via_config(
+        &tor_client,
+        obfs4config,
+        "obfs4 Tor connection",
+        &opts.connect_to,
+    )
+    .await;
     // meek is usually overloaded these days
     // by default we don't test meek; it is more efficient to check the other two
     // transports since they are more widely used
