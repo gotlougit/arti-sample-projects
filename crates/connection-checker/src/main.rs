@@ -1,3 +1,31 @@
+#![warn(clippy::missing_docs_in_private_items)]
+//! # connection-checker
+//! Use methods to test connections to Tor: directly or by using
+//! pluggable transports snowflake, obfs4, and meek
+//!
+//! ### Intro
+//! This project aims to illustrate how to make connections to Tor using
+//! different methods, and uses those to create a tool that users can run
+//! to see if they can connect to the Tor network in any way from their own
+//! networks.
+//!
+//! For more info on pluggable transports, you can refer to
+//! [these docs](https://tb-manual.torproject.org/circumvention/)
+//!
+//! ### Usage
+//! Run the program:
+//! `cargo run`
+//!
+//! The program tests connections using snowflake, obfs4, and meek,
+//! and thus requires the pluggable transports are installed.
+//! To install the pluggable transports, you can check your package manager
+//! or build "lyrebird", "meek" and "snowflake" from source, obtainable
+//! from the [corresponding Tor Project's GitLab repositories](https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/)
+//!
+//! ### Disclaimer
+//! The connection-checker is experimental, not for production use. It's
+//! intended for experimental purposes, providing insights into
+//! connection methods.
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, Reconfigure};
 use arti_client::{TorClient, TorClientConfig};
