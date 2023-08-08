@@ -60,7 +60,7 @@ async fn main() {
     stream.read_to_end(&mut buf).await.unwrap();
     // Interpret the response
     match Response::from_bytes(&buf) {
-        Some(resp) => println!("{}", resp),
-        None => eprintln!("No valid response!"),
+        Ok(resp) => println!("{}", resp),
+        Err(_) => eprintln!("No valid response!"),
     };
 }

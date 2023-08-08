@@ -1,5 +1,10 @@
 use std::fmt::Display;
+use thiserror::Error;
 use tracing::{debug, error};
+
+#[derive(Error, Debug)]
+#[error("Failed to parse bytes into struct!")]
+struct FromBytesError;
 
 /// Hardcoded DNS server, stored as (&str, u16) detailing host and port
 pub const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
@@ -50,18 +55,15 @@ pub trait FromBytes {
     ///
     /// It is just a thin wrapper over [u32::from_be_bytes()] but also deals
     /// with converting &\[u8\] (u8 slice) into [u8; 4] (a fixed size array of u8)
-    fn u8_to_u32(bytes_slice: &[u8]) -> u32 {
-        let mut bytes = [0u8; 4];
-        for (i, val) in bytes_slice.iter().enumerate() {
-            bytes[i] = *val;
-        }
-        u32::from_be_bytes(bytes)
+    fn u8_to_u32(bytes_slice: &[u8]) -> anyhow::Result<u32> {
+        let bytes: [u8; 4] = bytes_slice.try_into()?;
+        Ok(u32::from_be_bytes(bytes))
     }
     /// Try converting given bytes into the struct
     ///
     /// Returns an `Option<Box>` of the struct which implements
     /// this trait to help denote parsing failures
-    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>>;
+    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>>;
 }
 
 /// Report length of the struct as in byte stream
@@ -134,17 +136,17 @@ impl Display for Header {
 }
 
 impl FromBytes for Header {
-    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
         debug!("Parsing the header");
         let packed_second_row = Header::u8_to_u16(bytes[2], bytes[3]);
         if packed_second_row == 0x8180 {
             debug!("Correct flags set in response");
         } else {
             error!("Incorrect flags set in response");
-            return None;
+            return Err(FromBytesError.into());
         }
         // These offsets were determined by looking at RFC 1035
-        Some(Box::new(Header {
+        Ok(Box::new(Header {
             identification: Header::u8_to_u16(bytes[0], bytes[1]),
             packed_second_row,
             qdcount: Header::u8_to_u16(bytes[4], bytes[5]),
@@ -207,7 +209,7 @@ impl Len for Query {
 
 impl FromBytes for Query {
     // FIXME: the name struct isn't stored as it was sent over the wire
-    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
         let l = bytes.len();
         let header = *Header::from_bytes(&bytes[..12])?;
         // Parse name
@@ -229,7 +231,7 @@ impl FromBytes for Query {
                             debug!("Parsed part successfully");
                         } else {
                             error!("Mismatch between expected and observed length of hostname part: {} and {}", curcount, part_parsed);
-                            return None;
+                            return Err(FromBytesError.into());
                         }
                         part_parsed = 0;
                         name.push('.');
@@ -244,7 +246,7 @@ impl FromBytes for Query {
             }
         }
         // These offsets were determined by looking at RFC 1035
-        Some(Box::new(Self {
+        Ok(Box::new(Self {
             header,
             qname: name.as_bytes().to_vec(),
             qtype: Query::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
@@ -294,19 +296,19 @@ impl Len for ResourceRecord {
 }
 
 impl FromBytes for ResourceRecord {
-    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
         let lastnamebyte = 1;
         let mut rdata = [0u8; 4];
         if bytes.len() < 15 {
-            return None;
+            return Err(FromBytesError.into());
         }
         // Copy over IP address into rdata
         rdata.copy_from_slice(&bytes[lastnamebyte + 10..lastnamebyte + 14]);
         // These offsets were determined by looking at RFC 1035
-        Some(Box::new(Self {
+        Ok(Box::new(Self {
             rtype: ResourceRecord::u8_to_u16(bytes[lastnamebyte], bytes[lastnamebyte + 1]),
             class: ResourceRecord::u8_to_u16(bytes[lastnamebyte + 2], bytes[lastnamebyte + 3]),
-            ttl: ResourceRecord::u8_to_u32(&bytes[lastnamebyte + 4..lastnamebyte + 8]),
+            ttl: ResourceRecord::u8_to_u32(&bytes[lastnamebyte + 4..lastnamebyte + 8])?,
             rdlength: Response::u8_to_u16(bytes[lastnamebyte + 8], bytes[lastnamebyte + 9]),
             rdata,
         }))
@@ -345,7 +347,7 @@ pub struct Response {
 impl FromBytes for Response {
     // Try to construct Response from raw byte data from network
     // We will also try to check if a valid DNS response has been sent back to us
-    fn from_bytes(bytes: &[u8]) -> Option<Box<Self>> {
+    fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
         debug!("Parsing response into struct");
         // Check message length
         let l = bytes.len();
@@ -366,14 +368,14 @@ impl FromBytes for Response {
         let mut rrvec: Vec<ResourceRecord> = Vec::new();
         while index < l {
             match ResourceRecord::from_bytes(&bytes[index..]) {
-                Some(rr) => {
+                Ok(rr) => {
                     index += rr.len();
                     rrvec.push(*rr);
                 }
-                None => break,
+                Err(_) => break,
             }
         }
-        Some(Box::new(Response { query, rr: rrvec }))
+        Ok(Box::new(Response { query, rr: rrvec }))
     }
 }
 
