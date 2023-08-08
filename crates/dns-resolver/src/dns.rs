@@ -225,14 +225,13 @@ impl Len for Query {
 impl FromBytes for Query {
     // FIXME: the name struct isn't stored as it was sent over the wire
     fn from_bytes(bytes: &[u8]) -> anyhow::Result<Box<Self>> {
-        let l = bytes.len();
         let header = *Header::from_bytes(&bytes[..12])?;
         // Parse name
         let mut name = String::new();
         let mut lastnamebyte = 0;
         let mut curcount = 0;
         let mut part_parsed = 0;
-        for (i, &byte) in bytes.iter().enumerate().take(l).skip(12) {
+        for (i, &byte) in bytes.iter().enumerate().skip(12) {
             if byte != 0 {
                 // Allowed characters in domain name are appended to the string
                 if byte.is_ascii_alphanumeric() || byte == 45 {
