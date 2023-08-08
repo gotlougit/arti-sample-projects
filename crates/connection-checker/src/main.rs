@@ -39,6 +39,7 @@
 //! The connection-checker is experimental, not for production use. It's
 //! intended for experimental purposes, providing insights into
 //! connection methods.
+use anyhow::Result;
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, Reconfigure};
 use arti_client::{TorClient, TorClientConfig};
@@ -71,7 +72,7 @@ struct TestValues {
 
 impl FromStr for TestValues {
     type Err = anyhow::Error;
-    fn from_str(s: &str) -> anyhow::Result<Self> {
+    fn from_str(s: &str) -> Result<Self> {
         let mut values = HashMap::new();
         for pair in s.split(',') {
             let parts: Vec<&str> = pair.split(':').collect();
@@ -118,7 +119,7 @@ fn build_pt_config(
     bridge_line: &str,
     protocol_name: &str,
     client_path: &str,
-) -> anyhow::Result<TorClientConfig> {
+) -> Result<TorClientConfig> {
     let mut builder = TorClientConfig::builder();
     let bridge: BridgeConfigBuilder = bridge_line.parse()?;
     builder.bridges().bridges().push(bridge);
@@ -154,7 +155,7 @@ async fn test_connection_via_config(
 
 /// Main function ends up running most of the tests one by one
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
     let obfs4_bridge_line: &str = include_str!("../bridges/bridge_obfs4.txt");
     let snowflake_bridge_line: &str = include_str!("../bridges/bridge_snowflake.txt");
