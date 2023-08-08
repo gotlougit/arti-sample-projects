@@ -12,3 +12,4 @@ tracing = "0.1"
 tor-rtcompat = { git = "https://gitlab.torproject.org/tpo/core/arti/" }
 tracing-subscriber = "0.2.0"
 tor-error = { git = "https://gitlab.torproject.org/tpo/core/arti/" }
+anyhow = "1.0.72"
