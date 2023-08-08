@@ -431,8 +431,10 @@ pub fn craft_query(domain: &str) -> Query {
     let split_domain: Vec<&str> = domain.split('.').collect();
     for part in split_domain {
         let l = part.len() as u8;
-        qname.push(l);
-        qname.extend_from_slice(part.as_bytes());
+        if l != 0 {
+            qname.push(l);
+            qname.extend_from_slice(part.as_bytes());
+        }
     }
     qname.push(0x00); // Denote that hostname has ended by pushing 0x00
     debug!("Crafted query successfully!");
