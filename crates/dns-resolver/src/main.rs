@@ -49,7 +49,7 @@ async fn main() {
     debug!("Connecting to 1.1.1.1 port 53 for DNS over TCP lookup");
     let mut stream = tor_client.connect(crate::dns::DNS_SERVER).await.unwrap();
     // We now have a TcpStream analogue to use
-    let req = crate::dns::craft_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
+    let req = crate::dns::build_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
     stream.write_all(req.as_slice()).await.unwrap();
     // Flushing ensures we actually send data over network right then instead
     // of waiting for buffer to fill up

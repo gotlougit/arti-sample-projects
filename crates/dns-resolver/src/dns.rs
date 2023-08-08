@@ -422,7 +422,7 @@ impl Display for Response {
 /// should be returned from the DNS server.
 ///
 /// Convert this Query into bytes to be sent over the network by calling [Query::as_bytes()]
-pub fn craft_query(domain: &str) -> Query {
+pub fn build_query(domain: &str) -> Query {
     // TODO: generate identification randomly
     let header = Header {
         identification: 0x304e, // chosen by random dice roll, secure
