@@ -1,9 +1,19 @@
+//! Houses the DNS-specifc code, including the structs that we pack the bytes
+//! into and suitable traits and implementations to convert to and from bytes
+//! and structs
+//!
+//! ### Disclaimer
+//! This is a very barebones DNS client implementation. It hard-codes a lot of
+//! values and is intended only for demonstration purposes on how even custom
+//! protocols over TCP can be tunnelled through Tor. It is not meant for any
+//! real production usage.
 use std::fmt::Display;
 use thiserror::Error;
 use tracing::{debug, error};
 
 #[derive(Error, Debug)]
 #[error("Failed to parse bytes into struct!")]
+/// Generic error we return if we fail to parse bytes into the struct
 struct FromBytesError;
 
 /// Hardcoded DNS server, stored as (&str, u16) detailing host and port
