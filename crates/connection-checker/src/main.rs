@@ -62,6 +62,7 @@ struct Opts {
     connect_to: String,
 }
 
+/// Stores the test type and PT binary path for the tests we have to run
 #[derive(Clone)]
 struct TestValues {
     values: HashMap<String, String>,
