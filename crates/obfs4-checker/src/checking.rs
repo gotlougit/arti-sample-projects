@@ -2,12 +2,10 @@ use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
 use chrono::prelude::*;
-use postage::prelude::*;
-use postage::watch;
 use std::collections::HashMap;
-use std::sync::Arc;
+use tokio::sync::broadcast;
 use tokio::sync::mpsc::{self, Receiver, Sender};
-use tokio::sync::Mutex;
+use tokio::time::{timeout, Duration};
 use tor_error::ErrorReport;
 use tor_guardmgr::bridge::{BridgeConfig, BridgeParseError};
 use tor_proto::channel::Channel;
@@ -17,6 +15,9 @@ use crate::BridgeResult;
 
 /// The maximum number of open connections to relays at any given time
 const MAX_CONNECTIONS: usize = 10;
+
+/// The maximum amount of time to wait on a channel receive
+pub const RECEIVE_TIMEOUT: Duration = Duration::from_secs(1);
 
 /// Attempt to create a Channel to a provided bridge
 ///
@@ -155,7 +156,7 @@ pub async fn check_failed_bridges_task(
     common_tor_client: TorClient<PreferredRuntime>,
     now_online_bridges: Sender<HashMap<String, Channel>>,
     mut once_online_bridges: Receiver<Vec<String>>,
-    updates_sender_mutex: Arc<Mutex<watch::Sender<HashMap<String, BridgeResult>>>>,
+    updates_sender: broadcast::Sender<HashMap<String, BridgeResult>>,
 ) {
     let mut failed_bridges = initial_failed_bridges;
     loop {
@@ -172,12 +173,21 @@ pub async fn check_failed_bridges_task(
         // report online bridges to the appropriate task
         now_online_bridges.send(channels).await.unwrap();
         // get new failures from the other task
-        while let Some(new_failures) = once_online_bridges.recv().await {
-            failed_bridges.splice(..0, new_failures.iter().cloned());
+        loop {
+            match timeout(RECEIVE_TIMEOUT, once_online_bridges.recv()).await {
+                Ok(Some(new_failures)) => {
+                    if new_failures.is_empty() {
+                        break;
+                    }
+                    failed_bridges.splice(..0, new_failures.iter().cloned());
+                }
+                _ => break,
+            };
         }
-        // write newresults into the mutex
-        let mut updates_sender_lock = updates_sender_mutex.lock().await;
-        (*updates_sender_lock).send(newresults).await.unwrap();
+        // write newresults into the updates channel
+        if !newresults.is_empty() {
+            updates_sender.send(newresults).unwrap();
+        }
     }
 }
 
@@ -204,8 +214,13 @@ pub async fn detect_bridges_going_down(
         // report failures to the appropriate task
         once_online_bridges.send(failed_bridges).await.unwrap();
         // get new channels from the other task
-        while let Some(just_online_bridges) = now_online_bridges.recv().await {
-            new_channels.extend(just_online_bridges);
+        loop {
+            match timeout(RECEIVE_TIMEOUT, now_online_bridges.recv()).await {
+                Ok(Some(just_online_bridges)) => {
+                    new_channels.extend(just_online_bridges);
+                }
+                _ => break,
+            };
         }
         channels = new_channels;
     }
@@ -216,7 +231,7 @@ pub async fn continuous_check(
     channels: HashMap<String, Channel>,
     failed_bridges: Vec<String>,
     common_tor_client: TorClient<PreferredRuntime>,
-    updates_sender_mutex: Arc<Mutex<watch::Sender<HashMap<String, BridgeResult>>>>,
+    updates_sender: broadcast::Sender<HashMap<String, BridgeResult>>,
 ) {
     let (once_online_sender, once_online_recv) = mpsc::channel(100);
     let (now_online_sender, now_online_recv) = mpsc::channel(100);
@@ -226,7 +241,7 @@ pub async fn continuous_check(
         common_tor_client,
         now_online_sender,
         once_online_recv,
-        updates_sender_mutex,
+        updates_sender,
     );
     tokio::join!(task1, task2);
 }

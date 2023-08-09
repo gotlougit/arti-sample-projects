@@ -28,18 +28,17 @@
 //! ### Disclaimer
 //! This tool is currently in active development and needs further work and feedback
 //! from the Tor Project devs in order to one day make it to production
+use crate::checking::RECEIVE_TIMEOUT;
 use axum::{
     http::StatusCode,
     routing::{get, post},
     Json, Router,
 };
 use chrono::prelude::*;
-use postage::prelude::*;
-use postage::watch::{self, Receiver, Sender};
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 use std::{collections::HashMap, net::SocketAddr};
-use tokio::sync::Mutex;
+use tokio::sync::broadcast::{self, Receiver, Sender};
+use tokio::time::timeout;
 use tor_error::ErrorReport;
 mod checking;
 
@@ -83,7 +82,7 @@ struct Updates {
 /// Wrapper around the main testing function
 async fn check_bridges(
     bridge_lines: Vec<String>,
-    updates_sender_mutex: Arc<Mutex<Sender<HashMap<String, BridgeResult>>>>,
+    updates_sender: Sender<HashMap<String, BridgeResult>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let mainop = crate::checking::main_test(bridge_lines.clone()).await;
@@ -100,7 +99,7 @@ async fn check_bridges(
                     channels,
                     failed_bridges,
                     common_tor_client,
-                    updates_sender_mutex,
+                    updates_sender,
                 )
                 .await
             });
@@ -121,8 +120,16 @@ async fn updates(
     mut updates_recv: Receiver<HashMap<String, BridgeResult>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let mut bridge_results = HashMap::new();
-    while let Some(update) = updates_recv.recv().await {
-        bridge_results.extend(update);
+    loop {
+        match timeout(RECEIVE_TIMEOUT, updates_recv.recv()).await {
+            Ok(Ok(update)) => {
+                if update.is_empty() {
+                    break;
+                }
+                bridge_results.extend(update);
+            }
+            _ => break,
+        };
     }
     let finalresult = BridgesResult {
         bridge_results,
@@ -136,12 +143,17 @@ async fn updates(
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    let (updates_sender, updates_recv) = watch::channel::<HashMap<String, BridgeResult>>();
-    let updates_sender_mutex = Arc::new(Mutex::new(updates_sender));
+    // unused Receiver prevents SendErrors
+    let (updates_sender, _updates_recv_unused) =
+        broadcast::channel::<HashMap<String, BridgeResult>>(100);
+    let updates_sender_clone = updates_sender.clone();
     let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
-        check_bridges(payload.bridge_lines, updates_sender_mutex).await
+        check_bridges(payload.bridge_lines, updates_sender_clone).await
     };
-    let wrapped_updates = move || async { updates(updates_recv).await };
+    let wrapped_updates = move || {
+        let updates_recv = updates_sender.subscribe();
+        async move { updates(updates_recv).await }
+    };
     let app = Router::new()
         .route("/bridge-state", post(wrapped_bridge_check))
         .route("/updates", get(wrapped_updates));
