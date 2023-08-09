@@ -3,7 +3,8 @@ members = [
     "crates/download-manager",
     "crates/connection-checker",
     "crates/obfs4-checker",
-    "crates/dns-resolver"
+    "crates/dns-resolver",
+    "crates/pt-proxy",
 ]
 
 resolver = "2"
