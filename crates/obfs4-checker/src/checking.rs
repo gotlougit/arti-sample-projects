@@ -46,24 +46,24 @@ fn build_entry_node_config() -> TorClientConfigBuilder {
     TorClientConfig::builder()
 }
 
-/// Return a [TorClientConfigBuilder] which is set to use obfs4 pluggable transport
+/// Return a [TorClientConfigBuilder] which is set to use a pluggable transport
 /// for all connections
-///
-/// Note that the `obfs4proxy` binaru may go by a different name depending on
-/// which system you are using. This code is configured to find `lyrebird` in
-/// $PATH, but it may need alterations if this isn't working on your system
-fn build_obfs4_bridge_config() -> TorClientConfigBuilder {
+fn build_pt_bridge_config(
+    protocol: &str,
+    bin_path: &str,
+) -> anyhow::Result<TorClientConfigBuilder> {
     let mut builder = TorClientConfig::builder();
     let mut transport = ManagedTransportConfigBuilder::default();
+    let protocol_parsed = protocol.parse()?;
     transport
-        .protocols(vec!["obfs4".parse().unwrap()])
+        .protocols(vec![protocol_parsed])
         // THIS IS DISTRO SPECIFIC
         // If this function doesn't work, check by what name obfs4 client
         // goes by on your system
-        .path(CfgPath::new(("lyrebird").into()))
+        .path(CfgPath::new(bin_path.into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
-    builder
+    Ok(builder)
 }
 
 /// Contains the main logic for testing each bridge.
