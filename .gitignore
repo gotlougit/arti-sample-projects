@@ -1,5 +1,6 @@
 /target
-download.tar.xz
+*.tar.xz
+*.json
 tor.keyring
 signature.asc
 .envrc
