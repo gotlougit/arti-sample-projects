@@ -34,6 +34,8 @@ use axum::{
     Json, Router,
 };
 use chrono::prelude::*;
+use postage::prelude::*;
+use postage::watch::{self, Receiver, Sender};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use std::{collections::HashMap, net::SocketAddr};
@@ -50,7 +52,7 @@ struct BridgeLines {
 }
 
 /// Struct which represents one bridge's result
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, Debug)]
 pub struct BridgeResult {
     functional: bool,
     last_tested: String,
@@ -81,7 +83,7 @@ struct Updates {
 /// Wrapper around the main testing function
 async fn check_bridges(
     bridge_lines: Vec<String>,
-    updates_status_mutex: Arc<Mutex<HashMap<String, BridgeResult>>>,
+    updates_sender_mutex: Arc<Mutex<Sender<HashMap<String, BridgeResult>>>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let mainop = crate::checking::main_test(bridge_lines.clone()).await;
@@ -98,7 +100,7 @@ async fn check_bridges(
                     channels,
                     failed_bridges,
                     common_tor_client,
-                    updates_status_mutex,
+                    updates_sender_mutex,
                 )
                 .await
             });
@@ -116,10 +118,12 @@ async fn check_bridges(
 
 /// Wrapper around the main testing function
 async fn updates(
-    updates_status_mutex: Arc<Mutex<HashMap<String, BridgeResult>>>,
+    mut updates_recv: Receiver<HashMap<String, BridgeResult>>,
 ) -> (StatusCode, Json<BridgesResult>) {
-    let bridge_results_lock = updates_status_mutex.lock().await;
-    let bridge_results = (*bridge_results_lock).clone();
+    let mut bridge_results = HashMap::new();
+    while let Some(update) = updates_recv.recv().await {
+        bridge_results.extend(update);
+    }
     let finalresult = BridgesResult {
         bridge_results,
         error: None,
@@ -132,13 +136,12 @@ async fn updates(
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    let updates_status_mutex = Arc::new(Mutex::new(HashMap::new()));
-    let updates_mutex_copy = Arc::clone(&updates_status_mutex);
+    let (updates_sender, updates_recv) = watch::channel::<HashMap<String, BridgeResult>>();
+    let updates_sender_mutex = Arc::new(Mutex::new(updates_sender));
     let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
-        check_bridges(payload.bridge_lines, updates_mutex_copy).await
+        check_bridges(payload.bridge_lines, updates_sender_mutex).await
     };
-
-    let wrapped_updates = move || async { updates(updates_status_mutex).await };
+    let wrapped_updates = move || async { updates(updates_recv).await };
     let app = Router::new()
         .route("/bridge-state", post(wrapped_bridge_check))
         .route("/updates", get(wrapped_updates));

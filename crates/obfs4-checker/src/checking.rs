@@ -2,6 +2,8 @@ use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
 use chrono::prelude::*;
+use postage::prelude::*;
+use postage::watch;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::mpsc::{self, Receiver, Sender};
@@ -153,7 +155,7 @@ pub async fn check_failed_bridges_task(
     common_tor_client: TorClient<PreferredRuntime>,
     now_online_bridges: Sender<HashMap<String, Channel>>,
     mut once_online_bridges: Receiver<Vec<String>>,
-    updates_status_mutex: Arc<Mutex<HashMap<String, BridgeResult>>>,
+    updates_sender_mutex: Arc<Mutex<watch::Sender<HashMap<String, BridgeResult>>>>,
 ) {
     let mut failed_bridges = initial_failed_bridges;
     loop {
@@ -174,8 +176,8 @@ pub async fn check_failed_bridges_task(
             failed_bridges.splice(..0, new_failures.iter().cloned());
         }
         // write newresults into the mutex
-        let mut lock_map = updates_status_mutex.lock().await;
-        *lock_map = newresults;
+        let mut updates_sender_lock = updates_sender_mutex.lock().await;
+        (*updates_sender_lock).send(newresults).await.unwrap();
     }
 }
 
@@ -214,7 +216,7 @@ pub async fn continuous_check(
     channels: HashMap<String, Channel>,
     failed_bridges: Vec<String>,
     common_tor_client: TorClient<PreferredRuntime>,
-    updates_status_mutex: Arc<Mutex<HashMap<String, BridgeResult>>>,
+    updates_sender_mutex: Arc<Mutex<watch::Sender<HashMap<String, BridgeResult>>>>,
 ) {
     let (once_online_sender, once_online_recv) = mpsc::channel(100);
     let (now_online_sender, now_online_recv) = mpsc::channel(100);
@@ -224,7 +226,7 @@ pub async fn continuous_check(
         common_tor_client,
         now_online_sender,
         once_online_recv,
-        updates_status_mutex,
+        updates_sender_mutex,
     );
     tokio::join!(task1, task2);
 }
