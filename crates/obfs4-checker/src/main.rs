@@ -35,12 +35,21 @@ use axum::{
     Json, Router,
 };
 use chrono::prelude::*;
+use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, net::SocketAddr};
 use tokio::sync::broadcast::{self, Receiver, Sender};
 use tokio::time::timeout;
 use tor_error::ErrorReport;
 mod checking;
+
+/// Contains all CLI arguments
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(short, long, required = true)]
+    obfs4_bin: String,
+}
 
 /// The input to our `bridge-state` handler
 ///
@@ -143,6 +152,9 @@ async fn updates(
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
+    // TODO: use obfs4 as default and use CLI args
+    let _args = Args::parse();
+    let _obfs4_bin_path = _args.obfs4_bin;
     // unused Receiver prevents SendErrors
     let (updates_sender, _updates_recv_unused) =
         broadcast::channel::<HashMap<String, BridgeResult>>(100);
