@@ -153,8 +153,8 @@ async fn updates(
 async fn main() {
     tracing_subscriber::fmt::init();
     // TODO: use obfs4 as default and use CLI args
-    let _args = Args::parse();
-    let _obfs4_bin_path = _args.obfs4_bin;
+    // let _args = Args::parse();
+    // let _obfs4_bin_path = _args.obfs4_bin;
     // unused Receiver prevents SendErrors
     let (updates_sender, _updates_recv_unused) =
         broadcast::channel::<HashMap<String, BridgeResult>>(100);
