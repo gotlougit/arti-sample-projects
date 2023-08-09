@@ -165,12 +165,6 @@ pub async fn check_failed_bridges_task(
             controlled_test_function(&failed_bridges, common_tor_client.isolated_client()).await;
         // detect which bridges failed again
         failed_bridges = get_failed_bridges(&failed_bridges, &channels);
-        for failed_bridge in failed_bridges.iter() {
-            println!("{} failed to get new channel", failed_bridge);
-        }
-        for (bridge, _) in channels.iter() {
-            println!("{} is now online", bridge);
-        }
         // report online bridges to the appropriate task
         now_online_bridges.send(channels).await.unwrap();
         // get new failures from the other task
@@ -207,7 +201,6 @@ pub async fn detect_bridges_going_down(
         for (bridgeline, channel) in channels.iter() {
             if channel.is_closing() {
                 failed_bridges.push(bridgeline.to_string());
-                println!("{}: existing channel has failed", bridgeline);
             } else {
                 new_channels.insert(bridgeline.to_string(), channel.clone());
             }
