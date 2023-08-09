@@ -1,3 +1,4 @@
+//! This module contains the code that actually runs checks on bridges
 use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
@@ -138,7 +139,7 @@ async fn controlled_test_function(
 
 /// Calculates a list of bridge lines that have no channels
 pub fn get_failed_bridges(
-    guard_lines: &Vec<String>,
+    guard_lines: &[String],
     channels: &HashMap<String, Channel>,
 ) -> Vec<String> {
     let mut failed_lines = Vec::new();
@@ -246,6 +247,9 @@ pub async fn continuous_check(
     tokio::join!(task1, task2);
 }
 
+/// Build a [TorClient] that is intended to be used purely for creating isolated clients off of.
+///
+/// Note that this is mainly a wrapper for convenience purposes
 pub async fn build_common_tor_client() -> Result<TorClient<PreferredRuntime>, arti_client::Error> {
     let builder = build_entry_node_config().build().unwrap();
     // let builder = build_obfs4_bridge_config().build()?;
