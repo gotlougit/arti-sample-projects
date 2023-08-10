@@ -240,22 +240,23 @@ async fn download_segment(
 ///
 /// Summary:
 ///
-/// 1. Create the download file
+/// 1. Get the SHA256 checksum of the Tor Browser Bundle for later
+/// verification of the downloaded data
 ///
-/// 2. Create [MAX_CONNECTIONS] number of connections, these will be all that is used
-/// for the main loop of the program
+/// 2. Create [MAX_CONNECTIONS] number of connections, these will be all
+/// that is used for the main loop of the program
 ///
-/// 3. Get content length of the Tor Browser Bundle so we know how many loops to run
+/// 3. Get content length of the Tor Browser Bundle so we know how
+/// many loops to run
 ///
-/// 4. Create the main loop of the program; it simply cycles through the connections we initialized
-/// step 2 and makes a request with them for the bulk of the payload we request from the network
+/// 4. Create the main loop of the program; it simply cycles through the
+/// connections we initialized in step 2 and makes a request with them for the
+/// bulk of the payload we request from the network
 ///
-/// 5. Request any leftover data
+/// 5. Check SHA256 checksum of the file in memory and compare it to the
+/// expected value we got from the Tor Project's website
 ///
 /// 6. Write all that data to the disk
-///
-/// 7. Check SHA256 checksum of the file on disk and compare it to the expected value
-/// from the Tor Project's website
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
