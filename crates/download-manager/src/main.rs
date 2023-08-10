@@ -195,6 +195,13 @@ async fn request_sha256_sum(
     .into())
 }
 
+fn wait_time_for_iteration(iteration: usize) -> u64 {
+    if iteration == 0 {
+        return 0;
+    }
+    return 1000.min(500 + 100 * iteration as u64);
+}
+
 /// Wrapper around [request_range] in order to overcome network issues
 ///
 /// We try a maximum of [MAX_RETRIES] to get the portion of the file we require
@@ -206,9 +213,11 @@ async fn download_segment(
     end: usize,
     newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> Result<Vec<u8>, crate::DownloadMgrError> {
-    let base: u64 = 10;
-    for trial in 0..MAX_RETRIES as u32 {
-        tokio::time::sleep(std::time::Duration::from_millis(base.pow(trial) - 1)).await;
+    for trial in 0..MAX_RETRIES {
+        tokio::time::sleep(std::time::Duration::from_millis(wait_time_for_iteration(
+            trial,
+        )))
+        .await;
         // request via new Tor connection
         match request_range(&url, start, end, &newhttp).await {
             // save to disk
