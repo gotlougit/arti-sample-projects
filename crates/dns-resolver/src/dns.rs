@@ -248,13 +248,14 @@ impl FromBytes for Query {
         }
         // Parse name
         let mut name = String::new();
+        // 12 represents size of Header, which we have already parsed, or errored out of
         let mut lastnamebyte = 12;
         loop {
-            // byte denotes the prefix length, we read that many bytes into name
-            name.extend(std::str::from_utf8(
-                &bytes[lastnamebyte + 1..lastnamebyte + 1 + bytes[lastnamebyte] as usize],
-            ));
-            lastnamebyte += 1 + bytes[lastnamebyte] as usize;
+            // bytes[lastnamebytes] denotes the prefix length, we read that many bytes into name
+            let start = lastnamebyte + 1;
+            let end = start + bytes[lastnamebyte] as usize;
+            name.extend(std::str::from_utf8(&bytes[start..end]));
+            lastnamebyte = end;
             if lastnamebyte >= bytes.len() || bytes[lastnamebyte] == 0 {
                 // End of domain name, proceed to parse further fields
                 debug!("Reached end of name, moving on to parse other fields");
