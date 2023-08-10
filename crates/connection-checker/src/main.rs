@@ -14,15 +14,16 @@
 //!
 //! ### Usage
 //! Run the program:
-//! `cargo run -- --test <TEST>`
+//! `cargo run`
 //!
-//! where <TEST> is a comma separated string made up of <protocol>:<pt-binary-path>
-//! values
+//! By default only a direct Tor connection is tested. In order to test
+//! other pluggable transports, we can pass the path to the PT binary to the
+//! program.
 //!
-//! For example, if you wished to test a direct connection,
-//! <TEST> would be "direct:", if you wished to test an obfs4 and snowflake connection,
-//! <TEST> would be "obfs4:lyrebird,snowflake:snowflake-client", where `lyrebird` is
-//! the obfs4 pluggable transport binary and `snowflake-client` is the Snowflake counterpart
+//! For example, if you wished to test an obfs4 and snowflake connection,
+//! pass `--snowflake-path snowflake-client --obfs4-client lyrebird`,
+//! where `lyrebird` is the path to the obfs4 pluggable transport binary
+//! and `snowflake-client` is the Snowflake counterpart
 //!
 //! You can also optionally specify a different host:port than the default `torproject.org:80`
 //! to be tested by passing the value using the `--connect-to` argument.
