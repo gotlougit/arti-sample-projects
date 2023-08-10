@@ -65,6 +65,9 @@ enum DownloadMgrError {
         /// Error raised while reading body into bytes, wraps [hyper::Error]`
         error: hyper::Error,
     },
+    #[error("Failed to get a connection from pool")]
+    /// Used to denote a failed .get() request from `Vec<Client>`
+    ConnectionError,
 }
 
 /// Create a single TorClient which will be used to spawn isolated connections
@@ -293,15 +296,16 @@ async fn main() -> anyhow::Result<()> {
     while start < length as usize {
         // the upper bound of what block we need from the server
         let end = (start + (REQSIZE as usize) - 1).min(length as usize);
-        if let Some(http) = connections.get(taskid) {
-            let newhttp = http.clone();
-            let urlclone = url.clone();
-            downloadtasks.push(tokio::spawn(async move {
-                download_segment(urlclone, start, end, newhttp)
-                    .await
-                    .map(|body| (start, body))
-            }));
-        }
+        let http = connections
+            .get(taskid)
+            .ok_or(DownloadMgrError::ConnectionError)?;
+        let newhttp = http.clone();
+        let urlclone = url.clone();
+        downloadtasks.push(tokio::spawn(async move {
+            download_segment(urlclone, start, end, newhttp)
+                .await
+                .map(|body| (start, body))
+        }));
         start = end + 1;
         taskid = (taskid + 1) % MAX_CONNECTIONS;
     }
