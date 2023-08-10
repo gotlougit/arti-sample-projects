@@ -198,7 +198,7 @@ async fn main() -> Result<()> {
                 (msg, TorClientConfig::default())
             }
         };
-        test_connection_via_config(&tor_client, config, &msg, &opts.connect_to).await;
+        test_connection_via_config(&tor_client, config, msg, &opts.connect_to).await;
     }
     Ok(())
 }
