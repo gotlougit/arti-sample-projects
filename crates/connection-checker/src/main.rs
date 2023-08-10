@@ -92,6 +92,10 @@ impl FromStr for TestValues {
     }
 }
 
+const OBFS4_BRIDGE_LINE: &str = include_str!("../bridges/bridge_obfs4.txt");
+const SNOWFLAKE_BRIDGE_LINE: &str = include_str!("../bridges/bridge_snowflake.txt");
+const MEEK_BRIDGE_LINE: &str = include_str!("../bridges/bridge_meek.txt");
+
 /// Connect to a sample host and print the path it used to get there.
 /// Note that due to the way Tor works, other requests may use a different
 /// path than the one we obtain using this function, so this is mostly
@@ -157,9 +161,6 @@ async fn test_connection_via_config(
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let obfs4_bridge_line: &str = include_str!("../bridges/bridge_obfs4.txt");
-    let snowflake_bridge_line: &str = include_str!("../bridges/bridge_snowflake.txt");
-    let meek_bridge_line: &str = include_str!("../bridges/bridge_meek.txt");
 
     let opts = Opts::parse();
     let initialconfig = TorClientConfig::default();
@@ -167,9 +168,9 @@ async fn main() -> Result<()> {
 
     for (connection_type, connection_bin) in opts.test.values.iter() {
         let config = match connection_type.as_str() {
-            "obfs4" => build_pt_config(obfs4_bridge_line, "obfs4", connection_bin)?,
-            "snowflake" => build_pt_config(snowflake_bridge_line, "snowflake", connection_bin)?,
-            "meek" => build_pt_config(meek_bridge_line, "meek", connection_bin)?,
+            "obfs4" => build_pt_config(OBFS4_BRIDGE_LINE, "obfs4", connection_bin)?,
+            "snowflake" => build_pt_config(SNOWFLAKE_BRIDGE_LINE, "snowflake", connection_bin)?,
+            "meek" => build_pt_config(MEEK_BRIDGE_LINE, "meek", connection_bin)?,
             _ => TorClientConfig::default(),
         };
         let msg = format!("{} Tor connection", connection_type);
