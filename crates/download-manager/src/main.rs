@@ -49,17 +49,22 @@ const MAX_RETRIES: usize = 6;
 
 #[derive(thiserror::Error, Debug)]
 #[error("Download failed due to unspecified reason")]
+/// Generic download error to catch almost all download errors
 struct DownloadError;
 
 #[derive(thiserror::Error, Debug)]
 #[error("Got unexpected status code")]
+/// Error to represent an unexpected status code from the network
 struct RequestFailed {
+    /// The status code that we got instead of the intended one
     status: StatusCode,
 }
 
 #[derive(thiserror::Error, Debug)]
 #[error("Error while reading body into bytes")]
+/// Error raised while reading body into bytes, wraps [hyper::Error]`
 struct BodyDownload {
+    /// Inner error
     error: hyper::Error,
 }
 
@@ -116,13 +121,13 @@ async fn get_content_length(
 ///
 /// Note that it returns a Result to denote any network issues that may have arisen from the request
 async fn request_range(
-    url: String,
+    url: &String,
     start: usize,
     end: usize,
     http: &Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
 ) -> anyhow::Result<Vec<u8>> {
     warn!("Requesting {} via Tor...", url);
-    let uri = Uri::from_str(url.as_str())?;
+    let uri = Uri::from_str(url)?;
     let partial_req_value = format!("bytes={}-{}", start, end);
     // GET the contents of URL from byte offset "start" to "end"
     let req = Request::builder()
@@ -206,7 +211,7 @@ async fn download_segment(
     for trial in 0..MAX_RETRIES as u32 {
         tokio::time::sleep(std::time::Duration::from_millis(base.pow(trial) - 1)).await;
         // request via new Tor connection
-        match request_range(url, start, end, &newhttp).await {
+        match request_range(&url, start, end, &newhttp).await {
             // save to disk
             Ok(body) => {
                 return Ok(body);
@@ -217,7 +222,6 @@ async fn download_segment(
                     "Error while trying to get a segment: {}, retrying...",
                     e.to_string()
                 );
-                return Err(DownloadError);
             }
         }
     }
@@ -286,18 +290,15 @@ async fn main() -> anyhow::Result<()> {
         if end >= length as usize {
             break;
         }
-        match connections.get(i as usize % MAX_CONNECTIONS) {
-            Some(http) => {
-                let newhttp = http.clone();
-                let urlclone = url.clone();
-                downloadtasks.push(tokio::spawn(async move {
-                    match download_segment(urlclone, start, end, newhttp).await {
-                        Ok(body) => Ok((start, body)),
-                        Err(e) => Err(e),
-                    }
-                }));
-            }
-            None => {}
+        if let Some(http) = connections.get(i as usize % MAX_CONNECTIONS) {
+            let newhttp = http.clone();
+            let urlclone = url.clone();
+            downloadtasks.push(tokio::spawn(async move {
+                match download_segment(urlclone, start, end, newhttp).await {
+                    Ok(body) => Ok((start, body)),
+                    Err(e) => Err(e),
+                }
+            }));
         }
         start = end + 1;
     }
@@ -322,10 +323,9 @@ async fn main() -> anyhow::Result<()> {
     if start < length as usize {
         let newhttp = build_tor_hyper_client(&baseconn).await?;
         let urlclone = url.clone();
-        match download_segment(urlclone, start, length as usize, newhttp).await {
-            Ok(body) => results.push((start, body)),
-            Err(_) => {}
-        };
+        if let Ok(body) = download_segment(urlclone, start, length as usize, newhttp).await {
+            results.push((start, body));
+        }
     }
     results.sort_by(|a, b| a.0.cmp(&b.0));
     // write all chunks to disk, checking along the way if the offsets match our
