@@ -48,24 +48,23 @@ const MAX_CONNECTIONS: usize = 6;
 const MAX_RETRIES: usize = 6;
 
 #[derive(thiserror::Error, Debug)]
-#[error("Download failed due to unspecified reason")]
-/// Generic download error to catch almost all download errors
-struct DownloadError;
-
-#[derive(thiserror::Error, Debug)]
-#[error("Got unexpected status code")]
-/// Error to represent an unexpected status code from the network
-struct RequestFailed {
-    /// The status code that we got instead of the intended one
-    status: StatusCode,
-}
-
-#[derive(thiserror::Error, Debug)]
-#[error("Error while reading body into bytes")]
-/// Error raised while reading body into bytes, wraps [hyper::Error]`
-struct BodyDownload {
-    /// Inner error
-    error: hyper::Error,
+#[error("Download Manager Error")]
+/// Enum storing all the Errors that our program can raise
+enum DownloadMgrError {
+    #[error("Download failed due to unspecified reason")]
+    /// Blanket download error to catch almost all download errors
+    DownloadError,
+    #[error("Got unexpected status code")]
+    /// Error to represent an unexpected status code from the network
+    RequestFailed {
+        /// The status code that we got instead of the intended one
+        status: StatusCode,
+    },
+    #[error("Got unexpected status code")]
+    BodyDownload {
+        /// Error raised while reading body into bytes, wraps [hyper::Error]`
+        error: hyper::Error,
+    },
 }
 
 /// Create a single TorClient which will be used to spawn isolated connections
@@ -113,7 +112,7 @@ async fn get_content_length(
             // Return it after a suitable typecast
             Ok(length)
         }
-        None => Err(DownloadError.into()),
+        None => Err(DownloadMgrError::DownloadError.into()),
     }
 }
 
@@ -143,12 +142,12 @@ async fn request_range(
         // Get the body of the response
         return match hyper::body::to_bytes(resp.body_mut()).await {
             Ok(bytes) => Ok(bytes.to_vec()),
-            Err(e) => Err(BodyDownload { error: e }.into()),
+            Err(e) => Err(DownloadMgrError::BodyDownload { error: e }.into()),
         };
     }
     // Got something else, return an Error
     warn!("Non 206 Status code: {}", resp.status());
-    Err(RequestFailed {
+    Err(DownloadMgrError::RequestFailed {
         status: resp.status(),
     }
     .into())
@@ -183,14 +182,14 @@ async fn request_sha256_sum(
                         return Ok(parts[0].to_string());
                     }
                 }
-                Err(DownloadError.into())
+                Err(DownloadMgrError::DownloadError.into())
             }
-            Err(e) => Err(BodyDownload { error: e }.into()),
+            Err(e) => Err(DownloadMgrError::BodyDownload { error: e }.into()),
         };
     }
     // Got something else, return an Error
     warn!("Non 200 Status code: {}", resp.status());
-    Err(RequestFailed {
+    Err(DownloadMgrError::RequestFailed {
         status: resp.status(),
     }
     .into())
@@ -206,7 +205,7 @@ async fn download_segment(
     start: usize,
     end: usize,
     newhttp: Client<ArtiHttpConnector<PreferredRuntime, TlsConnector>>,
-) -> Result<Vec<u8>, DownloadError> {
+) -> Result<Vec<u8>, crate::DownloadMgrError> {
     let base: u64 = 10;
     for trial in 0..MAX_RETRIES as u32 {
         tokio::time::sleep(std::time::Duration::from_millis(base.pow(trial) - 1)).await;
@@ -225,7 +224,7 @@ async fn download_segment(
             }
         }
     }
-    Err(DownloadError)
+    Err(DownloadMgrError::DownloadError)
 }
 
 /// Main method which brings it all together
