@@ -27,8 +27,8 @@ use arti_hyper::*;
 use futures::future::join_all;
 use hyper::{Body, Client, Method, Request, StatusCode, Uri};
 use sha2::{Digest, Sha256};
-use std::fs::{remove_file, File, OpenOptions};
-use std::io::{self, Write};
+use std::fs::OpenOptions;
+use std::io::Write;
 use std::str::FromStr;
 use tls_api::{TlsConnector as TlsConnectorTrait, TlsConnectorBuilder};
 use tls_api_native_tls::TlsConnector;
@@ -251,7 +251,6 @@ async fn download_segment(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
-    info!("Creating download file");
     let download_file_name = format!("tor-browser-linux64-{}_ALL.tar.xz", TOR_VERSION);
     let url = format!(
         "https://dist.torproject.org/torbrowser/{}/{}",
@@ -261,10 +260,6 @@ async fn main() -> anyhow::Result<()> {
         "https://dist.torproject.org/torbrowser/{}/sha256sums-signed-build.txt",
         TOR_VERSION
     );
-    let mut fd = OpenOptions::new()
-        .write(true)
-        .create(true)
-        .open(&download_file_name)?;
     let baseconn = create_tor_client().await?;
     let length = get_content_length(url.clone(), &baseconn).await?;
 
@@ -312,7 +307,6 @@ async fn main() -> anyhow::Result<()> {
     let has_err = results_options.iter().any(|result_op| result_op.is_err());
     if has_err {
         error!("Possible missing chunk! Aborting");
-        remove_file(&download_file_name)?;
         return Ok(());
     }
     let mut results: Vec<_> = results_options
@@ -328,30 +322,39 @@ async fn main() -> anyhow::Result<()> {
         }
     }
     results.sort_by(|a, b| a.0.cmp(&b.0));
+    let mut file_vec: Vec<u8> = Vec::new();
     // write all chunks to disk, checking along the way if the offsets match our
     // expectations
     let mut start_check = 0;
     for (start, chunk) in results.iter() {
         if *start != start_check {
             error!("Mismatch in expected and observed offset! Aborting");
-            remove_file(&download_file_name)?;
             return Ok(());
         }
         let end_check = start_check + (REQSIZE as usize) - 1;
-        debug!("Saving chunk offset {} to disk...", start);
-        fd.write_all(chunk)?;
+        debug!(
+            "Writing chunk offset {} to memory representation of file...",
+            start
+        );
+        file_vec.extend(chunk);
         start_check = end_check + 1;
     }
 
     // Independently read the file and verify its checksum
-    let mut ro_file = File::open(&download_file_name)?;
     let mut sha256 = Sha256::new();
-    io::copy(&mut ro_file, &mut sha256)?;
+    sha256.update(&file_vec);
     let hash_result = sha256.finalize();
     let observed_hash = format!("{:x}", hash_result);
     if observed_hash != expected_sha256sum {
         error!("Incorrect SHA 256 sum in download! Aborting");
-        remove_file(&download_file_name)?;
+        return Ok(());
     }
+    info!("Creating download file");
+    let mut fd = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open(&download_file_name)?;
+    debug!("Created file, now writing downloaded content to disk...");
+    fd.write(&file_vec)?;
     Ok(())
 }
