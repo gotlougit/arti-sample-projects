@@ -44,8 +44,6 @@ use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, Reconfigure};
 use arti_client::{TorClient, TorClientConfig};
 use clap::Parser;
-use std::collections::HashMap;
-use std::str::FromStr;
 use tor_error::ErrorReport;
 use tor_rtcompat::PreferredRuntime;
 use tracing::{error, info};
@@ -54,42 +52,31 @@ use tracing::{error, info};
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Opts {
-    /// List of tests to run
-    #[clap(long, required = true)]
-    test: TestValues,
+    /// Snowflake binary to use, implies Snowflake is to be tested
+    #[clap(long, required = false, default_value = None)]
+    snowflake_path: Option<String>,
+    /// obfs4 binary to use, implies obfs4 is to be tested
+    #[clap(long, required = false, default_value = None)]
+    obfs4_path: Option<String>,
+    /// meek binary to use, implies meek is to be tested
+    #[clap(long, required = false, default_value = None)]
+    meek_path: Option<String>,
 
     /// Specify a custom host:port to connect to for testing purposes
     #[clap(long, required = false, default_value = "torproject.org:80")]
     connect_to: String,
 }
 
-/// Stores the test type and PT binary path for the tests we have to run
-#[derive(Clone)]
-struct TestValues {
-    /// Inner HashMap that stores the formatted data
-    values: HashMap<String, String>,
-}
-
-impl FromStr for TestValues {
-    type Err = anyhow::Error;
-    fn from_str(s: &str) -> Result<Self> {
-        let mut values = HashMap::new();
-        for pair in s.split(',') {
-            let parts: Vec<&str> = pair.split(':').collect();
-            if parts.len() == 2 {
-                let protocol_name = match parts[0] {
-                    "meek" => "meek",
-                    "snowflake" => "snowflake",
-                    "obfs4" => "obfs4",
-                    _ => "direct",
-                }
-                .to_string();
-                let pt_binary_path = parts[1].to_string();
-                values.insert(protocol_name, pt_binary_path);
-            }
-        }
-        Ok(TestValues { values })
-    }
+/// Denotes the connection type
+enum ConnType {
+    /// Snowflake
+    Snowflake,
+    /// obfs4
+    Obfs4,
+    /// Meek
+    Meek,
+    /// direct
+    Direct,
 }
 
 /// Test bridge we will use for validating obfs4 connections
@@ -168,15 +155,48 @@ async fn main() -> Result<()> {
     let opts = Opts::parse();
     let initialconfig = TorClientConfig::default();
     let tor_client = TorClient::create_bootstrapped(initialconfig).await?;
-
-    for (connection_type, connection_bin) in opts.test.values.iter() {
-        let config = match connection_type.as_str() {
-            "obfs4" => build_pt_config(OBFS4_BRIDGE_LINE, "obfs4", connection_bin)?,
-            "snowflake" => build_pt_config(SNOWFLAKE_BRIDGE_LINE, "snowflake", connection_bin)?,
-            "meek" => build_pt_config(MEEK_BRIDGE_LINE, "meek", connection_bin)?,
-            _ => TorClientConfig::default(),
+    let mut tests = Vec::with_capacity(4);
+    tests.push((ConnType::Direct, None));
+    if let Some(path) = opts.snowflake_path {
+        tests.push((ConnType::Snowflake, Some(path)));
+    }
+    if let Some(path) = opts.obfs4_path {
+        tests.push((ConnType::Obfs4, Some(path)));
+    }
+    if let Some(path) = opts.meek_path {
+        tests.push((ConnType::Meek, Some(path)));
+    }
+    for (connection_type, connection_bin_shared) in tests.iter() {
+        // This will only go to the "or" condition if we have a direct connection
+        // and that code doesn't use this variable anyway
+        let connection_bin = connection_bin_shared.to_owned().unwrap_or(String::new());
+        let (msg, config) = match connection_type {
+            ConnType::Obfs4 => {
+                let msg = "obfs4 Tor connection";
+                (
+                    msg,
+                    build_pt_config(OBFS4_BRIDGE_LINE, "obfs4", &connection_bin)?,
+                )
+            }
+            ConnType::Snowflake => {
+                let msg = "Snowflake Tor connection";
+                (
+                    msg,
+                    build_pt_config(SNOWFLAKE_BRIDGE_LINE, "snowflake", &connection_bin)?,
+                )
+            }
+            ConnType::Meek => {
+                let msg = "Meek Tor connection";
+                (
+                    msg,
+                    build_pt_config(MEEK_BRIDGE_LINE, "meek", &connection_bin)?,
+                )
+            }
+            ConnType::Direct => {
+                let msg = "direct Tor connection";
+                (msg, TorClientConfig::default())
+            }
         };
-        let msg = format!("{} Tor connection", connection_type);
         test_connection_via_config(&tor_client, config, &msg, &opts.connect_to).await;
     }
     Ok(())
