@@ -251,6 +251,8 @@ async fn download_segment(
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
+    // generate the URLs and file names from the version number
+    // and some known conventions
     let download_file_name = format!("tor-browser-linux64-{}_ALL.tar.xz", TOR_VERSION);
     let url = format!(
         "https://dist.torproject.org/torbrowser/{}/{}",
@@ -313,8 +315,8 @@ async fn main() -> anyhow::Result<()> {
         .collect();
     results.sort_by(|a, b| a.0.cmp(&b.0));
     let mut file_vec: Vec<u8> = Vec::new();
-    // write all chunks to disk, checking along the way if the offsets match our
-    // expectations
+    // write all chunks to memory representation of file, checking along the
+    // way if the offsets match our expectations
     let mut start_check = 0;
     for (start, chunk) in results.iter() {
         if *start != start_check {
@@ -330,7 +332,7 @@ async fn main() -> anyhow::Result<()> {
         start_check = end_check + 1;
     }
 
-    // Independently read the file and verify its checksum
+    // Verify downloaded content's checksum
     let mut sha256 = Sha256::new();
     sha256.update(&file_vec);
     let hash_result = sha256.finalize();
@@ -339,6 +341,7 @@ async fn main() -> anyhow::Result<()> {
         error!("Incorrect SHA 256 sum in download! Aborting");
         return Ok(());
     }
+    // Write validated data to disk
     info!("Creating download file");
     let mut fd = OpenOptions::new()
         .write(true)
