@@ -279,23 +279,21 @@ async fn main() -> anyhow::Result<()> {
     let steps = length / REQSIZE;
     let mut downloadtasks = Vec::with_capacity(steps as usize);
     let mut start = 0;
-    for i in 0..steps {
+    let mut taskid = 0;
+    while start < length as usize {
         // the upper bound of what block we need from the server
-        let end = start + (REQSIZE as usize) - 1;
-        if end >= length as usize {
-            break;
-        }
-        if let Some(http) = connections.get(i as usize % MAX_CONNECTIONS) {
+        let end = (start + (REQSIZE as usize) - 1).min(length as usize);
+        if let Some(http) = connections.get(taskid) {
             let newhttp = http.clone();
             let urlclone = url.clone();
             downloadtasks.push(tokio::spawn(async move {
-                match download_segment(urlclone, start, end, newhttp).await {
-                    Ok(body) => Ok((start, body)),
-                    Err(e) => Err(e),
-                }
+                download_segment(urlclone, start, end, newhttp)
+                    .await
+                    .map(|body| (start, body))
             }));
         }
         start = end + 1;
+        taskid = (taskid + 1) % MAX_CONNECTIONS;
     }
     let results_options: Vec<Result<_, _>> = join_all(downloadtasks)
         .await
@@ -313,14 +311,6 @@ async fn main() -> anyhow::Result<()> {
         .into_iter()
         .filter_map(|result| result.ok())
         .collect();
-    // if last portion of file is left, request it
-    if start < length as usize {
-        let newhttp = build_tor_hyper_client(&baseconn).await?;
-        let urlclone = url.clone();
-        if let Ok(body) = download_segment(urlclone, start, length as usize, newhttp).await {
-            results.push((start, body));
-        }
-    }
     results.sort_by(|a, b| a.0.cmp(&b.0));
     let mut file_vec: Vec<u8> = Vec::new();
     // write all chunks to disk, checking along the way if the offsets match our
