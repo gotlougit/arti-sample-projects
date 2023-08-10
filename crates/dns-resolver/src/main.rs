@@ -49,18 +49,23 @@ async fn main() {
     debug!("Connecting to 1.1.1.1 port 53 for DNS over TCP lookup");
     let mut stream = tor_client.connect(crate::dns::DNS_SERVER).await.unwrap();
     // We now have a TcpStream analogue to use
-    let req = crate::dns::build_query(args[1].as_str()).as_bytes(); // Get raw bytes representation
-    stream.write_all(req.as_slice()).await.unwrap();
-    // Flushing ensures we actually send data over network right then instead
-    // of waiting for buffer to fill up
-    stream.flush().await.unwrap();
-    debug!("Awaiting response...");
-    let mut buf: Vec<u8> = Vec::new();
-    // Read the response
-    stream.read_to_end(&mut buf).await.unwrap();
-    // Interpret the response
-    match Response::from_bytes(&buf) {
-        Ok(resp) => println!("{}", resp),
-        Err(_) => eprintln!("No valid response!"),
+    match crate::dns::build_query(args[1].as_str()) {
+        Ok(query) => {
+            let req = query.as_bytes(); // Get raw bytes representation
+            stream.write_all(req.as_slice()).await.unwrap();
+            // Flushing ensures we actually send data over network right then instead
+            // of waiting for buffer to fill up
+            stream.flush().await.unwrap();
+            debug!("Awaiting response...");
+            let mut buf: Vec<u8> = Vec::new();
+            // Read the response
+            stream.read_to_end(&mut buf).await.unwrap();
+            // Interpret the response
+            match Response::from_bytes(&buf) {
+                Ok(resp) => println!("{}", resp),
+                Err(_) => eprintln!("No valid response!"),
+            };
+        }
+        Err(_) => tracing::error!("Invalid domain name entered!"),
     };
 }

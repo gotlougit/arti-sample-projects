@@ -17,6 +17,11 @@ use tracing::{debug, error};
 /// Generic error we return if we fail to parse bytes into the struct
 struct FromBytesError;
 
+#[derive(Error, Debug)]
+#[error("Invalid domain name passed")]
+/// Error we return if a bad domain name is passed
+pub struct DomainError;
+
 /// Hardcoded DNS server, stored as (&str, u16) detailing host and port
 pub const DNS_SERVER: (&str, u16) = ("1.1.1.1", 53);
 
@@ -422,7 +427,7 @@ impl Display for Response {
 /// should be returned from the DNS server.
 ///
 /// Convert this Query into bytes to be sent over the network by calling [Query::as_bytes()]
-pub fn build_query(domain: &str) -> Query {
+pub fn build_query(domain: &str) -> Result<Query, DomainError> {
     // TODO: generate identification randomly
     let header = Header {
         identification: 0x304e, // chosen by random dice roll, secure
@@ -435,6 +440,9 @@ pub fn build_query(domain: &str) -> Query {
     let mut qname: Vec<u8> = Vec::new();
     let split_domain: Vec<&str> = domain.split('.').collect();
     for part in split_domain {
+        if part.is_empty() {
+            return Err(DomainError);
+        }
         let l = part.len() as u8;
         if l != 0 {
             qname.push(l);
@@ -443,10 +451,10 @@ pub fn build_query(domain: &str) -> Query {
     }
     qname.push(0x00); // Denote that hostname has ended by pushing 0x00
     debug!("Crafted query successfully!");
-    Query {
+    Ok(Query {
         header,
         qname,
         qtype: QTYPE,
         qclass: QCLASS,
-    }
+    })
 }
