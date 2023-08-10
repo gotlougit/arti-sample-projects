@@ -92,8 +92,11 @@ impl FromStr for TestValues {
     }
 }
 
+/// Test bridge we will use for validating obfs4 connections
 const OBFS4_BRIDGE_LINE: &str = include_str!("../bridges/bridge_obfs4.txt");
+/// Test bridge we will use for validating snowflake connections
 const SNOWFLAKE_BRIDGE_LINE: &str = include_str!("../bridges/bridge_snowflake.txt");
+/// Test bridge we will use for validating meek connections
 const MEEK_BRIDGE_LINE: &str = include_str!("../bridges/bridge_meek.txt");
 
 /// Connect to a sample host and print the path it used to get there.
