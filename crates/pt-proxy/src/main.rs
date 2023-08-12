@@ -95,17 +95,19 @@ async fn main() -> Result<()> {
     match protocol {
         Protocol::Socks(_, ref auth) => {
             if let SocksAuth::Username(user, pass) = auth {
-                println!("Username: {}", std::str::from_utf8(&user).unwrap());
+                let username = std::str::from_utf8(&user)?;
+                let password = std::str::from_utf8(&pass)?;
                 // FIXME: pass is b'0' but this can't be passed as a value into
                 // other programs
-                println!("Password: {}", std::str::from_utf8(&pass).unwrap());
+                println!("socks5://{}:{}@{}", username, password, endpoint);
             }
         }
         _ => {}
     };
     match connect_via_proxy(&cur_runtime, &client_endpoint, &protocol, &endpoint).await {
         Ok(mut conn) => {
-            conn.write(b"hello world").await.unwrap();
+            let request = "GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n";
+            conn.write_all(request.as_bytes()).await?;
             println!("Connected to stream");
         }
         Err(e) => eprintln!("{}", e.report()),
