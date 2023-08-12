@@ -114,7 +114,10 @@ async fn check_bridges(
             });
             (bridge_results, None)
         }
-        Err(e) => (HashMap::new(), Some(e.report().to_string())),
+        Err(e) => {
+            let error_report = e.report().to_string().replace("error: ", "");
+            (HashMap::new(), Some(error_report))
+        }
     };
     let finalresult = BridgesResult {
         bridge_results,

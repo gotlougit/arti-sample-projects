@@ -35,7 +35,7 @@ async fn is_bridge_online(
     match chanmgr.build_unmanaged_channel(bridge_config).await {
         Ok(chan) => (Some(chan), None),
         Err(e) => {
-            let report = e.report().to_string();
+            let report = e.report().to_string().replace("error: ", "");
             (None, Some(report))
         }
     }
