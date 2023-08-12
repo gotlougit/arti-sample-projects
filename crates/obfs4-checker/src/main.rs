@@ -91,13 +91,6 @@ struct BridgesResult {
     time: f64,
 }
 
-/// Wrapper for `updates` handler output
-#[derive(Serialize)]
-struct Updates {
-    online: Vec<String>,
-    offline: Vec<String>,
-}
-
 /// Wrapper around the main testing function
 async fn check_bridges(
     bridge_lines: Vec<String>,
