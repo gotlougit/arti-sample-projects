@@ -58,9 +58,6 @@ fn build_pt_bridge_config(
     let protocol_parsed = protocol.parse()?;
     transport
         .protocols(vec![protocol_parsed])
-        // THIS IS DISTRO SPECIFIC
-        // If this function doesn't work, check by what name obfs4 client
-        // goes by on your system
         .path(CfgPath::new(bin_path.into()))
         .run_on_startup(true);
     builder.bridges().transports().push(transport);
@@ -120,17 +117,15 @@ async fn controlled_test_function(
         }
 
         let task_results = futures::future::join_all(tasks).await;
-        for task in task_results {
-            if let Ok((bridgeline, chan, time, error)) = task {
-                let res = BridgeResult {
-                    functional: chan.is_some(),
-                    last_tested: time,
-                    error,
-                };
-                results.insert(bridgeline.clone(), res);
-                if let Some(channel) = chan {
-                    channels.insert(bridgeline, channel);
-                }
+        for (bridgeline, chan, time, error) in task_results.into_iter().flatten() {
+            let res = BridgeResult {
+                functional: chan.is_some(),
+                last_tested: time,
+                error,
+            };
+            results.insert(bridgeline.clone(), res);
+            if let Some(channel) = chan {
+                channels.insert(bridgeline, channel);
             }
         }
     }
@@ -168,16 +163,13 @@ pub async fn check_failed_bridges_task(
         // report online bridges to the appropriate task
         now_online_bridges.send(channels).await.unwrap();
         // get new failures from the other task
-        loop {
-            match timeout(RECEIVE_TIMEOUT, once_online_bridges.recv()).await {
-                Ok(Some(new_failures)) => {
-                    if new_failures.is_empty() {
-                        break;
-                    }
-                    failed_bridges.splice(..0, new_failures.iter().cloned());
-                }
-                _ => break,
-            };
+        while let Ok(Some(new_failures)) =
+            timeout(RECEIVE_TIMEOUT, once_online_bridges.recv()).await
+        {
+            if new_failures.is_empty() {
+                break;
+            }
+            failed_bridges.splice(..0, new_failures.iter().cloned());
         }
         // write newresults into the updates channel
         if !newresults.is_empty() {
@@ -208,13 +200,10 @@ pub async fn detect_bridges_going_down(
         // report failures to the appropriate task
         once_online_bridges.send(failed_bridges).await.unwrap();
         // get new channels from the other task
-        loop {
-            match timeout(RECEIVE_TIMEOUT, now_online_bridges.recv()).await {
-                Ok(Some(just_online_bridges)) => {
-                    new_channels.extend(just_online_bridges);
-                }
-                _ => break,
-            };
+        while let Ok(Some(just_online_bridges)) =
+            timeout(RECEIVE_TIMEOUT, now_online_bridges.recv()).await
+        {
+            new_channels.extend(just_online_bridges);
         }
         channels = new_channels;
     }

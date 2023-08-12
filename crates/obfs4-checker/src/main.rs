@@ -129,16 +129,11 @@ async fn updates(
     mut updates_recv: Receiver<HashMap<String, BridgeResult>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let mut bridge_results = HashMap::new();
-    loop {
-        match timeout(RECEIVE_TIMEOUT, updates_recv.recv()).await {
-            Ok(Ok(update)) => {
-                if update.is_empty() {
-                    break;
-                }
-                bridge_results.extend(update);
-            }
-            _ => break,
-        };
+    while let Ok(Ok(update)) = timeout(RECEIVE_TIMEOUT, updates_recv.recv()).await {
+        if update.is_empty() {
+            break;
+        }
+        bridge_results.extend(update);
     }
     let finalresult = BridgesResult {
         bridge_results,
