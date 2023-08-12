@@ -232,10 +232,11 @@ pub async fn continuous_check(
 /// Build a [TorClient] that is intended to be used purely for creating isolated clients off of.
 ///
 /// Note that this is mainly a wrapper for convenience purposes
-pub async fn build_common_tor_client() -> Result<TorClient<PreferredRuntime>, arti_client::Error> {
-    let builder = build_entry_node_config().build().unwrap();
-    // let builder = build_obfs4_bridge_config().build()?;
-    TorClient::create_bootstrapped(builder).await
+pub async fn build_common_tor_client(
+    obfs4_path: &str,
+) -> anyhow::Result<TorClient<PreferredRuntime>> {
+    let builder = build_pt_bridge_config("obfs4", obfs4_path)?.build()?;
+    Ok(TorClient::create_bootstrapped(builder).await?)
 }
 
 /// Main function to unite everything together
@@ -249,7 +250,8 @@ pub async fn build_common_tor_client() -> Result<TorClient<PreferredRuntime>, ar
 /// 3. Return the results
 pub async fn main_test(
     guard_lines: Vec<String>,
+    obfs4_path: &str,
 ) -> Result<(HashMap<String, BridgeResult>, HashMap<String, Channel>), arti_client::Error> {
-    let common_tor_client = build_common_tor_client().await?;
+    let common_tor_client = build_common_tor_client(obfs4_path).await.unwrap();
     Ok(controlled_test_function(&guard_lines, common_tor_client).await)
 }

@@ -99,9 +99,10 @@ struct BridgesResult {
 async fn check_bridges(
     bridge_lines: Vec<String>,
     updates_sender: Sender<HashMap<String, BridgeResult>>,
+    obfs4_path: String,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
-    let mainop = crate::checking::main_test(bridge_lines.clone()).await;
+    let mainop = crate::checking::main_test(bridge_lines.clone(), &obfs4_path).await;
     let end_time = Utc::now();
     let diff = end_time
         .signed_duration_since(commencement_time)
@@ -109,7 +110,9 @@ async fn check_bridges(
     let (bridge_results, error) = match mainop {
         Ok((bridge_results, channels)) => {
             let failed_bridges = crate::checking::get_failed_bridges(&bridge_lines, &channels);
-            let common_tor_client = crate::checking::build_common_tor_client().await.unwrap();
+            let common_tor_client = crate::checking::build_common_tor_client(&obfs4_path)
+                .await
+                .unwrap();
             tokio::spawn(async move {
                 crate::checking::continuous_check(
                     channels,
@@ -158,14 +161,14 @@ async fn updates(
 async fn main() {
     tracing_subscriber::fmt::init();
     // TODO: use obfs4 as default and use CLI args
-    // let _args = Args::parse();
-    // let _obfs4_bin_path = _args.obfs4_bin;
+    let args = Args::parse();
+    let obfs4_bin_path = args.obfs4_bin;
     // unused Receiver prevents SendErrors
     let (updates_sender, _updates_recv_unused) =
         broadcast::channel::<HashMap<String, BridgeResult>>(100);
     let updates_sender_clone = updates_sender.clone();
     let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
-        check_bridges(payload.bridge_lines, updates_sender_clone).await
+        check_bridges(payload.bridge_lines, updates_sender_clone, obfs4_bin_path).await
     };
     let wrapped_updates = move || {
         let updates_recv = updates_sender.subscribe();
