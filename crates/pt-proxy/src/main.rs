@@ -1,15 +1,19 @@
 //! Very very very basic soak test that runs obfs4proxy.
 
 use anyhow::Result;
+use futures_util::io::AsyncWriteExt;
 use std::env;
 use std::io;
 use std::{net::SocketAddrV4, str::FromStr};
 use tokio::time::Duration;
+use tor_chanmgr::transport::proxied::Protocol;
 use tor_chanmgr::transport::proxied::{connect_via_proxy, settings_to_protocol};
 use tor_error::ErrorReport;
 use tor_linkspec::PtTransportName;
 use tor_ptmgr::ipc::{PluggableTransport, PtParameters};
 use tor_rtcompat::PreferredRuntime;
+use tor_socksproto::SocksAuth;
+use tor_socksproto::SocksVersion;
 
 fn build_server_config(protocol: &str, bind_addr: &str) -> Result<PtParameters> {
     let bindaddr_formatted = format!("{}-{}", &protocol, bind_addr);
@@ -59,6 +63,7 @@ async fn main() -> Result<()> {
         while let Ok(_) = server_pt.next_message().await {
             println!("hi");
         }
+        return Ok(());
     }
 
     // Client code
@@ -87,13 +92,15 @@ async fn main() -> Result<()> {
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
     input.remove(input.len() - 1);
-    let socks_config = settings_to_protocol(tor_socksproto::SocksVersion::V5, input)?;
-    println!("{:#?}", socks_config);
-    match connect_via_proxy(&cur_runtime, &client_endpoint, &socks_config, &endpoint).await {
-        Ok(_) => {
-            println!("Connected to stream");
+    let socks_config = settings_to_protocol(SocksVersion::V5, input)?;
+    match socks_config {
+        Protocol::Socks(_, ref auth) => {
+            if let SocksAuth::Username(user, pass) = auth {
+                println!("Username: {}", std::str::from_utf8(&user).unwrap());
+                println!("Password: {}", std::str::from_utf8(&pass).unwrap());
+            }
         }
-        Err(e) => eprintln!("{}", e.report()),
-    };
+        _ => {}
+    }
     Ok(())
 }
