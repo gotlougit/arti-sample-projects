@@ -43,11 +43,12 @@ use tokio::time::timeout;
 use tor_error::ErrorReport;
 mod checking;
 
-/// Contains all CLI arguments
+/// Utility to deliver real-time updates on bridge health
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[arg(short, long, required = true)]
+    /// Path to the `lyrebird` or `obfs4proxy`, required for making obfs4 connections
     obfs4_bin: String,
 }
 
@@ -56,14 +57,20 @@ struct Args {
 /// Just contains a list of bridge lines to test
 #[derive(Deserialize)]
 struct BridgeLines {
+    /// List of bridge lines to test
     pub bridge_lines: Vec<String>,
 }
 
 /// Struct which represents one bridge's result
 #[derive(Serialize, Clone, Debug)]
 pub struct BridgeResult {
+    /// Is bridge online or not?
     functional: bool,
+    /// The time at which the bridge was last tested, written as a nice string
     last_tested: String,
+    /// Error encountered while trying to connect to the bridge, if any
+    ///
+    /// It is generated using [tor_error::ErrorReport]
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<String>,
 }
@@ -75,9 +82,12 @@ pub struct BridgeResult {
 /// to run the entire test
 #[derive(Serialize)]
 struct BridgesResult {
+    /// All the bridge results, mapped by bridge line
     bridge_results: HashMap<String, BridgeResult>,
+    /// General error encountered, if any
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<String>,
+    /// The time it took to generate this result
     time: f64,
 }
 
