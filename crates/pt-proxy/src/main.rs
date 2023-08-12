@@ -15,11 +15,13 @@ use tor_rtcompat::PreferredRuntime;
 use tor_socksproto::SocksAuth;
 use tor_socksproto::SocksVersion;
 
+const SERVER_STATE_LOCATION: &str = "/tmp/arti-pt";
+
 fn build_server_config(protocol: &str, bind_addr: &str) -> Result<PtParameters> {
     let bindaddr_formatted = format!("{}-{}", &protocol, bind_addr);
     let orport = String::from("0.0.0.0:0");
     Ok(PtParameters::builder()
-        .state_location("/tmp/arti-pt".into())
+        .state_location(SERVER_STATE_LOCATION.into())
         .transports(vec![protocol.parse()?])
         .timeout(Some(Duration::from_secs(1)))
         .server_bindaddr(Some(bindaddr_formatted))
@@ -59,11 +61,8 @@ async fn main() -> Result<()> {
             ],
             server_params,
         );
-        server_pt.launch(cr_clone).await.unwrap();
-        while let Ok(_) = server_pt.next_message().await {
-            println!("hi");
-        }
-        return Ok(());
+        server_pt.launch(cr_clone).await?;
+        loop {}
     }
 
     // Client code
@@ -92,15 +91,24 @@ async fn main() -> Result<()> {
     let mut input = String::new();
     io::stdin().read_line(&mut input)?;
     input.remove(input.len() - 1);
-    let socks_config = settings_to_protocol(SocksVersion::V5, input)?;
-    match socks_config {
+    let protocol = settings_to_protocol(SocksVersion::V5, input)?;
+    match protocol {
         Protocol::Socks(_, ref auth) => {
             if let SocksAuth::Username(user, pass) = auth {
                 println!("Username: {}", std::str::from_utf8(&user).unwrap());
+                // FIXME: pass is b'0' but this can't be passed as a value into
+                // other programs
                 println!("Password: {}", std::str::from_utf8(&pass).unwrap());
             }
         }
         _ => {}
-    }
+    };
+    match connect_via_proxy(&cur_runtime, &client_endpoint, &protocol, &endpoint).await {
+        Ok(mut conn) => {
+            conn.write(b"hello world").await.unwrap();
+            println!("Connected to stream");
+        }
+        Err(e) => eprintln!("{}", e.report()),
+    };
     Ok(())
 }
