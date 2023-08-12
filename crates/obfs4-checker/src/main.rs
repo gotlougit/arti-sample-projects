@@ -21,6 +21,10 @@
 //!
 //! By and large, the request and response formats are almost the same
 //!
+//! There is one additional endpoint "/updates", which is supposed to be polled
+//! regularly in order to deliver updates on which bridges have failed/come back
+//! online, and whose output is same as the normal /bridge-state endpoint in format
+//!
 //! Note that for testing purposes right now the program is only configured to
 //! make connections to regular, public Tor entry nodes instead, hence the naming
 //! differences here.
