@@ -43,7 +43,8 @@ fn build_client_config(protocol: &str) -> Result<PtParameters> {
 
 async fn connect_to_obfs4_client(
     proxy_server: &str,
-    bridge_config: &str,
+    username: &str,
+    password: &str,
     destination: &str,
     port: u16,
 ) -> Result<Socks5Stream<TcpStream>> {
@@ -52,8 +53,8 @@ async fn connect_to_obfs4_client(
         proxy_server.to_string(),
         destination.to_string(),
         port,
-        bridge_config.to_string(),
-        '\0'.to_string(),
+        username.to_string(),
+        password.to_string(),
         config,
     )
     .await?)
@@ -178,10 +179,12 @@ async fn main() -> Result<()> {
     let mut conn = connect_to_obfs4_client(
         &client_endpoint,
         &obfs4_server_conf,
+        "\0",
         "127.0.0.1",
         obfs4_server_port,
     )
     .await?;
+    // TODO: expose socks5 server for arbitrary traffic to use
     http_request_over_socks5(&mut conn, dest).await?;
     Ok(())
 }
