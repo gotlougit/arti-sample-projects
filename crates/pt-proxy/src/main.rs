@@ -171,20 +171,35 @@ async fn main() -> Result<()> {
 
     // TODO: use `settings_to_protocol` to get username and password
     // this way we can deal with all edge cases
-    let _settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf.clone())?;
+    let settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf.clone())?;
+    match settings {
+        Protocol::Socks(_, auth) => {
+            match auth {
+                SocksAuth::Username(raw_username, raw_password) => {
+                    let username = std::str::from_utf8(&raw_username)?;
+                    let password = match raw_password.is_empty() {
+                        true => "\0",
+                        false => std::str::from_utf8(&raw_password)?,
+                    };
+                    println!("Connecting to PT client proxy");
+                    let dest = String::from("icanhazip.com");
+                    // TODO: pass password from `settings_to_protocol` in here too
+                    let mut conn = connect_to_obfs4_client(
+                        &client_endpoint,
+                        &username,
+                        &password,
+                        "127.0.0.1",
+                        obfs4_server_port,
+                    )
+                    .await?;
+                    // TODO: expose socks5 server for arbitrary traffic to use
+                    http_request_over_socks5(&mut conn, dest).await?;
+                }
+                _ => eprintln!("Unable to get credentials for obfs4 client process!"),
+            }
+        }
+        _ => eprintln!("Unexpected protocol"),
+    }
 
-    println!("Connecting to PT client proxy");
-    let dest = String::from("icanhazip.com");
-    // TODO: pass password from `settings_to_protocol` in here too
-    let mut conn = connect_to_obfs4_client(
-        &client_endpoint,
-        &obfs4_server_conf,
-        "\0",
-        "127.0.0.1",
-        obfs4_server_port,
-    )
-    .await?;
-    // TODO: expose socks5 server for arbitrary traffic to use
-    http_request_over_socks5(&mut conn, dest).await?;
     Ok(())
 }
