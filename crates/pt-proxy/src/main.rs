@@ -2,7 +2,6 @@
 
 use anyhow::Result;
 use fast_socks5::client::Socks5Stream;
-use std::env;
 use std::io;
 use std::str::FromStr;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
@@ -114,34 +113,31 @@ async fn http_request_over_socks5<T: AsyncRead + AsyncWrite + Unpin>(
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        return Ok(());
-    }
+    // TODO: use clap for CLI args for configuring everything
     let cur_runtime = PreferredRuntime::current()?;
     let server_addr = "127.0.0.1:4200";
     let final_socks5_endpoint = "127.0.0.1:9050";
     let obfs4_server_port = 4200;
     // server code
-    if args[1] == "server" {
-        let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
+    let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
 
-        let cr_clone = cur_runtime.clone();
-        let mut server_pt = PluggableTransport::new(
-            "lyrebird".into(),
-            vec![
-                "-enableLogging".to_string(),
-                "-logLevel".to_string(),
-                "DEBUG".to_string(),
-                "-unsafeLogging".to_string(),
-            ],
-            server_params,
-        );
-        server_pt.launch(cr_clone).await?;
+    let cr_clone = cur_runtime.clone();
+    let mut server_pt = PluggableTransport::new(
+        "lyrebird".into(),
+        vec![
+            "-enableLogging".to_string(),
+            "-logLevel".to_string(),
+            "DEBUG".to_string(),
+            "-unsafeLogging".to_string(),
+        ],
+        server_params,
+    );
+    server_pt.launch(cr_clone).await?;
+    tokio::spawn(async move {
         while let Ok(_) = server_pt.next_message().await {
             println!("Got a message from a client");
         }
-    }
+    });
 
     // Client code
 
