@@ -1376,7 +1376,8 @@ checksum = "7360491ce676a36bf9bb3c56c1aa791658183a54d2744120f27285738d90465a"
 [[package]]
 name = "fast-socks5"
 version = "0.8.2"
-source = "git+https://github.com/nemosupremo/fast-socks5?branch=feat/into_inner#59c38275a73c707440100986d66559fb628c5048"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "961ce1761191c157145a8c9f0c3ceabecd3a729d65c9a8d443674eaee3420f7e"
 dependencies = [
  "anyhow",
  "log",

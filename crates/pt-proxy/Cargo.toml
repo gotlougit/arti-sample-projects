@@ -17,6 +17,6 @@ tracing-subscriber = "0.2.0"
 tor-error = { git = "https://gitlab.torproject.org/gotlou/arti/" , branch = "pt-proxy"}
 tor-ptmgr = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = "pt-proxy", features = [ "experimental-api"] }
 anyhow = "1.0.72"
-fast-socks5 = { git = "https://github.com/nemosupremo/fast-socks5", branch = "feat/into_inner" }
 thiserror = "1.0.44"
 tokio-stream = "0.1.14"
+fast-socks5 = "0.8.2"

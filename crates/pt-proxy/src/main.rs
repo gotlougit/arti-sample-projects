@@ -1,8 +1,7 @@
 use anyhow::Result;
 use fast_socks5::client::Socks5Stream;
-use fast_socks5::server::Socks5Server;
+use fast_socks5::server::{Config, Socks5Server};
 use std::str::FromStr;
-use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use tokio::net::TcpStream;
 use tokio::time::Duration;
 use tokio_stream::StreamExt;
@@ -87,63 +86,48 @@ fn read_cert_info() -> Result<String> {
     }
 }
 
-// TODO: use a low level crate to not generate SOCKS5 messages manually
-async fn http_request_over_socks5<T: AsyncRead + AsyncWrite + Unpin>(
-    stream: &mut T,
-    http_target: String,
+// TODO: make `forward_creds` a proper struct
+async fn create_socks5_server(
+    endpoint: &str,
+    forward_creds: Option<(String, String, String, u16)>,
 ) -> Result<()> {
-    // Version identifier/method selection message
-    stream.write_all(&[5, 1, 0]).await?;
-    let mut response = [0; 2];
-    stream.read_exact(&mut response).await?;
-
-    if response[0] != 5 || response[1] != 0 {
-        eprintln!("SOCKS5 handshake failed");
-        return Ok(());
-    }
-
-    // Form a CONNECT request for HTTP endpoint
-    let http_request = format!("GET / HTTP/1.1\r\nHost: {}\r\n\r\n", http_target);
-
-    // Prepare SOCKS5 request
-    let mut socks_request = Vec::new();
-    socks_request.push(5); // SOCKS version
-    socks_request.push(1); // CONNECT command
-    socks_request.push(0); // Reserved
-    socks_request.push(3); // Domain name type
-    socks_request.push(http_target.len() as u8); // Domain name length
-    socks_request.extend_from_slice(http_target.as_bytes()); // Domain name
-    socks_request.extend_from_slice(&(80 as u16).to_be_bytes()); // Port
-
-    // Send the SOCKS5 request
-    stream.write_all(&socks_request).await?;
-
-    // Read SOCKS5 response
-    let mut socks_response = [0; 10];
-    stream.read_exact(&mut socks_response).await?;
-
-    if socks_response[1] != 0 {
-        eprintln!("SOCKS5 request failed");
-        return Ok(());
-    }
-    // Send HTTP request through the proxied stream
-    stream.write(http_request.as_bytes()).await?;
-    stream.write_u8(0).await?;
-    // Read and print the HTTP response
-    let mut http_response = Vec::new();
-    stream.read_to_end(&mut http_response).await?;
-    // stream.read_to_end(&mut http_response).await?;
-    println!("{}", String::from_utf8_lossy(&http_response));
-    Ok(())
-}
-
-async fn create_final_socks5_server(final_endpoint: &str) -> Result<()> {
-    let listener = Socks5Server::bind(final_endpoint).await?;
-    tokio::spawn(async move {
-        while let Some(Ok(socket)) = listener.incoming().next().await {
+    let forward = forward_creds.is_some();
+    let config = match forward {
+        true => Config::default()
+            .set_skip_auth(true)
+            .set_execute_command(false)
+            .to_owned(),
+        false => Config::default(),
+    };
+    let mut listener = Socks5Server::bind(endpoint).await?;
+    listener.set_config(config);
+    if forward {
+        while let Some(Ok(mut socks_socket)) = listener.incoming().next().await {
+            let forward_cred_clone = forward_creds.clone();
             tokio::spawn(async move {
-                if let Err(_) = socket.upgrade_to_socks5().await {
-                    eprintln!("error");
+                let (username, password, client_endpoint, obfs4_server_port) =
+                    forward_cred_clone.unwrap();
+                let mut forward_client = connect_to_obfs4_client(
+                    &client_endpoint,
+                    &username,
+                    &password,
+                    "127.0.0.1",
+                    obfs4_server_port,
+                )
+                .await
+                .unwrap();
+
+                tokio::io::copy_bidirectional(&mut socks_socket, &mut forward_client)
+                    .await
+                    .unwrap();
+            });
+        }
+    }
+    tokio::spawn(async move {
+        while let Some(Ok(socks_socket)) = listener.incoming().next().await {
+            tokio::spawn(async move {
+                if let Err(e) = socks_socket.upgrade_to_socks5().await {
+                    eprintln!("{:#?}", e);
                 }
             });
         }
@@ -165,7 +149,7 @@ async fn main() -> Result<()> {
     let final_socks5_endpoint = "127.0.0.1:9050";
 
     // server code
-    create_final_socks5_server(final_socks5_endpoint).await?;
+    create_socks5_server(final_socks5_endpoint, None).await?;
     let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
 
     let cr_clone = cur_runtime.clone();
@@ -215,18 +199,14 @@ async fn main() -> Result<()> {
                         true => "\0",
                         false => std::str::from_utf8(&raw_password)?,
                     };
-                    println!("Connecting to PT client proxy");
-                    let dest = String::from("icanhazip.com");
-                    let mut conn = connect_to_obfs4_client(
-                        &client_endpoint,
-                        &username,
-                        &password,
-                        "127.0.0.1",
+                    let creds = Some((
+                        username.to_string(),
+                        password.to_string(),
+                        client_endpoint,
                         obfs4_server_port,
-                    )
-                    .await?;
-                    // TODO: expose socks5 server for arbitrary traffic to use
-                    http_request_over_socks5(&mut conn, dest).await?;
+                    ));
+                    // FIXME: final hop doesn't get socks5 traffic
+                    create_socks5_server(&entry_addr, creds).await?;
                 }
                 _ => eprintln!("Unable to get credentials for obfs4 client process!"),
             }
