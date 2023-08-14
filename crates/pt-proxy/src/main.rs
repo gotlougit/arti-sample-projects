@@ -132,11 +132,6 @@ async fn main() -> Result<()> {
         server_params,
     );
     server_pt.launch(cr_clone).await?;
-    tokio::spawn(async move {
-        while let Ok(_) = server_pt.next_message().await {
-            println!("Got a message from a client");
-        }
-    });
 
     // Client code
 
