@@ -163,9 +163,8 @@ async fn main() -> Result<()> {
     let server_addr = format!("{}:{}", server_ip, obfs4_server_port);
     let final_socks5_endpoint = "127.0.0.1:9050";
 
-    create_final_socks5_server(final_socks5_endpoint).await;
-
     // server code
+    create_final_socks5_server(final_socks5_endpoint).await;
     let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
 
     let cr_clone = cur_runtime.clone();
