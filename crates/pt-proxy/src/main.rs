@@ -122,16 +122,17 @@ async fn create_socks5_server(
                     .unwrap();
             });
         }
+    } else {
+        tokio::spawn(async move {
+            while let Some(Ok(socks_socket)) = listener.incoming().next().await {
+                tokio::spawn(async move {
+                    if let Err(e) = socks_socket.upgrade_to_socks5().await {
+                        eprintln!("{:#?}", e);
+                    }
+                });
+            }
+        });
     }
-    tokio::spawn(async move {
-        while let Some(Ok(socks_socket)) = listener.incoming().next().await {
-            tokio::spawn(async move {
-                if let Err(e) = socks_socket.upgrade_to_socks5().await {
-                    eprintln!("{:#?}", e);
-                }
-            });
-        }
-    });
     Ok(())
 }
 
