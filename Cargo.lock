@@ -2680,6 +2680,7 @@ dependencies = [
  "fast-socks5",
  "thiserror",
  "tokio",
+ "tokio-stream",
  "tor-chanmgr 0.9.2",
  "tor-error 0.5.2",
  "tor-linkspec 0.8.1",
