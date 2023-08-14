@@ -12,6 +12,7 @@ use tor_socksproto::SocksAuth;
 use tor_socksproto::SocksVersion;
 
 const SERVER_STATE_LOCATION: &str = "/tmp/arti-pt";
+const CLIENT_STATE_LOCATION: &str = "/tmp/arti-pt-client";
 
 #[derive(Debug, thiserror::Error)]
 #[error("Error while obtaining bridge line data")]
@@ -36,7 +37,7 @@ fn build_server_config(
 
 fn build_client_config(protocol: &str) -> Result<PtParameters> {
     Ok(PtParameters::builder()
-        .state_location("/tmp/arti-pt2".into())
+        .state_location(CLIENT_STATE_LOCATION.into())
         .transports(vec![protocol.parse()?])
         .timeout(Some(Duration::from_secs(1)))
         .build()?)
