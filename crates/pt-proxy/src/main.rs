@@ -190,7 +190,7 @@ async fn main() -> Result<()> {
 
     // TODO: use `settings_to_protocol` to get username and password
     // this way we can deal with all edge cases
-    let settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf.clone())?;
+    let settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf)?;
     match settings {
         Protocol::Socks(_, auth) => {
             match auth {
