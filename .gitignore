@@ -4,6 +4,7 @@
 tor.keyring
 signature.asc
 .envrc
+.direnv
 
 # Added by cargo
 #
