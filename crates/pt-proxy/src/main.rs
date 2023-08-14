@@ -126,8 +126,7 @@ async fn http_request_over_socks5<T: AsyncRead + AsyncWrite + Unpin>(
     }
     // Send HTTP request through the proxied stream
     stream.write(http_request.as_bytes()).await?;
-    let endbyte = b'\0';
-    stream.write_u8(endbyte).await?;
+    stream.write_u8(0).await?;
     // Read and print the HTTP response
     let mut http_response = Vec::new();
     stream.read_to_end(&mut http_response).await?;
