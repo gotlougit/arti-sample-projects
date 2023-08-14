@@ -18,3 +18,4 @@ tor-error = { git = "https://gitlab.torproject.org/gotlou/arti/" , branch = "pt-
 tor-ptmgr = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = "pt-proxy", features = [ "experimental-api"] }
 anyhow = "1.0.72"
 fast-socks5 = "0.8.2"
+thiserror = "1.0.44"

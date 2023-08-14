@@ -1,6 +1,5 @@
 use anyhow::Result;
 use fast_socks5::client::Socks5Stream;
-use std::io;
 use std::str::FromStr;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use tokio::net::TcpStream;
@@ -13,6 +12,10 @@ use tor_socksproto::SocksAuth;
 use tor_socksproto::SocksVersion;
 
 const SERVER_STATE_LOCATION: &str = "/tmp/arti-pt";
+
+#[derive(Debug, thiserror::Error)]
+#[error("Error while obtaining bridge line data")]
+struct BridgeLineParseError;
 
 fn build_server_config(
     protocol: &str,
@@ -56,6 +59,29 @@ async fn connect_to_obfs4_client(
         config,
     )
     .await?)
+}
+
+fn read_cert_info() -> Result<String> {
+    let file_path = format!("{}/obfs4_bridgeline.txt", SERVER_STATE_LOCATION);
+    match std::fs::read_to_string(file_path) {
+        Ok(contents) => {
+            let line = contents
+                .lines()
+                .find(|line| line.contains("Bridge obfs4"))
+                .ok_or(BridgeLineParseError)?;
+            let cert = line
+                .split_whitespace()
+                .find(|part| part.starts_with("cert="))
+                .ok_or(BridgeLineParseError)?;
+            let iat = line
+                .split_whitespace()
+                .find(|part| part.starts_with("iat-mode="))
+                .ok_or(BridgeLineParseError)?;
+            let complete_config = format!("{};{}", cert, iat);
+            return Ok(complete_config);
+        }
+        Err(e) => Err(e.into()),
+    }
 }
 
 // TODO: use a low level crate to not generate SOCKS5 messages manually
@@ -114,9 +140,13 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
     // TODO: use clap for CLI args for configuring everything
     let cur_runtime = PreferredRuntime::current()?;
-    let server_addr = "127.0.0.1:4200";
-    let final_socks5_endpoint = "127.0.0.1:9050";
+    let entry_ip = "127.0.0.1";
+    let entry_socks5_port = 1234;
+    let entry_addr = format!("{}:{}", entry_ip, entry_socks5_port);
+    let server_ip = "127.0.0.1";
     let obfs4_server_port = 4200;
+    let server_addr = format!("{}:{}", server_ip, obfs4_server_port);
+    let final_socks5_endpoint = "127.0.0.1:9050";
     // server code
     let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
 
@@ -155,12 +185,7 @@ async fn main() -> Result<()> {
         .endpoint()
         .to_string();
 
-    // TODO: read this from state directory
-    // get the cert from CLI (temp HACK)
-    println!("Enter cert and iat-mode in semicolon separated format:");
-    let mut obfs4_server_conf = String::new();
-    io::stdin().read_line(&mut obfs4_server_conf)?;
-    obfs4_server_conf.remove(obfs4_server_conf.len() - 1);
+    let obfs4_server_conf = read_cert_info()?;
 
     // TODO: use `settings_to_protocol` to get username and password
     // this way we can deal with all edge cases
