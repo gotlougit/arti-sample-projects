@@ -217,7 +217,6 @@ async fn main() -> Result<()> {
                     };
                     println!("Connecting to PT client proxy");
                     let dest = String::from("icanhazip.com");
-                    // TODO: pass password from `settings_to_protocol` in here too
                     let mut conn = connect_to_obfs4_client(
                         &client_endpoint,
                         &username,
