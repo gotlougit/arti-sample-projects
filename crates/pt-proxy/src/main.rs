@@ -137,8 +137,8 @@ async fn http_request_over_socks5<T: AsyncRead + AsyncWrite + Unpin>(
     Ok(())
 }
 
-async fn create_final_socks5_server(final_endpoint: &str) {
-    let listener = Socks5Server::bind(final_endpoint).await.unwrap();
+async fn create_final_socks5_server(final_endpoint: &str) -> Result<()> {
+    let listener = Socks5Server::bind(final_endpoint).await?;
     tokio::spawn(async move {
         while let Some(Ok(socket)) = listener.incoming().next().await {
             tokio::spawn(async move {
@@ -148,6 +148,7 @@ async fn create_final_socks5_server(final_endpoint: &str) {
             });
         }
     });
+    Ok(())
 }
 
 #[tokio::main]
@@ -164,7 +165,7 @@ async fn main() -> Result<()> {
     let final_socks5_endpoint = "127.0.0.1:9050";
 
     // server code
-    create_final_socks5_server(final_socks5_endpoint).await;
+    create_final_socks5_server(final_socks5_endpoint).await?;
     let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
 
     let cr_clone = cur_runtime.clone();
