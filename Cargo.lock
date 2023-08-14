@@ -2678,6 +2678,7 @@ dependencies = [
  "anyhow",
  "arti-client 0.9.2",
  "fast-socks5",
+ "thiserror",
  "tokio",
  "tor-chanmgr 0.9.2",
  "tor-error 0.5.2",
