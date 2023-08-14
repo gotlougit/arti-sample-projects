@@ -19,3 +19,4 @@ tor-ptmgr = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = "pt-p
 anyhow = "1.0.72"
 fast-socks5 = "0.8.2"
 thiserror = "1.0.44"
+tokio-stream = "0.1.14"

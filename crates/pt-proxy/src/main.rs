@@ -1,9 +1,11 @@
 use anyhow::Result;
 use fast_socks5::client::Socks5Stream;
+use fast_socks5::server::Socks5Server;
 use std::str::FromStr;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use tokio::net::TcpStream;
 use tokio::time::Duration;
+use tokio_stream::StreamExt;
 use tor_chanmgr::transport::proxied::{settings_to_protocol, Protocol};
 use tor_linkspec::PtTransportName;
 use tor_ptmgr::ipc::{PluggableTransport, PtParameters};
@@ -135,6 +137,19 @@ async fn http_request_over_socks5<T: AsyncRead + AsyncWrite + Unpin>(
     Ok(())
 }
 
+async fn create_final_socks5_server(final_endpoint: &str) {
+    let listener = Socks5Server::bind(final_endpoint).await.unwrap();
+    tokio::spawn(async move {
+        while let Some(Ok(socket)) = listener.incoming().next().await {
+            tokio::spawn(async move {
+                if let Err(_) = socket.upgrade_to_socks5().await {
+                    eprintln!("error");
+                }
+            });
+        }
+    });
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
@@ -147,6 +162,9 @@ async fn main() -> Result<()> {
     let obfs4_server_port = 4200;
     let server_addr = format!("{}:{}", server_ip, obfs4_server_port);
     let final_socks5_endpoint = "127.0.0.1:9050";
+
+    create_final_socks5_server(final_socks5_endpoint).await;
+
     // server code
     let server_params = build_server_config("obfs4", &server_addr, &final_socks5_endpoint)?;
 
