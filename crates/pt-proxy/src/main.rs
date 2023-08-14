@@ -1,5 +1,3 @@
-//! Very very very basic soak test that runs obfs4proxy.
-
 use anyhow::Result;
 use fast_socks5::client::Socks5Stream;
 use std::io;
@@ -99,15 +97,15 @@ async fn http_request_over_socks5<T: AsyncRead + AsyncWrite + Unpin>(
         eprintln!("SOCKS5 request failed");
         return Ok(());
     }
-
     // Send HTTP request through the proxied stream
-    stream.write_all(http_request.as_bytes()).await?;
-
+    stream.write(http_request.as_bytes()).await?;
+    let endbyte = b'\0';
+    stream.write_u8(endbyte).await?;
     // Read and print the HTTP response
     let mut http_response = Vec::new();
     stream.read_to_end(&mut http_response).await?;
+    // stream.read_to_end(&mut http_response).await?;
     println!("{}", String::from_utf8_lossy(&http_response));
-
     Ok(())
 }
 
