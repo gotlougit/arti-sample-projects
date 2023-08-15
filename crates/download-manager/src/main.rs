@@ -60,7 +60,8 @@ enum DownloadMgrError {
         /// The status code that we got instead of the intended one
         status: StatusCode,
     },
-    #[error("Got unexpected status code")]
+    /// Error to represent raw bytes properly
+    #[error("Unable to read body into bytes")]
     BodyDownload {
         /// Error raised while reading body into bytes, wraps [hyper::Error]`
         error: hyper::Error,
@@ -198,8 +199,9 @@ async fn request_sha256_sum(
     .into())
 }
 
+/// Backoff function for determining timeout duration for each repeated download try
 fn wait_time_for_iteration(iteration: usize) -> u64 {
-    return 1000.min(500 + 100 * iteration as u64);
+    1000.min(500 + 100 * iteration as u64)
 }
 
 /// Wrapper around [request_range] in order to overcome network issues
@@ -360,6 +362,6 @@ async fn main() -> anyhow::Result<()> {
         .create(true)
         .open(&download_file_name)?;
     debug!("Created file, now writing downloaded content to disk...");
-    fd.write(&file_vec)?;
+    fd.write_all(&file_vec)?;
     Ok(())
 }
