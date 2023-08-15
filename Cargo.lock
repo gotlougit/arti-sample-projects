@@ -2683,7 +2683,6 @@ dependencies = [
  "tokio",
  "tokio-stream",
  "tor-chanmgr 0.9.2",
- "tor-error 0.5.2",
  "tor-linkspec 0.8.1",
  "tor-ptmgr 0.3.2",
  "tor-rtcompat 0.9.2",

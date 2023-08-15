@@ -14,7 +14,6 @@ tor-socksproto = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = 
 tor-linkspec = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = "pt-proxy"}
 tor-chanmgr = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = "pt-proxy", features = ["pt-client"]}
 tracing-subscriber = "0.2.0"
-tor-error = { git = "https://gitlab.torproject.org/gotlou/arti/" , branch = "pt-proxy"}
 tor-ptmgr = { git = "https://gitlab.torproject.org/gotlou/arti/", branch = "pt-proxy", features = [ "experimental-api"] }
 anyhow = "1.0.72"
 thiserror = "1.0.44"
