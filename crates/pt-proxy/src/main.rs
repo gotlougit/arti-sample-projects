@@ -256,7 +256,6 @@ async fn main() -> Result<()> {
             let server_params =
                 build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
 
-            let cr_clone = cur_runtime.clone();
             let mut server_pt = PluggableTransport::new(
                 obfs4_path.into(),
                 vec![
@@ -267,7 +266,7 @@ async fn main() -> Result<()> {
                 ],
                 server_params,
             );
-            server_pt.launch(cr_clone).await?;
+            tokio::spawn(async move { server_pt.launch(cur_runtime).await.unwrap() });
             loop {}
         }
     }
