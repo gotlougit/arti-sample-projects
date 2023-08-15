@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use fast_socks5::client::{self, Socks5Stream};
+use fast_socks5::client::{Config, Socks5Stream};
 use fast_socks5::server::Socks5Server;
 use std::str::FromStr;
 use tokio::io::AsyncWriteExt;
@@ -117,7 +117,7 @@ async fn connect_to_obfs4_client(
     destination: &str,
     port: u16,
 ) -> Result<Socks5Stream<TcpStream>> {
-    let config = client::Config::default();
+    let config = Config::default();
     Ok(Socks5Stream::connect_with_password(
         proxy_server.to_string(),
         destination.to_string(),
