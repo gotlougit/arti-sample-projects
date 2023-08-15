@@ -23,22 +23,15 @@ pub const RECEIVE_TIMEOUT: Duration = Duration::from_secs(1);
 /// Attempt to create a Channel to a provided bridge
 ///
 /// If successful, we will obtain a Channel, if not we get an error.
-/// Based on this operation we simply return a boolean.
 ///
 /// The channel is created using [tor_chanmgr::ChanMgr], accessed using
 /// [TorClient::chanmgr()]
 async fn is_bridge_online(
     bridge_config: &BridgeConfig,
     tor_client: &TorClient<PreferredRuntime>,
-) -> (Option<Channel>, Option<String>) {
+) -> Result<Channel, tor_chanmgr::Error> {
     let chanmgr = tor_client.chanmgr();
-    match chanmgr.build_unmanaged_channel(bridge_config).await {
-        Ok(chan) => (Some(chan), None),
-        Err(e) => {
-            let report = e.report().to_string().replace("error: ", "");
-            (None, Some(report))
-        }
-    }
+    chanmgr.build_unmanaged_channel(bridge_config).await
 }
 
 /// Just a small alias for building a default [TorClient] config. It will likely
@@ -94,9 +87,17 @@ async fn controlled_test_function(
                         let current_time = Utc::now();
                         let formatted_time =
                             current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
-                        let (functional, error) =
-                            is_bridge_online(&bridge_config, &tor_client).await;
-                        (rawbridgeline, functional, formatted_time, error)
+                        match is_bridge_online(&bridge_config, &tor_client).await {
+                            Ok(functional) => {
+                                (rawbridgeline, Some(functional), formatted_time, None)
+                            }
+                            Err(er) => (
+                                rawbridgeline,
+                                None,
+                                formatted_time,
+                                Some(er.report().to_string()),
+                            ),
+                        }
                     }));
                 }
                 Err(e) => {
