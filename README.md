@@ -14,7 +14,8 @@ It helps show how arbitrary bytestreams can be routed over Tor effectively, and 
 toy DNS implementation for this purpose.
 
 - An obfs4 connection checker, which takes in a list of all obfs4 bridges and checks their health,
-ie, whether they are online or not.
+ie, whether they are online or not, as well as delivers updates on their statuses, all through
+a RESTful API
 
 - A connection checker, which runs on a user's machine to help report whether different
 ways to connect to the Tor Network work (ie, normal Tor connections, Snowflake Tor connections,
