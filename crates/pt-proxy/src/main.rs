@@ -42,6 +42,10 @@ enum Command {
         /// obfs4 server
         #[arg(required = true)]
         remote_obfs4_port: u16,
+        /// Info about the server process that is required to connect
+        /// successfully
+        #[arg(required = true)]
+        obfs4_auth_info: String,
     },
     /// Enable server mode
     Server {
@@ -128,31 +132,6 @@ async fn connect_to_obfs4_client(
     .await?)
 }
 
-/// TODO: this will go away in its present form since the obfs4 server won't
-/// necessarily be in the same place as the obfs4 client
-fn read_cert_info() -> Result<String> {
-    let file_path = format!("{}/obfs4_bridgeline.txt", SERVER_STATE_LOCATION);
-    match std::fs::read_to_string(file_path) {
-        Ok(contents) => {
-            let line = contents
-                .lines()
-                .find(|line| line.contains("Bridge obfs4"))
-                .ok_or(BridgeLineParseError)?;
-            let cert = line
-                .split_whitespace()
-                .find(|part| part.starts_with("cert="))
-                .ok_or(BridgeLineParseError)?;
-            let iat = line
-                .split_whitespace()
-                .find(|part| part.starts_with("iat-mode="))
-                .ok_or(BridgeLineParseError)?;
-            let complete_config = format!("{};{}", cert, iat);
-            Ok(complete_config)
-        }
-        Err(e) => Err(e.into()),
-    }
-}
-
 /// Launch the dumb TCP pipe, whose only job is to abstract away the obfs4 client
 /// and its complicated setup, and just forward bytes between the obfs4 client
 /// and the client
@@ -214,6 +193,7 @@ async fn main() -> Result<()> {
             client_port,
             remote_obfs4_ip,
             remote_obfs4_port,
+            obfs4_auth_info: obfs4_server_conf,
         } => {
             let entry_addr = format!("127.0.0.1:{}", client_port);
 
@@ -235,9 +215,6 @@ async fn main() -> Result<()> {
                 .unwrap()
                 .endpoint()
                 .to_string();
-
-            // TODO: make this work remotely
-            let obfs4_server_conf = read_cert_info()?;
 
             let settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf)?;
             match settings {
