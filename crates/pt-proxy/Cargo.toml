@@ -20,3 +20,4 @@ anyhow = "1.0.72"
 thiserror = "1.0.44"
 tokio-stream = "0.1.14"
 fast-socks5 = "0.8.2"
+clap = { version = "4.3.21", features = [ "derive" ] }

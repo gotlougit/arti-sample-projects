@@ -1,4 +1,5 @@
 use anyhow::Result;
+use clap::{Parser, Subcommand};
 use fast_socks5::client::{self, Socks5Stream};
 use fast_socks5::server::Socks5Server;
 use std::str::FromStr;
@@ -19,6 +20,52 @@ const CLIENT_STATE_LOCATION: &str = "/tmp/arti-pt-client";
 #[derive(Debug, thiserror::Error)]
 #[error("Error while obtaining bridge line data")]
 struct BridgeLineParseError;
+
+/// Specify which mode we wish to use the program in
+#[derive(Subcommand)]
+enum Command {
+    /// Enable client mode
+    Client {
+        /// Binary to use to launch obfs4 client
+        #[arg(required = true)]
+        obfs4_path: String,
+        /// The local port that programs will point traffic to
+        #[arg(short, long, default_value = "9050")]
+        client_port: u16,
+        /// Remote IP that connections should go to, this is an
+        /// obfs4 server
+        #[arg(required = true)]
+        remote_obfs4_ip: String,
+        /// Remote port that connections should go to, this is an
+        /// obfs4 server
+        #[arg(required = true)]
+        remote_obfs4_port: u16,
+    },
+    /// Enable server mode
+    Server {
+        /// Binary to use to launch obfs4 server
+        #[arg(required = true)]
+        obfs4_path: String,
+        /// Address on which the obfs4 server should listen in for
+        /// incoming connections
+        #[arg(required = true)]
+        listen_address: String,
+        /// The local port the obfs4 server directs connections to
+        ///
+        /// Programs generally don't interact directly with it,
+        /// so this doesn't need to be set
+        #[arg(default_value = "4000")]
+        final_socks5_port: u16,
+    },
+}
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+/// Tunnel SOCKS5 traffic through obfs4 connections
+struct Args {
+    #[command(subcommand)]
+    command: Command,
+}
 
 #[derive(Clone)]
 struct ForwardingCreds {
@@ -143,79 +190,86 @@ async fn run_socks5_server(endpoint: &str) -> Result<()> {
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    // TODO: use clap for CLI args for configuring everything
     let cur_runtime = PreferredRuntime::current()?;
-    let entry_ip = "127.0.0.1";
-    let entry_socks5_port = 1234;
-    let entry_addr = format!("{}:{}", entry_ip, entry_socks5_port);
-    let server_ip = "127.0.0.1";
-    let obfs4_server_port = 4200;
-    let server_addr = format!("{}:{}", server_ip, obfs4_server_port);
-    let final_socks5_endpoint = "127.0.0.1:9050";
+    let args = Args::parse();
+    match args.command {
+        Command::Client {
+            obfs4_path,
+            client_port,
+            remote_obfs4_ip,
+            remote_obfs4_port,
+        } => {
+            let entry_addr = format!("127.0.0.1:{}", client_port);
 
-    // server code
-    run_socks5_server(final_socks5_endpoint).await?;
-    let server_params = build_server_config("obfs4", &server_addr, final_socks5_endpoint)?;
+            let client_params = build_client_config("obfs4")?;
+            let mut client_pt = PluggableTransport::new(
+                obfs4_path.into(),
+                vec![
+                    "-enableLogging".to_string(),
+                    "-logLevel".to_string(),
+                    "DEBUG".to_string(),
+                    "-unsafeLogging".to_string(),
+                ],
+                client_params,
+            );
+            client_pt.launch(cur_runtime).await?;
+            let client_endpoint = client_pt
+                .transport_methods()
+                .get(&PtTransportName::from_str("obfs4")?)
+                .unwrap()
+                .endpoint()
+                .to_string();
 
-    let cr_clone = cur_runtime.clone();
-    let mut server_pt = PluggableTransport::new(
-        "lyrebird".into(),
-        vec![
-            "-enableLogging".to_string(),
-            "-logLevel".to_string(),
-            "DEBUG".to_string(),
-            "-unsafeLogging".to_string(),
-        ],
-        server_params,
-    );
-    server_pt.launch(cr_clone).await?;
+            // TODO: make this work remotely
+            let obfs4_server_conf = read_cert_info()?;
 
-    // Client code
-
-    let client_params = build_client_config("obfs4")?;
-    let cr_clone = cur_runtime.clone();
-    let mut client_pt = PluggableTransport::new(
-        "lyrebird".into(),
-        vec![
-            "-enableLogging".to_string(),
-            "-logLevel".to_string(),
-            "DEBUG".to_string(),
-            "-unsafeLogging".to_string(),
-        ],
-        client_params,
-    );
-    client_pt.launch(cr_clone).await?;
-    let client_endpoint = client_pt
-        .transport_methods()
-        .get(&PtTransportName::from_str("obfs4")?)
-        .unwrap()
-        .endpoint()
-        .to_string();
-
-    let obfs4_server_conf = read_cert_info()?;
-
-    let settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf)?;
-    match settings {
-        Protocol::Socks(_, auth) => match auth {
-            SocksAuth::Username(raw_username, raw_password) => {
-                let username = std::str::from_utf8(&raw_username)?;
-                let password = match raw_password.is_empty() {
-                    true => "\0",
-                    false => std::str::from_utf8(&raw_password)?,
-                };
-                let creds = ForwardingCreds {
-                    username: username.to_string(),
-                    password: password.to_string(),
-                    forward_endpoint: client_endpoint,
-                    obfs4_server_ip: String::from("127.0.0.1"),
-                    obfs4_server_port,
-                };
-                run_forwarding_server(&entry_addr, creds).await?;
+            let settings = settings_to_protocol(SocksVersion::V5, obfs4_server_conf)?;
+            match settings {
+                Protocol::Socks(_, auth) => match auth {
+                    SocksAuth::Username(raw_username, raw_password) => {
+                        let username = std::str::from_utf8(&raw_username)?;
+                        let password = match raw_password.is_empty() {
+                            true => "\0",
+                            false => std::str::from_utf8(&raw_password)?,
+                        };
+                        let creds = ForwardingCreds {
+                            username: username.to_string(),
+                            password: password.to_string(),
+                            forward_endpoint: client_endpoint,
+                            obfs4_server_ip: remote_obfs4_ip,
+                            obfs4_server_port: remote_obfs4_port,
+                        };
+                        run_forwarding_server(&entry_addr, creds).await?;
+                    }
+                    _ => eprintln!("Unable to get credentials for obfs4 client process!"),
+                },
+                _ => eprintln!("Unexpected protocol"),
             }
-            _ => eprintln!("Unable to get credentials for obfs4 client process!"),
-        },
-        _ => eprintln!("Unexpected protocol"),
-    }
+        }
+        Command::Server {
+            obfs4_path,
+            listen_address,
+            final_socks5_port,
+        } => {
+            let final_socks5_endpoint = format!("127.0.0.1:{}", final_socks5_port);
+            run_socks5_server(&final_socks5_endpoint).await?;
+            let server_params =
+                build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
 
+            let cr_clone = cur_runtime.clone();
+            let mut server_pt = PluggableTransport::new(
+                obfs4_path.into(),
+                vec![
+                    "-enableLogging".to_string(),
+                    "-logLevel".to_string(),
+                    "DEBUG".to_string(),
+                    "-unsafeLogging".to_string(),
+                ],
+                server_params,
+            );
+            server_pt.launch(cr_clone).await?;
+            loop {}
+        }
+    }
     Ok(())
 }
