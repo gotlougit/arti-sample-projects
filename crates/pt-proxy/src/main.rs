@@ -14,9 +14,12 @@ use tor_rtcompat::PreferredRuntime;
 use tor_socksproto::SocksAuth;
 use tor_socksproto::SocksVersion;
 
+/// The location where the obfs4 server will store its state
 const SERVER_STATE_LOCATION: &str = "/tmp/arti-pt";
+/// The location where the obfs4 client will store its state
 const CLIENT_STATE_LOCATION: &str = "/tmp/arti-pt-client";
 
+/// Error defined to denote a failure to get the bridge line
 #[derive(Debug, thiserror::Error)]
 #[error("Error while obtaining bridge line data")]
 struct BridgeLineParseError;
@@ -59,14 +62,17 @@ enum Command {
     },
 }
 
+/// Tunnel SOCKS5 traffic through obfs4 connections
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
-/// Tunnel SOCKS5 traffic through obfs4 connections
 struct Args {
     #[command(subcommand)]
     command: Command,
 }
 
+/// Store the data we need to connect to the obfs4 client
+///
+/// The obfs4 client in turn connects to the obfs4 server
 #[derive(Clone)]
 struct ForwardingCreds {
     username: String,
@@ -76,6 +82,7 @@ struct ForwardingCreds {
     obfs4_server_port: u16,
 }
 
+/// Create the config to launch an obfs4 server process
 fn build_server_config(
     protocol: &str,
     bind_addr: &str,
@@ -93,6 +100,7 @@ fn build_server_config(
         .build()?)
 }
 
+/// Create the config to launch an obfs4 client process
 fn build_client_config(protocol: &str) -> Result<PtParameters> {
     Ok(PtParameters::builder()
         .state_location(CLIENT_STATE_LOCATION.into())
@@ -101,6 +109,7 @@ fn build_client_config(protocol: &str) -> Result<PtParameters> {
         .build()?)
 }
 
+/// Create a SOCKS5 connection to the obfs4 client
 async fn connect_to_obfs4_client(
     proxy_server: &str,
     username: &str,
@@ -120,6 +129,8 @@ async fn connect_to_obfs4_client(
     .await?)
 }
 
+/// TODO: this will go away in its present form since the obfs4 server won't
+/// necessarily be in the same place as the obfs4 client
 fn read_cert_info() -> Result<String> {
     let file_path = format!("{}/obfs4_bridgeline.txt", SERVER_STATE_LOCATION);
     match std::fs::read_to_string(file_path) {
@@ -143,6 +154,9 @@ fn read_cert_info() -> Result<String> {
     }
 }
 
+/// Launch the dumb TCP pipe, whose only job is to abstract away the obfs4 client
+/// and its complicated setup, and just forward bytes between the obfs4 client
+/// and the client
 async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -> Result<()> {
     let listener = TcpListener::bind(endpoint).await?;
     while let Ok((mut client, _)) = listener.accept().await {
@@ -173,6 +187,8 @@ async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -
     Ok(())
 }
 
+/// Run the final hop of the connection, which finally makes the actual
+/// network request to the intended host and relays it back
 async fn run_socks5_server(endpoint: &str) -> Result<()> {
     let listener = Socks5Server::bind(endpoint).await?;
     tokio::spawn(async move {
@@ -187,6 +203,7 @@ async fn run_socks5_server(endpoint: &str) -> Result<()> {
     Ok(())
 }
 
+/// Main function, ties everything together and parses arguments etc.
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
@@ -267,6 +284,7 @@ async fn main() -> Result<()> {
                 server_params,
             );
             tokio::spawn(async move { server_pt.launch(cur_runtime).await.unwrap() });
+            // Need an endless loop here to not kill the server PT process
             loop {}
         }
     }
