@@ -11,8 +11,7 @@ use tor_chanmgr::transport::proxied::{settings_to_protocol, Protocol};
 use tor_linkspec::PtTransportName;
 use tor_ptmgr::ipc::{PluggableTransport, PtParameters};
 use tor_rtcompat::PreferredRuntime;
-use tor_socksproto::SocksAuth;
-use tor_socksproto::SocksVersion;
+use tor_socksproto::{SocksAuth, SocksVersion};
 
 /// The location where the obfs4 server will store its state
 const SERVER_STATE_LOCATION: &str = "/tmp/arti-pt";
