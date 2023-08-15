@@ -34,12 +34,6 @@ async fn is_bridge_online(
     chanmgr.build_unmanaged_channel(bridge_config).await
 }
 
-/// Just a small alias for building a default [TorClient] config. It will likely
-/// be removed later
-fn build_entry_node_config() -> TorClientConfigBuilder {
-    TorClientConfig::builder()
-}
-
 /// Return a [TorClientConfigBuilder] which is set to use a pluggable transport
 /// for all connections
 fn build_pt_bridge_config(
