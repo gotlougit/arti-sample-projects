@@ -19,3 +19,6 @@ ie, whether they are online or not.
 - A connection checker, which runs on a user's machine to help report whether different
 ways to connect to the Tor Network work (ie, normal Tor connections, Snowflake Tor connections,
 obfs4 Tor connections etc.)
+
+- A `pt-proxy` program that allows you to use obfs4 independently of Tor to obfsucate your own
+traffic
