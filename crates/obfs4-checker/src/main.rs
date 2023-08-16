@@ -25,10 +25,6 @@
 //! regularly in order to deliver updates on which bridges have failed/come back
 //! online, and whose output is same as the normal /bridge-state endpoint in format
 //!
-//! Note that for testing purposes right now the program is only configured to
-//! make connections to regular, public Tor entry nodes instead, hence the naming
-//! differences here.
-//!
 //! ### Disclaimer
 //! This tool is currently in active development and needs further work and feedback
 //! from the Tor Project devs in order to one day make it to production
