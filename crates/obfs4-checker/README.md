@@ -1,12 +1,10 @@
 # Obfs4 Connection Checker
 
-This small tool attempts to check obfs4 bridge status.
+This small tool attempts to check obfs4 bridge status over a long period of time.
 
-Note: I used `curl https://onionoo.torproject.org/details?search=flag:guard` to
-get the entry nodes, then did some `jq`ing to finally get the raw descriptors to
-directly add into the program:
-
-`cat list | jq -r '.relays[] | "\(.or_addresses[0]) \(.fingerprint)"' > list_of_entry_nodes`
+A large list of bridges is intended to be ingested into the program once, and then
+another endpoint is meant to be polled in order to get updates on those bridges'
+states.
 
 ## Usage
 
