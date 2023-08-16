@@ -86,12 +86,11 @@ async fn controlled_test_function(
                                 Ok(functional) => {
                                     (rawbridgeline, Some(functional), formatted_time, None)
                                 }
-                                Err(er) => (
-                                    rawbridgeline,
-                                    None,
-                                    formatted_time,
-                                    Some(er.report().to_string()),
-                                ),
+                                Err(er) => {
+                                    let error_report =
+                                        er.report().to_string().replace("error: ", "");
+                                    (rawbridgeline, None, formatted_time, Some(error_report))
+                                }
                             }
                         })
                     }
