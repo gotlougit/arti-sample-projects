@@ -60,18 +60,18 @@ fn build_pt_bridge_config(
 ///
 /// This is done up until all the bridges in the slice are covered
 async fn controlled_test_function(
-    node_lines: &[String],
+    bridge_lines: &[String],
     common_tor_client: TorClient<PreferredRuntime>,
 ) -> (HashMap<String, BridgeResult>, HashMap<String, Channel>) {
     let mut results = HashMap::new();
     let mut channels = HashMap::new();
-    for mut counter in 0..node_lines.len() {
+    for mut counter in 0..bridge_lines.len() {
         let mut tasks = Vec::with_capacity(MAX_CONNECTIONS);
         for _ in 0..MAX_CONNECTIONS {
-            if counter >= node_lines.len() {
+            if counter >= bridge_lines.len() {
                 break;
             }
-            let rawbridgeline = node_lines[counter].clone();
+            let rawbridgeline = bridge_lines[counter].clone();
             let maybe_bridge: Result<BridgeConfigBuilder, BridgeParseError> = rawbridgeline.parse();
             match maybe_bridge {
                 Ok(bridge) => {
@@ -129,13 +129,13 @@ async fn controlled_test_function(
 
 /// Calculates a list of bridge lines that have no channels
 pub fn get_failed_bridges(
-    guard_lines: &[String],
+    bridge_lines: &[String],
     channels: &HashMap<String, Channel>,
 ) -> Vec<String> {
     let mut failed_lines = Vec::new();
-    for guard_line in guard_lines.iter() {
-        if !channels.contains_key(guard_line) {
-            failed_lines.push(guard_line.clone());
+    for bridge_line in bridge_lines.iter() {
+        if !channels.contains_key(bridge_line) {
+            failed_lines.push(bridge_line.clone());
         }
     }
     failed_lines
@@ -244,9 +244,9 @@ pub async fn build_common_tor_client(
 ///
 /// 3. Return the results
 pub async fn main_test(
-    guard_lines: Vec<String>,
+    bridge_lines: Vec<String>,
     obfs4_path: &str,
 ) -> Result<(HashMap<String, BridgeResult>, HashMap<String, Channel>), arti_client::Error> {
     let common_tor_client = build_common_tor_client(obfs4_path).await.unwrap();
-    Ok(controlled_test_function(&guard_lines, common_tor_client).await)
+    Ok(controlled_test_function(&bridge_lines, common_tor_client).await)
 }
