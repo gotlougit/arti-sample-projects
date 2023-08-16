@@ -17,7 +17,8 @@ use crate::BridgeResult;
 /// The maximum number of open connections to relays at any given time
 const MAX_CONNECTIONS: usize = 10;
 
-/// The maximum amount of time to wait on a channel receive
+/// The maximum amount of time we wait for a response from a channel
+/// before giving up. This is important to avoid getting the program stuck
 pub const RECEIVE_TIMEOUT: Duration = Duration::from_secs(1);
 
 /// Attempt to create a Channel to a provided bridge
