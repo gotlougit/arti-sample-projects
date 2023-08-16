@@ -67,7 +67,8 @@ async fn controlled_test_function(
     let mut channels = HashMap::new();
     let mut counter = 0;
     while counter < bridge_lines.len() {
-        let tasks: Vec<_> = bridge_lines[counter..counter + MAX_CONNECTIONS]
+        let tasks: Vec<_> = bridge_lines
+            [counter..(counter + MAX_CONNECTIONS).min(bridge_lines.len())]
             .iter()
             .map(|rawbridgeline_ref| {
                 let rawbridgeline = rawbridgeline_ref.to_string();
