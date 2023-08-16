@@ -65,37 +65,36 @@ async fn controlled_test_function(
 ) -> (HashMap<String, BridgeResult>, HashMap<String, Channel>) {
     let mut results = HashMap::new();
     let mut channels = HashMap::new();
-    for mut counter in 0..bridge_lines.len() {
-        let mut tasks = Vec::with_capacity(MAX_CONNECTIONS);
-        for _ in 0..MAX_CONNECTIONS {
-            if counter >= bridge_lines.len() {
-                break;
-            }
-            let rawbridgeline = bridge_lines[counter].clone();
-            let maybe_bridge: Result<BridgeConfigBuilder, BridgeParseError> = rawbridgeline.parse();
-            match maybe_bridge {
-                Ok(bridge) => {
-                    let bridge_config = bridge.build().unwrap();
-                    let tor_client = common_tor_client.isolated_client();
-                    tasks.push(tokio::spawn(async move {
-                        let current_time = Utc::now();
-                        let formatted_time =
-                            current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
-                        match is_bridge_online(&bridge_config, &tor_client).await {
-                            Ok(functional) => {
-                                (rawbridgeline, Some(functional), formatted_time, None)
+    let mut counter = 0;
+    while counter < bridge_lines.len() {
+        let tasks: Vec<_> = bridge_lines[counter..counter + MAX_CONNECTIONS]
+            .iter()
+            .map(|rawbridgeline_ref| {
+                let rawbridgeline = rawbridgeline_ref.to_string();
+                let maybe_bridge: Result<BridgeConfigBuilder, BridgeParseError> =
+                    rawbridgeline.parse();
+                match maybe_bridge {
+                    Ok(bridge) => {
+                        let bridge_config = bridge.build().unwrap();
+                        let tor_client = common_tor_client.isolated_client();
+                        tokio::spawn(async move {
+                            let current_time = Utc::now();
+                            let formatted_time =
+                                current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
+                            match is_bridge_online(&bridge_config, &tor_client).await {
+                                Ok(functional) => {
+                                    (rawbridgeline, Some(functional), formatted_time, None)
+                                }
+                                Err(er) => (
+                                    rawbridgeline,
+                                    None,
+                                    formatted_time,
+                                    Some(er.report().to_string()),
+                                ),
                             }
-                            Err(er) => (
-                                rawbridgeline,
-                                None,
-                                formatted_time,
-                                Some(er.report().to_string()),
-                            ),
-                        }
-                    }));
-                }
-                Err(e) => {
-                    tasks.push(tokio::spawn(async move {
+                        })
+                    }
+                    Err(e) => tokio::spawn(async move {
                         let current_time = Utc::now();
                         let formatted_time =
                             current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
@@ -105,12 +104,11 @@ async fn controlled_test_function(
                             formatted_time,
                             Some(e.report().to_string()),
                         )
-                    }));
+                    }),
                 }
-            }
-            counter += 1;
-        }
-
+            })
+            .collect();
+        counter += MAX_CONNECTIONS;
         let task_results = futures::future::join_all(tasks).await;
         for (bridgeline, chan, time, error) in task_results.into_iter().flatten() {
             let res = BridgeResult {
@@ -132,13 +130,16 @@ pub fn get_failed_bridges(
     bridge_lines: &[String],
     channels: &HashMap<String, Channel>,
 ) -> Vec<String> {
-    let mut failed_lines = Vec::new();
-    for bridge_line in bridge_lines.iter() {
-        if !channels.contains_key(bridge_line) {
-            failed_lines.push(bridge_line.clone());
-        }
-    }
-    failed_lines
+    bridge_lines
+        .iter()
+        .filter_map(|bridge_line| {
+            if !channels.contains_key(bridge_line) {
+                Some(bridge_line.to_owned())
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>()
 }
 
 /// Task which checks if failed bridges have come up online
