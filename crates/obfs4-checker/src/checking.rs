@@ -88,6 +88,11 @@ async fn test_bridges(
                                     (rawbridgeline, Some(functional), formatted_time, None)
                                 }
                                 Err(er) => {
+                                    // Build error here since we can't
+                                    // represent the actual Arti-related errors
+                                    // by `dyn ErrorReport` and we need the
+                                    // `.report()` method's output to pretty print
+                                    // errors in the JSON we return to the user
                                     let error_report =
                                         er.report().to_string().replace("error: ", "");
                                     (rawbridgeline, None, formatted_time, Some(error_report))
@@ -99,6 +104,11 @@ async fn test_bridges(
                         let current_time = Utc::now();
                         let formatted_time =
                             current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
+                        // Build error here since we can't
+                        // represent the actual Arti-related errors
+                        // by `dyn ErrorReport` and we need the
+                        // `.report()` method's output to pretty print
+                        // errors in the JSON we return to the user
                         (
                             rawbridgeline,
                             None,
