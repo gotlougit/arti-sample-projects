@@ -60,7 +60,7 @@ fn build_pt_bridge_config(
 /// actual work to check each single bridge is done by [is_bridge_online()]
 ///
 /// This is done up until all the bridges in the slice are covered
-async fn controlled_test_function(
+async fn test_bridges(
     bridge_lines: &[String],
     common_tor_client: TorClient<PreferredRuntime>,
 ) -> (HashMap<String, BridgeResult>, HashMap<String, Channel>) {
@@ -154,7 +154,7 @@ pub async fn check_failed_bridges_task(
     let mut failed_bridges = initial_failed_bridges;
     loop {
         let (newresults, channels) =
-            controlled_test_function(&failed_bridges, common_tor_client.isolated_client()).await;
+            test_bridges(&failed_bridges, common_tor_client.isolated_client()).await;
         // detect which bridges failed again
         failed_bridges = get_failed_bridges(&failed_bridges, &channels);
         // report online bridges to the appropriate task
@@ -242,7 +242,7 @@ pub async fn build_common_tor_client(
 ///
 /// 1. Create the common [`TorClient`] which will be used for every connection
 ///
-/// 2. Give [controlled_test_function()] the bridge lines
+/// 2. Give [test_bridges()] the bridge lines
 ///
 /// 3. Return the results
 pub async fn main_test(
@@ -250,5 +250,5 @@ pub async fn main_test(
     obfs4_path: &str,
 ) -> Result<(HashMap<String, BridgeResult>, HashMap<String, Channel>), arti_client::Error> {
     let common_tor_client = build_common_tor_client(obfs4_path).await.unwrap();
-    Ok(controlled_test_function(&bridge_lines, common_tor_client).await)
+    Ok(test_bridges(&bridge_lines, common_tor_client).await)
 }
