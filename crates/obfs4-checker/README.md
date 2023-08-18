@@ -52,10 +52,14 @@ For that you can run
   curl localhost:5000/updates
 ```
 
-This has the same output structure as the `/bridge-state` endpoint. Note that it
-may return an empty list, but that is because at that point there may not be
-updates to give to the user. This is why you should poll this endpoint for responses.
-If we call this endpoint before `/bridge-state`, you will always get no results.
+This has the same output structure as the `/bridge-state` endpoint. 
+
+### Usage Disclaimers
+
+Note that `/updates` often may return an empty list, but that is because at that point 
+there may not be updates to give to the user. This is why you should poll this 
+endpoint for responses. If we call this endpoint before `/bridge-state`, you 
+will always get no results.
 
 Hence you should ALWAYS call `/bridge-state` first and poll `/updates` thereafter.
 
