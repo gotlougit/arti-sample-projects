@@ -126,6 +126,7 @@ async fn updates(
     (StatusCode::OK, Json(finalresult))
 }
 
+/// Add new bridges to the main testing tasks
 async fn add_new_bridges(
     new_bridge_lines: Vec<String>,
     new_bridges_sender: Sender<Vec<String>>,
