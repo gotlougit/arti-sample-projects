@@ -67,7 +67,7 @@ pub struct BridgeResult {
     /// Is bridge online or not?
     functional: bool,
     /// The time at which the bridge was last tested, written as a nice string
-    last_tested: String,
+    last_tested: DateTime<Utc>,
     /// Error encountered while trying to connect to the bridge, if any
     ///
     /// It is generated using [tor_error::ErrorReport]

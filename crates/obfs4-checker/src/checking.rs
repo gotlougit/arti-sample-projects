@@ -81,11 +81,9 @@ async fn test_bridges(
                         let tor_client = common_tor_client.isolated_client();
                         tokio::spawn(async move {
                             let current_time = Utc::now();
-                            let formatted_time =
-                                current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
                             match is_bridge_online(&bridge_config, &tor_client).await {
                                 Ok(functional) => {
-                                    (rawbridgeline, Some(functional), formatted_time, None)
+                                    (rawbridgeline, Some(functional), current_time, None)
                                 }
                                 Err(er) => {
                                     // Build error here since we can't
@@ -95,15 +93,13 @@ async fn test_bridges(
                                     // errors in the JSON we return to the user
                                     let error_report =
                                         er.report().to_string().replace("error: ", "");
-                                    (rawbridgeline, None, formatted_time, Some(error_report))
+                                    (rawbridgeline, None, current_time, Some(error_report))
                                 }
                             }
                         })
                     }
                     Err(e) => tokio::spawn(async move {
                         let current_time = Utc::now();
-                        let formatted_time =
-                            current_time.format("%Y-%m-%dT%H:%M:%S%.9fZ").to_string();
                         // Build error here since we can't
                         // represent the actual Arti-related errors
                         // by `dyn ErrorReport` and we need the
@@ -112,7 +108,7 @@ async fn test_bridges(
                         (
                             rawbridgeline,
                             None,
-                            formatted_time,
+                            current_time,
                             Some(e.report().to_string()),
                         )
                     }),
