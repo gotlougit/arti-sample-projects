@@ -60,6 +60,9 @@ success or failure. From there on, poll `/updates` as usual to get connection in
 
 ### Usage Disclaimers
 
+Note that this tool is currently in active development and needs further work and feedback
+from the Tor Project devs in order to one day make it to production
+
 Note that `/updates` often may return an empty list, but that is because at that point 
 there may not be updates to give to the user. This is why you should poll this 
 endpoint for responses. If we call this endpoint before `/bridge-state`, you 
