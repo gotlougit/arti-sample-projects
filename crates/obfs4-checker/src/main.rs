@@ -96,7 +96,7 @@ async fn check_bridges(
     bridge_lines: Vec<String>,
     updates_sender: Sender<HashMap<String, BridgeResult>>,
     obfs4_path: String,
-    reset_receiver: broadcast::Receiver<Vec<String>>,
+    new_bridges_receiver: broadcast::Receiver<Vec<String>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let mainop = crate::checking::main_test(bridge_lines.clone(), &obfs4_path).await;
@@ -116,7 +116,7 @@ async fn check_bridges(
                     failed_bridges,
                     common_tor_client,
                     updates_sender,
-                    reset_receiver,
+                    new_bridges_receiver,
                 )
                 .await
             });
@@ -156,9 +156,9 @@ async fn updates(
 
 async fn add_new_bridges(
     new_bridge_lines: Vec<String>,
-    reset_sender: Sender<Vec<String>>,
+    new_bridges_sender: Sender<Vec<String>>,
 ) -> StatusCode {
-    match reset_sender.send(new_bridge_lines) {
+    match new_bridges_sender.send(new_bridge_lines) {
         Ok(_) => StatusCode::OK,
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
@@ -173,17 +173,17 @@ async fn main() {
     // unused Receiver prevents SendErrors
     let (updates_sender, _updates_recv_unused) =
         broadcast::channel::<HashMap<String, BridgeResult>>(100);
-    let (reset_sender, _reset_receiver) = broadcast::channel::<Vec<String>>(100);
+    let (new_bridges_sender, _new_bridges_receiver) = broadcast::channel::<Vec<String>>(100);
     let updates_sender_clone = updates_sender.clone();
-    let reset_sender_clone = reset_sender.clone();
+    let new_bridges_sender_clone = new_bridges_sender.clone();
     let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| {
-        let reset_sub = reset_sender_clone.subscribe();
+        let new_bridges_recv_clone = new_bridges_sender_clone.subscribe();
         async {
             check_bridges(
                 payload.bridge_lines,
                 updates_sender_clone,
                 obfs4_bin_path,
-                reset_sub,
+                new_bridges_recv_clone,
             )
             .await
         }
@@ -193,7 +193,7 @@ async fn main() {
         async move { updates(updates_recv).await }
     };
     let wrapped_add_new_bridges = move |Json(payload): Json<BridgeLines>| async move {
-        add_new_bridges(payload.bridge_lines, reset_sender).await
+        add_new_bridges(payload.bridge_lines, new_bridges_sender).await
     };
     let app = Router::new()
         .route("/bridge-state", post(wrapped_bridge_check))

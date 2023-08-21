@@ -160,7 +160,7 @@ pub async fn check_failed_bridges_task(
     now_online_bridges: Sender<HashMap<String, Channel>>,
     mut once_online_bridges: Receiver<Vec<String>>,
     updates_sender: broadcast::Sender<HashMap<String, BridgeResult>>,
-    mut reset_receiver: broadcast::Receiver<Vec<String>>,
+    mut new_bridges_receiver: broadcast::Receiver<Vec<String>>,
 ) {
     let mut failed_bridges = initial_failed_bridges;
     loop {
@@ -181,7 +181,8 @@ pub async fn check_failed_bridges_task(
         }
         // get new bridges to test from API call and merge them with known bad
         // bridges
-        while let Ok(Ok(new_failures)) = timeout(RECEIVE_TIMEOUT, reset_receiver.recv()).await {
+        while let Ok(Ok(new_failures)) = timeout(RECEIVE_TIMEOUT, new_bridges_receiver.recv()).await
+        {
             if new_failures.is_empty() {
                 break;
             }
@@ -233,7 +234,7 @@ pub async fn continuous_check(
     failed_bridges: Vec<String>,
     common_tor_client: TorClient<PreferredRuntime>,
     updates_sender: broadcast::Sender<HashMap<String, BridgeResult>>,
-    reset_receiver: broadcast::Receiver<Vec<String>>,
+    new_bridges_receiver: broadcast::Receiver<Vec<String>>,
 ) {
     let (once_online_sender, once_online_recv) = mpsc::channel(100);
     let (now_online_sender, now_online_recv) = mpsc::channel(100);
@@ -244,7 +245,7 @@ pub async fn continuous_check(
         now_online_sender,
         once_online_recv,
         updates_sender,
-        reset_receiver,
+        new_bridges_receiver,
     );
     tokio::join!(task1, task2);
 }
