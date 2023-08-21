@@ -3,7 +3,7 @@ use arti_client::config::pt::ManagedTransportConfigBuilder;
 use arti_client::config::{BridgeConfigBuilder, CfgPath, TorClientConfigBuilder};
 use arti_client::{TorClient, TorClientConfig};
 use chrono::prelude::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tokio::sync::broadcast;
 use tokio::sync::mpsc::{self, Receiver, Sender};
 use tokio::time::{timeout, Duration};
@@ -179,12 +179,15 @@ pub async fn check_failed_bridges_task(
             }
             failed_bridges.splice(..0, new_failures.iter().cloned());
         }
-        // get new failures from API call
+        // get new bridges to test from API call and merge them with known bad
+        // bridges
         while let Ok(Ok(new_failures)) = timeout(RECEIVE_TIMEOUT, reset_receiver.recv()).await {
             if new_failures.is_empty() {
                 break;
             }
-            failed_bridges.splice(..0, new_failures.iter().cloned());
+            let set1: HashSet<_> = new_failures.iter().cloned().collect();
+            let set2: HashSet<_> = failed_bridges.iter().cloned().collect();
+            failed_bridges = set1.union(&set2).cloned().collect();
         }
         // write newresults into the updates channel
         if !newresults.is_empty() {
