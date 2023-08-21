@@ -96,6 +96,7 @@ async fn check_bridges(
     bridge_lines: Vec<String>,
     updates_sender: Sender<HashMap<String, BridgeResult>>,
     obfs4_path: String,
+    reset_receiver: broadcast::Receiver<Vec<String>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let mainop = crate::checking::main_test(bridge_lines.clone(), &obfs4_path).await;
@@ -115,6 +116,7 @@ async fn check_bridges(
                     failed_bridges,
                     common_tor_client,
                     updates_sender,
+                    reset_receiver,
                 )
                 .await
             });
@@ -161,9 +163,19 @@ async fn main() {
     // unused Receiver prevents SendErrors
     let (updates_sender, _updates_recv_unused) =
         broadcast::channel::<HashMap<String, BridgeResult>>(100);
+    let (reset_sender, _reset_receiver) = broadcast::channel::<Vec<String>>(100);
     let updates_sender_clone = updates_sender.clone();
-    let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| async {
-        check_bridges(payload.bridge_lines, updates_sender_clone, obfs4_bin_path).await
+    let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| {
+        let reset_sub = reset_sender.subscribe();
+        async {
+            check_bridges(
+                payload.bridge_lines,
+                updates_sender_clone,
+                obfs4_bin_path,
+                reset_sub,
+            )
+            .await
+        }
     };
     let wrapped_updates = move || {
         let updates_recv = updates_sender.subscribe();
