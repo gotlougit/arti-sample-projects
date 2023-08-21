@@ -154,6 +154,16 @@ async fn updates(
     (StatusCode::OK, Json(finalresult))
 }
 
+async fn add_new_bridges(
+    new_bridge_lines: Vec<String>,
+    reset_sender: Sender<Vec<String>>,
+) -> StatusCode {
+    match reset_sender.send(new_bridge_lines) {
+        Ok(_) => StatusCode::OK,
+        Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
+    }
+}
+
 /// Run the HTTP server and call the required methods to initialize the testing
 #[tokio::main]
 async fn main() {
@@ -165,8 +175,9 @@ async fn main() {
         broadcast::channel::<HashMap<String, BridgeResult>>(100);
     let (reset_sender, _reset_receiver) = broadcast::channel::<Vec<String>>(100);
     let updates_sender_clone = updates_sender.clone();
+    let reset_sender_clone = reset_sender.clone();
     let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| {
-        let reset_sub = reset_sender.subscribe();
+        let reset_sub = reset_sender_clone.subscribe();
         async {
             check_bridges(
                 payload.bridge_lines,
@@ -181,8 +192,12 @@ async fn main() {
         let updates_recv = updates_sender.subscribe();
         async move { updates(updates_recv).await }
     };
+    let wrapped_add_new_bridges = move |Json(payload): Json<BridgeLines>| async move {
+        add_new_bridges(payload.bridge_lines, reset_sender).await
+    };
     let app = Router::new()
         .route("/bridge-state", post(wrapped_bridge_check))
+        .route("/add-bridges", post(wrapped_add_new_bridges))
         .route("/updates", get(wrapped_updates));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
