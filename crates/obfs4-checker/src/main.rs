@@ -156,7 +156,6 @@ async fn updates(
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    // TODO: use obfs4 as default and use CLI args
     let args = Args::parse();
     let obfs4_bin_path = args.obfs4_bin;
     // unused Receiver prevents SendErrors
