@@ -54,6 +54,10 @@ For that you can run
 
 This has the same output structure as the `/bridge-state` endpoint. 
 
+To add additional bridges for testing, call `/add-bridges`. It is a POST endpoint which takes
+the bridge list in the same manner as `/bridge-state`, and only returns a status code indicating
+success or failure. From there on, poll `/updates` as usual to get connection info.
+
 ### Usage Disclaimers
 
 Note that `/updates` often may return an empty list, but that is because at that point 
