@@ -144,8 +144,10 @@ async fn main() {
     let args = Args::parse();
     let obfs4_bin_path = args.obfs4_bin;
     // unused Receiver prevents SendErrors
-    let (updates_tx, _updates_rx_unused) = broadcast::channel::<HashMap<String, BridgeResult>>(100);
-    let (new_bridges_tx, _new_bridges_rx) = broadcast::channel::<Vec<String>>(100);
+    let (updates_tx, _updates_rx_unused) =
+        broadcast::channel::<HashMap<String, BridgeResult>>(crate::checking::CHANNEL_SIZE);
+    let (new_bridges_tx, _new_bridges_rx) =
+        broadcast::channel::<Vec<String>>(crate::checking::CHANNEL_SIZE);
     let updates_sender_clone = updates_tx.clone();
     let new_bridges_tx_clone = new_bridges_tx.clone();
     let bridges_check_callback = move |Json(payload): Json<BridgeLines>| {

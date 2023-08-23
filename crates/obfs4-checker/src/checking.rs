@@ -21,6 +21,10 @@ const MAX_CONNECTIONS: usize = 10;
 /// before giving up. This is important to avoid getting the program stuck
 pub const RECEIVE_TIMEOUT: Duration = Duration::from_secs(1);
 
+/// The amount of messages our channels will be able to store in them
+/// while in transit
+pub(crate) const CHANNEL_SIZE: usize = 100;
+
 /// Attempt to create a Channel to a provided bridge
 ///
 /// If successful, we will obtain a Channel, if not we get an error.
@@ -231,8 +235,8 @@ pub async fn continuous_check(
     updates_tx: broadcast::Sender<HashMap<String, BridgeResult>>,
     new_bridges_rx: broadcast::Receiver<Vec<String>>,
 ) {
-    let (once_online_sender, once_online_recv) = mpsc::channel(100);
-    let (now_online_sender, now_online_recv) = mpsc::channel(100);
+    let (once_online_sender, once_online_recv) = mpsc::channel(CHANNEL_SIZE);
+    let (now_online_sender, now_online_recv) = mpsc::channel(CHANNEL_SIZE);
     let task1 = detect_bridges_going_down(channels, once_online_sender, now_online_recv);
     let task2 = check_failed_bridges_task(
         failed_bridges,
