@@ -149,7 +149,7 @@ async fn main() {
     let (new_bridges_sender, _new_bridges_receiver) = broadcast::channel::<Vec<String>>(100);
     let updates_sender_clone = updates_sender.clone();
     let new_bridges_sender_clone = new_bridges_sender.clone();
-    let wrapped_bridge_check = move |Json(payload): Json<BridgeLines>| {
+    let bridges_check_callback = move |Json(payload): Json<BridgeLines>| {
         let new_bridges_recv_clone = new_bridges_sender_clone.subscribe();
         async {
             check_bridges(
@@ -161,17 +161,17 @@ async fn main() {
             .await
         }
     };
-    let wrapped_updates = move || {
+    let updates_callback = move || {
         let updates_recv = updates_sender.subscribe();
         async move { updates(updates_recv).await }
     };
-    let wrapped_add_new_bridges = move |Json(payload): Json<BridgeLines>| async move {
+    let add_new_bridges_callback = move |Json(payload): Json<BridgeLines>| async move {
         add_new_bridges(payload.bridge_lines, new_bridges_sender).await
     };
     let app = Router::new()
-        .route("/bridge-state", post(wrapped_bridge_check))
-        .route("/add-bridges", post(wrapped_add_new_bridges))
-        .route("/updates", get(wrapped_updates));
+        .route("/bridge-state", post(bridges_check_callback))
+        .route("/add-bridges", post(add_new_bridges_callback))
+        .route("/updates", get(updates_callback));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 5000));
     axum::Server::bind(&addr)
