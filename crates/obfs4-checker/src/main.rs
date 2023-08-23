@@ -66,9 +66,9 @@ struct BridgesResult {
 /// Wrapper around the main testing function
 async fn check_bridges(
     bridge_lines: Vec<String>,
-    updates_sender: Sender<HashMap<String, BridgeResult>>,
+    updates_tx: Sender<HashMap<String, BridgeResult>>,
     obfs4_path: String,
-    new_bridges_receiver: broadcast::Receiver<Vec<String>>,
+    new_bridges_rx: broadcast::Receiver<Vec<String>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let commencement_time = Utc::now();
     let mainop = crate::checking::main_test(bridge_lines.clone(), &obfs4_path).await;
@@ -87,8 +87,8 @@ async fn check_bridges(
                     channels,
                     failed_bridges,
                     common_tor_client,
-                    updates_sender,
-                    new_bridges_receiver,
+                    updates_tx,
+                    new_bridges_rx,
                 )
                 .await
             });
@@ -109,10 +109,10 @@ async fn check_bridges(
 
 /// Wrapper around the main testing function
 async fn updates(
-    mut updates_recv: Receiver<HashMap<String, BridgeResult>>,
+    mut updates_rx: Receiver<HashMap<String, BridgeResult>>,
 ) -> (StatusCode, Json<BridgesResult>) {
     let mut bridge_results = HashMap::new();
-    while let Ok(Ok(update)) = timeout(RECEIVE_TIMEOUT, updates_recv.recv()).await {
+    while let Ok(Ok(update)) = timeout(RECEIVE_TIMEOUT, updates_rx.recv()).await {
         if update.is_empty() {
             break;
         }
@@ -129,9 +129,9 @@ async fn updates(
 /// Add new bridges to the main testing tasks
 async fn add_new_bridges(
     new_bridge_lines: Vec<String>,
-    new_bridges_sender: Sender<Vec<String>>,
+    new_bridges_tx: Sender<Vec<String>>,
 ) -> StatusCode {
-    match new_bridges_sender.send(new_bridge_lines) {
+    match new_bridges_tx.send(new_bridge_lines) {
         Ok(_) => StatusCode::OK,
         Err(_) => StatusCode::INTERNAL_SERVER_ERROR,
     }
@@ -144,13 +144,12 @@ async fn main() {
     let args = Args::parse();
     let obfs4_bin_path = args.obfs4_bin;
     // unused Receiver prevents SendErrors
-    let (updates_sender, _updates_recv_unused) =
-        broadcast::channel::<HashMap<String, BridgeResult>>(100);
-    let (new_bridges_sender, _new_bridges_receiver) = broadcast::channel::<Vec<String>>(100);
-    let updates_sender_clone = updates_sender.clone();
-    let new_bridges_sender_clone = new_bridges_sender.clone();
+    let (updates_tx, _updates_rx_unused) = broadcast::channel::<HashMap<String, BridgeResult>>(100);
+    let (new_bridges_tx, _new_bridges_rx) = broadcast::channel::<Vec<String>>(100);
+    let updates_sender_clone = updates_tx.clone();
+    let new_bridges_tx_clone = new_bridges_tx.clone();
     let bridges_check_callback = move |Json(payload): Json<BridgeLines>| {
-        let new_bridges_recv_clone = new_bridges_sender_clone.subscribe();
+        let new_bridges_recv_clone = new_bridges_tx_clone.subscribe();
         async {
             check_bridges(
                 payload.bridge_lines,
@@ -162,11 +161,11 @@ async fn main() {
         }
     };
     let updates_callback = move || {
-        let updates_recv = updates_sender.subscribe();
-        async move { updates(updates_recv).await }
+        let updates_rx = updates_tx.subscribe();
+        async move { updates(updates_rx).await }
     };
     let add_new_bridges_callback = move |Json(payload): Json<BridgeLines>| async move {
-        add_new_bridges(payload.bridge_lines, new_bridges_sender).await
+        add_new_bridges(payload.bridge_lines, new_bridges_tx).await
     };
     let app = Router::new()
         .route("/bridge-state", post(bridges_check_callback))
