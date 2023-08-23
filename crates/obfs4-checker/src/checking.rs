@@ -160,12 +160,12 @@ pub async fn check_failed_bridges_task(
 ) {
     let mut failed_bridges = initial_failed_bridges;
     loop {
-        let (newresults, channels) =
+        let (newresults, good_bridges) =
             test_bridges(&failed_bridges, common_tor_client.isolated_client()).await;
         // detect which bridges failed again
-        failed_bridges = get_failed_bridges(&failed_bridges, &channels);
+        failed_bridges = get_failed_bridges(&failed_bridges, &good_bridges);
         // report online bridges to the appropriate task
-        now_online_bridges.send(channels).await.unwrap();
+        now_online_bridges.send(good_bridges).await.unwrap();
         // get new failures from the other task
         while let Ok(Some(new_failures)) =
             timeout(RECEIVE_TIMEOUT, once_online_bridges.recv()).await
