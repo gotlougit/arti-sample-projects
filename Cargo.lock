@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "addr2line"
-version = "0.20.0"
+version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4fa78e18c64fce05e902adecd7a5eed15a5e0a3439f7b0e169f0252214865e3"
+checksum = "8a30b2e23b9e17a9f90641c7ab1549cd9b44f296d3ccbf309d2863cfe398a0cb"
 dependencies = [
  "gimli",
 ]
@@ -42,9 +42,9 @@ dependencies = [
 
 [[package]]
 name = "aho-corasick"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86b8f9420f797f2d9e935edf629310eb938a0d839f984e25327f3c7eed22300c"
+checksum = "6748e8def348ed4d14996fa801f4122cd763fff530258cdc03f64b25f89d3a5a"
 dependencies = [
  "memchr",
 ]
@@ -122,24 +122,23 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.3.2"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ca84f3628370c59db74ee214b3263d58f9aadd9b4fe7e711fd87dc452b7f163"
+checksum = "b1f58811cfac344940f1a400b6e6231ce35171f614f26439e80f8c1465c5cc0c"
 dependencies = [
  "anstyle",
  "anstyle-parse",
  "anstyle-query",
  "anstyle-wincon",
  "colorchoice",
- "is-terminal",
  "utf8parse",
 ]
 
 [[package]]
 name = "anstyle"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3a30da5c5f2d5e72842e00bcb57657162cdabef0931f40e2deb9b4140440cecd"
+checksum = "15c4c2c83f81532e5845a733998b6971faca23490340a418e9b72a3ec9de12ea"
 
 [[package]]
 name = "anstyle-parse"
@@ -161,9 +160,9 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "1.0.2"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c677ab05e09154296dd37acecd46420c17b9713e8366facafa8fc0885167cf4c"
+checksum = "58f54d10c6dfa51283a066ceab3ec1ab78d13fae00aa49243a45e4571fb79dfd"
 dependencies = [
  "anstyle",
  "windows-sys",
@@ -171,96 +170,51 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.72"
+version = "1.0.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b13c32d80ecc7ab747b80c3784bce54ee8a7a0cc4fbda9bf4cda2cf6fe90854"
+checksum = "a4668cab20f66d8d020e1fbc0ebe47217433c1b6c8f2040faf858554e394ace6"
 
 [[package]]
 name = "arti-client"
 version = "0.10.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "cfg-if",
  "derive_builder_fork_arti",
  "derive_more",
  "directories",
  "educe",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "fs-mistrust",
  "futures",
  "hostname-validator",
  "humantime-serde",
  "libc",
  "pin-project",
  "postage",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "serde",
  "thiserror",
- "tor-async-utils 0.1.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-dirmgr 0.11.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hsclient 0.4.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-keymgr 0.2.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-persist 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-ptmgr 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rpcbase 0.1.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "void",
-]
-
-[[package]]
-name = "arti-client"
-version = "0.10.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "cfg-if",
- "derive_builder_fork_arti",
- "derive_more",
- "directories",
- "educe",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "futures",
- "hostname-validator",
- "humantime-serde",
- "libc",
- "pin-project",
- "postage",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "serde",
- "thiserror",
- "tor-async-utils 0.1.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-dirmgr 0.11.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hsclient 0.4.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-keymgr 0.2.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-persist 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-ptmgr 0.4.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rpcbase 0.1.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-async-utils",
+ "tor-basic-utils",
+ "tor-cell",
+ "tor-chanmgr",
+ "tor-checkable",
+ "tor-circmgr",
+ "tor-config",
+ "tor-dirmgr",
+ "tor-error",
+ "tor-guardmgr",
+ "tor-hsclient",
+ "tor-keymgr",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-persist",
+ "tor-proto",
+ "tor-ptmgr",
+ "tor-rpcbase",
+ "tor-rtcompat",
  "tracing",
  "void",
 ]
@@ -268,10 +222,10 @@ dependencies = [
 [[package]]
 name = "arti-hyper"
 version = "0.10.1"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "anyhow",
- "arti-client 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "arti-client",
  "educe",
  "hyper",
  "pin-project",
@@ -279,8 +233,8 @@ dependencies = [
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error",
+ "tor-rtcompat",
 ]
 
 [[package]]
@@ -445,7 +399,7 @@ checksum = "bc00ceb34980c03614e35a3a4e218276a0a824e911d07651cd0d858a51e8c0f0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -557,9 +511,9 @@ dependencies = [
 
 [[package]]
 name = "backtrace"
-version = "0.3.68"
+version = "0.3.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4319208da049c43661739c5fade2ba182f09d1dc2299b32298d3a31692b17e12"
+checksum = "2089b7e3f35b9dd2d0ed921ead4f6d318c27680d4a5bd167b3ee120edb105837"
 dependencies = [
  "addr2line",
  "cc",
@@ -569,12 +523,6 @@ dependencies = [
  "object",
  "rustc-demangle",
 ]
-
-[[package]]
-name = "base16ct"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "349a06037c7bf932dd7e7d1f653678b2038b9ad46a74102f1fc7bd7872678cce"
 
 [[package]]
 name = "base16ct"
@@ -689,18 +637,13 @@ checksum = "89b2fd2a0dcf38d7971e2194b6b6eebab45ae01067456a7fd93d5547a61b70be"
 [[package]]
 name = "caret"
 version = "0.4.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-
-[[package]]
-name = "caret"
-version = "0.4.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 
 [[package]]
 name = "cc"
-version = "1.0.82"
+version = "1.0.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "305fe645edc1442a0fa8b6726ba61d422798d37a52e12eaecf4b022ebbb88f01"
+checksum = "f1174fb0b6ec23863f8b971027804a42614e347eafb0a95bf0b12cdae21fc4d0"
 dependencies = [
  "jobserver",
  "libc",
@@ -741,9 +684,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.3.21"
+version = "4.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c27cdf28c0f604ba3f512b0c9a409f8de8513e4816705deb0498b627e7c3a3fd"
+checksum = "1d5f1946157a96594eb2d2c10eb7ad9a2b27518cb3000209dec700c35df9197d"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -752,9 +695,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.3.21"
+version = "4.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08a9f1ab5e9f01a9b81f202e8562eb9a10de70abf9eaeac1be465c28b75aa4aa"
+checksum = "78116e32a042dd73c2901f0dc30790d20ff3447f3e3472fad359e8c3d282bcd6"
 dependencies = [
  "anstream",
  "anstyle",
@@ -764,21 +707,21 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "4.3.12"
+version = "4.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54a9bb5758fc5dfe728d1019941681eccaf0cf8a4189b692a0ee2f2ecf90a050"
+checksum = "c9fd1a5729c4548118d7d70ff234a44868d00489a4b6597b0b020918a0e91a1a"
 dependencies = [
  "heck",
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
 name = "clap_lex"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2da6da31387c7e4ef160ffab6d5e7f00c42626fe39aea70a7b0f1773f7dd6c1b"
+checksum = "cd7cc57abe963c6d3b9d8be5b06ba7c8957a930305ca90304f24ef040aa6f961"
 
 [[package]]
 name = "coarsetime"
@@ -826,11 +769,11 @@ name = "connection-checker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "arti-client 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "arti-client",
  "clap",
  "tokio",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error",
+ "tor-rtcompat",
  "tracing",
  "tracing-subscriber 0.2.25",
 ]
@@ -898,18 +841,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a22b2d63d4d1dc0b7f1b6b2747dd0088008a9be28b6ddf0b1e7d335e3037294"
 dependencies = [
  "cfg-if",
-]
-
-[[package]]
-name = "crypto-bigint"
-version = "0.4.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef2b4b23cddf68b89b8f8069890e8c270d54e2d5fe1b143820234805e4cb17ef"
-dependencies = [
- "generic-array",
- "rand_core 0.6.4",
- "subtle",
- "zeroize",
 ]
 
 [[package]]
@@ -1001,7 +932,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "strsim",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -1023,7 +954,7 @@ checksum = "836a9bbc7ad63342d6d6e7b815ccab164bc77a2d95d84bc3117a8c0d5c98e2d5"
 dependencies = [
  "darling_core 0.20.3",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -1034,31 +965,20 @@ checksum = "c2e66c9d817f1720209181c316d28635c050fa304f9c79e47a520882661b7308"
 
 [[package]]
 name = "der"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f1a467a65c5e759bce6e65eaf91cc29f466cdc57cb65777bd646872a8a1fd4de"
-dependencies = [
- "const-oid",
- "pem-rfc7468 0.6.0",
- "zeroize",
-]
-
-[[package]]
-name = "der"
 version = "0.7.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fffa369a668c8af7dbf8b5e56c9f744fbd399949ed171606040001947de40b1c"
 dependencies = [
  "const-oid",
- "pem-rfc7468 0.7.0",
+ "pem-rfc7468",
  "zeroize",
 ]
 
 [[package]]
 name = "deranged"
-version = "0.3.7"
+version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7684a49fb1af197853ef7b2ee694bc1f5b4179556f1e5710e1760c5db6f5e929"
+checksum = "f2696e8a945f658fd14dc3b87242e6b80cd0f36ff04ea560fa39082368847946"
 dependencies = [
  "serde",
 ]
@@ -1193,7 +1113,7 @@ checksum = "487585f4d0c6655fe74905e2504d8ad6908e4db67f744eb140876906c2f3175d"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -1201,7 +1121,7 @@ name = "dns-resolver"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "arti-client 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "arti-client",
  "thiserror",
  "tokio",
  "tracing",
@@ -1219,7 +1139,7 @@ name = "download-manager"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "arti-client 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "arti-client",
  "arti-hyper",
  "futures",
  "hyper",
@@ -1228,28 +1148,16 @@ dependencies = [
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat",
  "tracing",
  "tracing-subscriber 0.2.25",
 ]
 
 [[package]]
 name = "dyn-clone"
-version = "1.0.12"
+version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "304e6508efa593091e97a9abbc10f90aa7ca635b6d2784feff3c89d41dd12272"
-
-[[package]]
-name = "ecdsa"
-version = "0.14.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "413301934810f597c1d19ca71c8710e99a3f1ba28a0d2ebc01551a2daeea3c5c"
-dependencies = [
- "der 0.6.1",
- "elliptic-curve 0.12.3",
- "rfc6979 0.3.1",
- "signature 1.6.4",
-]
+checksum = "bbfc4744c1b8f2a09adc0e55242f60b1af195d88596bd8700be74418c056c555"
 
 [[package]]
 name = "ecdsa"
@@ -1257,12 +1165,12 @@ version = "0.16.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4b1e0c257a9e9f25f90ff76d7a68360ed497ee519c8e428d1825ef0000799d4"
 dependencies = [
- "der 0.7.8",
+ "der",
  "digest 0.10.7",
- "elliptic-curve 0.13.5",
- "rfc6979 0.4.0",
+ "elliptic-curve",
+ "rfc6979",
  "signature 2.1.0",
- "spki 0.7.2",
+ "spki",
 ]
 
 [[package]]
@@ -1309,38 +1217,19 @@ checksum = "a26ae43d7bcc3b814de94796a5e736d4029efb0ee900c12e2d54c993ad1a1e07"
 
 [[package]]
 name = "elliptic-curve"
-version = "0.12.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e7bb888ab5300a19b8e5bceef25ac745ad065f3c9f7efc6de1b91958110891d3"
-dependencies = [
- "base16ct 0.1.1",
- "crypto-bigint 0.4.9",
- "der 0.6.1",
- "digest 0.10.7",
- "ff 0.12.1",
- "generic-array",
- "group 0.12.1",
- "rand_core 0.6.4",
- "sec1 0.3.0",
- "subtle",
- "zeroize",
-]
-
-[[package]]
-name = "elliptic-curve"
 version = "0.13.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "968405c8fdc9b3bf4df0a6638858cc0b52462836ab6b1c87377785dd09cf1c0b"
 dependencies = [
- "base16ct 0.2.0",
- "crypto-bigint 0.5.2",
+ "base16ct",
+ "crypto-bigint",
  "digest 0.10.7",
- "ff 0.13.0",
+ "ff",
  "generic-array",
- "group 0.13.0",
- "pkcs8 0.10.2",
+ "group",
+ "pkcs8",
  "rand_core 0.6.4",
- "sec1 0.7.3",
+ "sec1",
  "subtle",
  "zeroize",
 ]
@@ -1355,7 +1244,7 @@ dependencies = [
  "num-traits",
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -1379,9 +1268,9 @@ checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
 
 [[package]]
 name = "erased-serde"
-version = "0.3.28"
+version = "0.3.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da96524cc884f6558f1769b6c46686af2fe8e8b4cd253bd5a3cdba8181b8e070"
+checksum = "837c0466252947ada828b975e12daf82e18bb5444e4df87be6038d4469e2a3d2"
 dependencies = [
  "serde",
 ]
@@ -1455,16 +1344,6 @@ checksum = "6999dc1837253364c2ebb0704ba97994bd874e8f195d665c50b7548f6ea92764"
 
 [[package]]
 name = "ff"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d013fc25338cc558c5c2cfbad646908fb23591e2404481826742b651c9af7160"
-dependencies = [
- "rand_core 0.6.4",
- "subtle",
-]
-
-[[package]]
-name = "ff"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ded41244b729663b1e574f1b4fb731469f69f79c17667b5d776b16cda0479449"
@@ -1475,9 +1354,9 @@ dependencies = [
 
 [[package]]
 name = "flate2"
-version = "1.0.26"
+version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b9429470923de8e8cbd4d2dc513535400b4b3fef0319fb5c4e1f520a7bef743"
+checksum = "c6c98ee8095e9d1dcbf2fcc6d95acccb90d1c81db1e44725c6a984b1dbdfb010"
 dependencies = [
  "crc32fast",
  "miniz_oxide",
@@ -1522,23 +1401,7 @@ dependencies = [
 [[package]]
 name = "fs-mistrust"
 version = "0.7.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-dependencies = [
- "derive_builder_fork_arti",
- "dirs",
- "educe",
- "libc",
- "once_cell",
- "pwd-grp",
- "serde",
- "thiserror",
- "walkdir",
-]
-
-[[package]]
-name = "fs-mistrust"
-version = "0.7.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "derive_builder_fork_arti",
  "dirs",
@@ -1653,7 +1516,7 @@ checksum = "89ca545a94061b6365f2c7355b4b32bd20df3ff95f02da9329b34ccc3bd6ee72"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -1723,9 +1586,9 @@ dependencies = [
 
 [[package]]
 name = "gimli"
-version = "0.27.3"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b6c80984affa11d98d1b88b66ac8853f143217b399d3c74116778ff8fdb4ed2e"
+checksum = "6fb8d784f27acf97159b40fc4db5ecd8aa23b9ad5ef69cdd136d3bc80665f0c0"
 
 [[package]]
 name = "gloo-timers"
@@ -1741,22 +1604,11 @@ dependencies = [
 
 [[package]]
 name = "group"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5dfbfb3a6cfbd390d5c9564ab283a0349b9b9fcd46a706c1eb10e0db70bfbac7"
-dependencies = [
- "ff 0.12.1",
- "rand_core 0.6.4",
- "subtle",
-]
-
-[[package]]
-name = "group"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0f9ef7462f7c099f518d754361858f86d8a07af53ba9af0fe635bbccb151a63"
 dependencies = [
- "ff 0.13.0",
+ "ff",
  "rand_core 0.6.4",
  "subtle",
 ]
@@ -1873,9 +1725,9 @@ checksum = "d897f394bad6a705d5f4104762e116a75639e470d80901eed05a860a95cb1904"
 
 [[package]]
 name = "httpdate"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4a1e36c821dbe04574f602848a19f742f4fb3c98d40449f11bcad18d6b17421"
+checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
 
 [[package]]
 name = "humantime"
@@ -2018,17 +1870,6 @@ checksum = "eae7b9aee968036d54dce06cebaefd919e4472e753296daccd6d344e3e2df0c2"
 dependencies = [
  "hermit-abi 0.3.2",
  "libc",
- "windows-sys",
-]
-
-[[package]]
-name = "is-terminal"
-version = "0.4.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb0889898416213fab133e1d33a0e5858a48177452750691bde3666d0fdbaf8b"
-dependencies = [
- "hermit-abi 0.3.2",
- "rustix 0.38.8",
  "windows-sys",
 ]
 
@@ -2279,9 +2120,9 @@ dependencies = [
 
 [[package]]
 name = "num-bigint"
-version = "0.4.3"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f93ab6289c7b344a8a9f60f88d80aa20032336fe78da341afc91c8a2341fc75f"
+checksum = "608e7659b5c3d7cba262d894801b9ec9d00de989e8a82bd4bef91d08da45cdc0"
 dependencies = [
  "autocfg",
  "num-integer",
@@ -2348,32 +2189,11 @@ dependencies = [
 
 [[package]]
 name = "num_enum"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a015b430d3c108a207fd776d2e2196aaf8b1cf8cf93253e3a097ff3085076a1"
-dependencies = [
- "num_enum_derive 0.6.1",
-]
-
-[[package]]
-name = "num_enum"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "70bf6736f74634d299d00086f02986875b3c2d924781a6a2cb6c201e73da0ceb"
 dependencies = [
- "num_enum_derive 0.7.0",
-]
-
-[[package]]
-name = "num_enum_derive"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96667db765a921f7b295ffee8b60472b686a51d4f21c2ee4ffdb94c7013b65a6"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn 2.0.28",
+ "num_enum_derive",
 ]
 
 [[package]]
@@ -2385,7 +2205,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -2393,7 +2213,7 @@ name = "obfs4-checker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "arti-client 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "arti-client",
  "axum",
  "chrono",
  "clap",
@@ -2403,20 +2223,20 @@ dependencies = [
  "tls-api",
  "tls-api-native-tls",
  "tokio",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-chanmgr",
+ "tor-error",
+ "tor-guardmgr",
+ "tor-proto",
+ "tor-rtcompat",
  "tracing",
  "tracing-subscriber 0.2.25",
 ]
 
 [[package]]
 name = "object"
-version = "0.31.1"
+version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8bda667d9f2b5051b8833f59f3bf748b28ef54f850f4fcb389a252aa383866d1"
+checksum = "77ac5bbd07aea88c60a577a1ce218075ffd59208b2d7ca97adf9bfc5aeb21ebe"
 dependencies = [
  "memchr",
 ]
@@ -2456,7 +2276,7 @@ checksum = "a948666b637a0f465e8564c73e89d4dde00d72d4d473cc972f390fc3dcee7d9c"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -2491,35 +2311,13 @@ checksum = "b15813163c1d831bf4a13c3610c05c0d03b39feb07f7e09fa234dac9b15aaf39"
 
 [[package]]
 name = "p256"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51f44edd08f51e2ade572f141051021c5af22677e42b7dd28a88155151c33594"
-dependencies = [
- "ecdsa 0.14.8",
- "elliptic-curve 0.12.3",
- "sha2 0.10.7",
-]
-
-[[package]]
-name = "p256"
 version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c9863ad85fa8f4460f9c48cb909d38a0d689dba1f6f6988a5e3e0d31071bcd4b"
 dependencies = [
- "ecdsa 0.16.8",
- "elliptic-curve 0.13.5",
+ "ecdsa",
+ "elliptic-curve",
  "primeorder",
- "sha2 0.10.7",
-]
-
-[[package]]
-name = "p384"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dfc8c5bf642dde52bb9e87c0ecd8ca5a76faac2eeed98dedb7c717997e1080aa"
-dependencies = [
- "ecdsa 0.14.8",
- "elliptic-curve 0.12.3",
  "sha2 0.10.7",
 ]
 
@@ -2529,8 +2327,8 @@ version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "70786f51bcc69f6a4c0360e063a4cac5419ef7c5cd5b3c99ad70f3be5ba79209"
 dependencies = [
- "ecdsa 0.16.8",
- "elliptic-curve 0.13.5",
+ "ecdsa",
+ "elliptic-curve",
  "primeorder",
  "sha2 0.10.7",
 ]
@@ -2589,15 +2387,6 @@ dependencies = [
 
 [[package]]
 name = "pem-rfc7468"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24d159833a9105500e0398934e205e0773f0b27529557134ecfc51c27646adac"
-dependencies = [
- "base64ct",
-]
-
-[[package]]
-name = "pem-rfc7468"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "88b39c9bfcfc231068454382784bb460aae594343fb030d46e9f50a645418412"
@@ -2641,7 +2430,7 @@ dependencies = [
  "phf_shared",
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -2670,7 +2459,7 @@ checksum = "4359fd9c9171ec6e8c62926d6faaf553a8dc3f64e1507e76da7911b4f6a04405"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -2687,35 +2476,13 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "pkcs1"
-version = "0.4.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eff33bdbdfc54cc98a2eca766ebdec3e1b8fb7387523d5c9c9a2891da856f719"
-dependencies = [
- "der 0.6.1",
- "pkcs8 0.9.0",
- "spki 0.6.0",
- "zeroize",
-]
-
-[[package]]
-name = "pkcs1"
 version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8ffb9f10fa047879315e6625af03c164b16962a5368d724ed16323b68ace47f"
 dependencies = [
- "der 0.7.8",
- "pkcs8 0.10.2",
- "spki 0.7.2",
-]
-
-[[package]]
-name = "pkcs8"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9eca2c590a5f85da82668fa685c09ce2888b9430e83299debf1f34b65fd4a4ba"
-dependencies = [
- "der 0.6.1",
- "spki 0.6.0",
+ "der",
+ "pkcs8",
+ "spki",
 ]
 
 [[package]]
@@ -2724,8 +2491,8 @@ version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f950b2377845cebe5cf8b5165cb3cc1a5e0fa5cfa3e1f7f55707d8fd82e0a7b7"
 dependencies = [
- "der 0.7.8",
- "spki 0.7.2",
+ "der",
+ "spki",
 ]
 
 [[package]]
@@ -2777,7 +2544,7 @@ version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3c2fcef82c0ec6eefcc179b978446c399b3cdf73c392c35604e399eee6df1ee3"
 dependencies = [
- "elliptic-curve 0.13.5",
+ "elliptic-curve",
 ]
 
 [[package]]
@@ -2804,17 +2571,17 @@ name = "pt-proxy"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "arti-client 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "arti-client",
  "clap",
  "fast-socks5",
  "thiserror",
  "tokio",
  "tokio-stream",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-ptmgr 0.4.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-socksproto 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "tor-chanmgr",
+ "tor-linkspec",
+ "tor-ptmgr",
+ "tor-rtcompat",
+ "tor-socksproto",
  "tracing",
  "tracing-subscriber 0.2.25",
 ]
@@ -2839,9 +2606,9 @@ checksum = "a1d01941d82fa2ab50be1e79e6714289dd7cde78eba4c074bc5a4374f650dfe0"
 
 [[package]]
 name = "quote"
-version = "1.0.32"
+version = "1.0.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50f3b39ccfb720540debaa0164757101c08ecb8d326b15358ce76a62c7e85965"
+checksum = "5267fca4496028628a95160fc423a33e8b2e6af8a5302579e322e4b520293cae"
 dependencies = [
  "proc-macro2",
 ]
@@ -3005,23 +2772,7 @@ checksum = "4389f1d5789befaf6029ebd9f7dac4af7f7e3d61b69d4f30e2ac02b57e7712b0"
 [[package]]
 name = "retry-error"
 version = "0.5.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-
-[[package]]
-name = "retry-error"
-version = "0.5.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-
-[[package]]
-name = "rfc6979"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7743f17af12fa0b03b803ba12cd6a8d9483a587e89c69445e3909655c0b9fabb"
-dependencies = [
- "crypto-bigint 0.4.9",
- "hmac",
- "zeroize",
-]
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 
 [[package]]
 name = "rfc6979"
@@ -3050,27 +2801,6 @@ dependencies = [
 
 [[package]]
 name = "rsa"
-version = "0.7.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "094052d5470cbcef561cb848a7209968c9f12dfa6d668f4bca048ac5de51099c"
-dependencies = [
- "byteorder",
- "digest 0.10.7",
- "num-bigint-dig",
- "num-integer",
- "num-iter",
- "num-traits",
- "pkcs1 0.4.1",
- "pkcs8 0.9.0",
- "rand_core 0.6.4",
- "signature 1.6.4",
- "smallvec",
- "subtle",
- "zeroize",
-]
-
-[[package]]
-name = "rsa"
 version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ab43bb47d23c1a631b4b680199a45255dce26fa9ab2fa902581f624ff13e6a8"
@@ -3082,12 +2812,12 @@ dependencies = [
  "num-integer",
  "num-iter",
  "num-traits",
- "pkcs1 0.7.5",
- "pkcs8 0.10.2",
+ "pkcs1",
+ "pkcs8",
  "rand_core 0.6.4",
  "sha2 0.10.7",
  "signature 2.1.0",
- "spki 0.7.2",
+ "spki",
  "subtle",
  "zeroize",
 ]
@@ -3104,7 +2834,7 @@ dependencies = [
  "hashlink",
  "libsqlite3-sys",
  "smallvec",
- "time 0.3.25",
+ "time 0.3.27",
 ]
 
 [[package]]
@@ -3164,19 +2894,7 @@ checksum = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"
 [[package]]
 name = "safelog"
 version = "0.3.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-dependencies = [
- "derive_more",
- "educe",
- "either",
- "fluid-let",
- "thiserror",
-]
-
-[[package]]
-name = "safelog"
-version = "0.3.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "derive_more",
  "educe",
@@ -3221,28 +2939,14 @@ checksum = "94143f37725109f92c262ed2cf5e59bce7498c01bcc1502d7b9afe439a4e9f49"
 
 [[package]]
 name = "sec1"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3be24c1842290c45df0a7bf069e0c268a747ad05a192f2fd7dcfdbc1cba40928"
-dependencies = [
- "base16ct 0.1.1",
- "der 0.6.1",
- "generic-array",
- "pkcs8 0.9.0",
- "subtle",
- "zeroize",
-]
-
-[[package]]
-name = "sec1"
 version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3e97a565f76233a6003f9f5c54be1d9c5bdfa3eccfb189469f11ec4901c47dc"
 dependencies = [
- "base16ct 0.2.0",
- "der 0.7.8",
+ "base16ct",
+ "der",
  "generic-array",
- "pkcs8 0.10.2",
+ "pkcs8",
  "subtle",
  "zeroize",
 ]
@@ -3278,22 +2982,22 @@ checksum = "b0293b4b29daaf487284529cc2f5675b8e57c61f70167ba415a463651fd6a918"
 
 [[package]]
 name = "serde"
-version = "1.0.183"
+version = "1.0.186"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "32ac8da02677876d532745a130fc9d8e6edfa81a269b107c5b00829b91d8eb3c"
+checksum = "9f5db24220c009de9bd45e69fb2938f4b6d2df856aa9304ce377b3180f83b7c1"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.183"
+version = "1.0.186"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aafe972d60b0b9bee71a91b92fee2d4fb3c9d7e8f6b179aa99f27203d99a4816"
+checksum = "5ad697f7e0b65af4983a4ce8f56ed5b357e8d3c36651bf6a7e13639c17b8e670"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -3307,9 +3011,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.104"
+version = "1.0.105"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "076066c5f1078eac5b722a31827a8832fe108bed65dfa75e233c89f8206e976c"
+checksum = "693151e1ac27563d6dbcec9dee9fbd5da8539b20fa14ad3752b2e6d363ace360"
 dependencies = [
  "itoa",
  "ryu",
@@ -3334,7 +3038,7 @@ checksum = "8725e1dfadb3a50f7e5ce0b1a540466f6ed3fe7a0fca2ac2b8b831d31316bd00"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -3360,9 +3064,9 @@ dependencies = [
 
 [[package]]
 name = "serde_with"
-version = "3.2.0"
+version = "3.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1402f54f9a3b9e2efe71c1cea24e648acce55887983553eeb858cf3115acfd49"
+checksum = "1ca3b16a3d82c4088f343b7480a93550b3eabe1a358569c2dfe38bbcead07237"
 dependencies = [
  "base64 0.21.2",
  "chrono",
@@ -3372,19 +3076,19 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_with_macros",
- "time 0.3.25",
+ "time 0.3.27",
 ]
 
 [[package]]
 name = "serde_with_macros"
-version = "3.2.0"
+version = "3.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9197f1ad0e3c173a0222d3c4404fb04c3afe87e962bcb327af73e8301fa203c7"
+checksum = "2e6be15c453eb305019bfa438b1593c731f36a289a7853f7707ee29e870b3b3c"
 dependencies = [
  "darling 0.20.3",
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -3474,10 +3178,6 @@ name = "signature"
 version = "1.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74233d3b3b2f6d4b006dc19dee745e73e2a6bfb6f93607cd3b02bd5b00797d7c"
-dependencies = [
- "digest 0.10.7",
- "rand_core 0.6.4",
-]
 
 [[package]]
 name = "signature"
@@ -3498,20 +3198,20 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "thiserror",
- "time 0.3.25",
+ "time 0.3.27",
 ]
 
 [[package]]
 name = "siphasher"
-version = "0.3.10"
+version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bd3e3206899af3f8b12af284fafc038cc1dc2b41d1b89dd17297221c5d225de"
+checksum = "38b58827f4464d87d377d175e90bf58eb00fd8716ff0a62f80356b5e61555d0d"
 
 [[package]]
 name = "slab"
-version = "0.4.8"
+version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6528351c9bc8ab22353f9d776db39a20288e8d6c37ef8cfe3317cf875eecfc2d"
+checksum = "8f92a496fb766b417c996b9c5e57daf2f7ad3b0bebe1ccfca4856390e3d3bb67"
 dependencies = [
  "autocfg",
 ]
@@ -3559,22 +3259,12 @@ checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
 
 [[package]]
 name = "spki"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67cf02bbac7a337dc36e4f5a693db6c21e7863f45070f7064577eb4367a3212b"
-dependencies = [
- "base64ct",
- "der 0.6.1",
-]
-
-[[package]]
-name = "spki"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d1e996ef02c474957d681f1b05213dfb0abab947b446a62d37770b23500184a"
 dependencies = [
  "base64ct",
- "der 0.7.8",
+ "der",
 ]
 
 [[package]]
@@ -3584,18 +3274,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "caac132742f0d33c3af65bfcde7f6aa8f62f0e991d80db99149eb9d44708784f"
 dependencies = [
  "cipher",
- "ssh-encoding 0.2.0",
-]
-
-[[package]]
-name = "ssh-encoding"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "19cfdc32e0199062113edf41f344fbf784b8205a94600233c84eb838f45191e1"
-dependencies = [
- "base64ct",
- "pem-rfc7468 0.6.0",
- "sha2 0.10.7",
+ "ssh-encoding",
 ]
 
 [[package]]
@@ -3605,26 +3284,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eb9242b9ef4108a78e8cd1a2c98e193ef372437f8c22be363075233321dd4a15"
 dependencies = [
  "base64ct",
- "pem-rfc7468 0.7.0",
+ "pem-rfc7468",
  "sha2 0.10.7",
-]
-
-[[package]]
-name = "ssh-key"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "288d8f5562af5a3be4bda308dd374b2c807b940ac370b5efa1c99311da91d9a1"
-dependencies = [
- "ed25519-dalek",
- "p256 0.11.1",
- "p384 0.11.2",
- "rand_core 0.6.4",
- "rsa 0.7.2",
- "sec1 0.3.0",
- "sha2 0.10.7",
- "signature 1.6.4",
- "ssh-encoding 0.1.0",
- "zeroize",
 ]
 
 [[package]]
@@ -3633,15 +3294,15 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "728fdf5286c394f12d83eaad51190af629aade5494813ce6b57f7425f1ca51b7"
 dependencies = [
- "p256 0.13.2",
- "p384 0.13.0",
+ "p256",
+ "p384",
  "rand_core 0.6.4",
- "rsa 0.9.2",
- "sec1 0.7.3",
+ "rsa",
+ "sec1",
  "sha2 0.10.7",
  "signature 2.1.0",
  "ssh-cipher",
- "ssh-encoding 0.2.0",
+ "ssh-encoding",
  "subtle",
  "zeroize",
 ]
@@ -3677,7 +3338,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -3699,9 +3360,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.28"
+version = "2.0.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04361975b3f5e348b2189d8dc55bc942f278b2d482a6a0365de5bdd62d351567"
+checksum = "c324c494eba9d92503e6f1ef2e6df781e78f6a7705a0202d9801b198807d518a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3716,9 +3377,9 @@ checksum = "2047c6ded9c721764247e62cd3b03c09ffc529b2ba5b10ec482ae507a4a70160"
 
 [[package]]
 name = "tempfile"
-version = "3.7.1"
+version = "3.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dc02fddf48964c42031a0b3fe0428320ecf3a73c401040fc0096f97794310651"
+checksum = "cb94d2f3cc536af71caac6b6fcebf65860b347e7ce0cc9ebe8f70d3e521054ef"
 dependencies = [
  "cfg-if",
  "fastrand 2.0.0",
@@ -3749,22 +3410,22 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.44"
+version = "1.0.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "611040a08a0439f8248d1990b111c95baa9c704c805fa1f62104b39655fd7f90"
+checksum = "97a802ec30afc17eee47b2855fc72e0c4cd62be9b4efe6591edde0ec5bd68d8f"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.44"
+version = "1.0.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "090198534930841fab3a5d1bb637cde49e339654e606195f8d9c76eeb081dc96"
+checksum = "6bb623b56e39ab7dcd4b1b98bb6c8f8d907ed255b18de254088016b27a8ee19b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -3790,9 +3451,9 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.3.25"
+version = "0.3.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fdd63d58b18d663fbdf70e049f00a22c8e42be082203be7f26589213cd75ea"
+checksum = "0bb39ee79a6d8de55f48f2293a830e040392f1c5f16e336bdd1788cd0aadce07"
 dependencies = [
  "deranged",
  "itoa",
@@ -3809,9 +3470,9 @@ checksum = "7300fbefb4dadc1af235a9cef3737cea692a9d97e1b9cbcd4ebdae6f8868e6fb"
 
 [[package]]
 name = "time-macros"
-version = "0.2.11"
+version = "0.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb71511c991639bb078fd5bf97757e03914361c48100d52878b8e52b46fb92cd"
+checksum = "733d258752e9303d392b94b75230d07b0b9c489350c69b851fc6c065fde3e8f9"
 dependencies = [
  "time-core",
 ]
@@ -3889,9 +3550,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.31.0"
+version = "1.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40de3a2ba249dcb097e01be5e67a5ff53cf250397715a071a81543e8a832a920"
+checksum = "17ed6077ed6cd6c74735e21f37eb16dc3935f96878b1fe961074089cc80893f9"
 dependencies = [
  "backtrace",
  "bytes",
@@ -3914,7 +3575,7 @@ checksum = "630bdcf245f78637c13ec01ffae6187cca34625e8c63150d424b59e55af2675e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -3988,19 +3649,7 @@ dependencies = [
 [[package]]
 name = "tor-async-utils"
 version = "0.1.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-dependencies = [
- "futures",
- "pin-project",
- "postage",
- "thiserror",
- "void",
-]
-
-[[package]]
-name = "tor-async-utils"
-version = "0.1.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "futures",
  "pin-project",
@@ -4012,21 +3661,7 @@ dependencies = [
 [[package]]
 name = "tor-basic-utils"
 version = "0.7.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-dependencies = [
- "hex",
- "libc",
- "paste",
- "rand 0.8.5",
- "rand_chacha 0.3.1",
- "slab",
- "thiserror",
-]
-
-[[package]]
-name = "tor-basic-utils"
-version = "0.7.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "hex",
  "libc",
@@ -4040,7 +3675,7 @@ dependencies = [
 [[package]]
 name = "tor-bytes"
 version = "0.7.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "bytes",
  "digest 0.10.7",
@@ -4049,108 +3684,53 @@ dependencies = [
  "getrandom 0.2.10",
  "signature 1.6.4",
  "thiserror",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "zeroize",
-]
-
-[[package]]
-name = "tor-bytes"
-version = "0.7.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "bytes",
- "digest 0.10.7",
- "educe",
- "generic-array",
- "getrandom 0.2.10",
- "signature 1.6.4",
- "thiserror",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error",
+ "tor-llcrypto",
  "zeroize",
 ]
 
 [[package]]
 name = "tor-cell"
 version = "0.12.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "bitflags 2.4.0",
  "bytes",
- "caret 0.4.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "caret",
  "derive_more",
  "educe",
  "paste",
  "rand 0.8.5",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cert 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-cell"
-version = "0.12.1"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "bitflags 2.4.0",
- "bytes",
- "caret 0.4.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "derive_more",
- "educe",
- "paste",
- "rand 0.8.5",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cert 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-cert",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-units",
 ]
 
 [[package]]
 name = "tor-cert"
 version = "0.7.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
- "caret 0.4.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "caret",
  "derive_builder_fork_arti",
  "digest 0.10.7",
  "signature 1.6.4",
  "thiserror",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-cert"
-version = "0.7.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "caret 0.4.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "derive_builder_fork_arti",
- "digest 0.10.7",
- "signature 1.6.4",
- "thiserror",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes",
+ "tor-checkable",
+ "tor-llcrypto",
 ]
 
 [[package]]
 name = "tor-chanmgr"
 version = "0.10.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "async-trait",
  "derive_builder_fork_arti",
@@ -4159,50 +3739,20 @@ dependencies = [
  "futures",
  "postage",
  "rand 0.8.5",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "serde",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-socksproto 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "void",
-]
-
-[[package]]
-name = "tor-chanmgr"
-version = "0.10.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "async-trait",
- "derive_builder_fork_arti",
- "derive_more",
- "educe",
- "futures",
- "postage",
- "rand 0.8.5",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "serde",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-socksproto 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-cell",
+ "tor-config",
+ "tor-error",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-netdir",
+ "tor-proto",
+ "tor-rtcompat",
+ "tor-socksproto",
+ "tor-units",
  "tracing",
  "void",
 ]
@@ -4210,29 +3760,18 @@ dependencies = [
 [[package]]
 name = "tor-checkable"
 version = "0.5.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "humantime 2.1.0",
  "signature 1.6.4",
  "thiserror",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-checkable"
-version = "0.5.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "humantime 2.1.0",
- "signature 1.6.4",
- "thiserror",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto",
 ]
 
 [[package]]
 name = "tor-circmgr"
 version = "0.10.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "amplify",
  "async-trait",
@@ -4248,64 +3787,23 @@ dependencies = [
  "once_cell",
  "pin-project",
  "rand 0.8.5",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "retry-error",
+ "safelog",
  "serde",
  "static_assertions",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-persist 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "visibility",
- "weak-table",
-]
-
-[[package]]
-name = "tor-circmgr"
-version = "0.10.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "amplify",
- "async-trait",
- "bounded-vec-deque",
- "derive_builder_fork_arti",
- "derive_more",
- "downcast-rs",
- "dyn-clone",
- "educe",
- "futures",
- "humantime-serde",
- "itertools",
- "once_cell",
- "pin-project",
- "rand 0.8.5",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "serde",
- "static_assertions",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-persist 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-chanmgr",
+ "tor-config",
+ "tor-error",
+ "tor-guardmgr",
+ "tor-hscrypto",
+ "tor-linkspec",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-persist",
+ "tor-proto",
+ "tor-rtcompat",
  "tracing",
  "visibility",
  "weak-table",
@@ -4314,14 +3812,14 @@ dependencies = [
 [[package]]
 name = "tor-config"
 version = "0.9.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "config",
  "derive_builder_fork_arti",
  "directories",
  "educe",
  "either",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "fs-mistrust",
  "itertools",
  "once_cell",
  "paste",
@@ -4332,35 +3830,8 @@ dependencies = [
  "strum",
  "thiserror",
  "toml 0.7.6",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "void",
-]
-
-[[package]]
-name = "tor-config"
-version = "0.9.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "config",
- "derive_builder_fork_arti",
- "directories",
- "educe",
- "either",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "itertools",
- "once_cell",
- "paste",
- "regex",
- "serde",
- "serde_ignored",
- "shellexpand",
- "strum",
- "thiserror",
- "toml 0.7.6",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-error",
  "tracing",
  "void",
 ]
@@ -4368,29 +3839,18 @@ dependencies = [
 [[package]]
 name = "tor-consdiff"
 version = "0.5.4"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "digest 0.10.7",
  "hex",
  "thiserror",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-consdiff"
-version = "0.5.4"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "digest 0.10.7",
- "hex",
- "thiserror",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-llcrypto",
 ]
 
 [[package]]
 name = "tor-dirclient"
 version = "0.8.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "async-compression",
  "base64ct",
@@ -4403,48 +3863,21 @@ dependencies = [
  "itertools",
  "memchr",
  "thiserror",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
-]
-
-[[package]]
-name = "tor-dirclient"
-version = "0.8.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "async-compression",
- "base64ct",
- "derive_more",
- "futures",
- "hex",
- "http",
- "httparse",
- "httpdate",
- "itertools",
- "memchr",
- "thiserror",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-circmgr",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-netdoc",
+ "tor-proto",
+ "tor-rtcompat",
  "tracing",
 ]
 
 [[package]]
 name = "tor-dirmgr"
 version = "0.11.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "async-trait",
  "base64ct",
@@ -4453,7 +3886,7 @@ dependencies = [
  "digest 0.10.7",
  "educe",
  "event-listener",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "fs-mistrust",
  "fslock",
  "futures",
  "hex",
@@ -4465,108 +3898,42 @@ dependencies = [
  "paste",
  "postage",
  "rand 0.8.5",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "retry-error",
  "rusqlite",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "scopeguard",
  "serde",
  "signature 1.6.4",
  "strum",
  "thiserror",
- "time 0.3.25",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-consdiff 0.5.4 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-dirclient 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
-]
-
-[[package]]
-name = "tor-dirmgr"
-version = "0.11.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "async-trait",
- "base64ct",
- "derive_builder_fork_arti",
- "derive_more",
- "digest 0.10.7",
- "educe",
- "event-listener",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "fslock",
- "futures",
- "hex",
- "humantime 2.1.0",
- "humantime-serde",
- "itertools",
- "memmap2",
- "once_cell",
- "paste",
- "postage",
- "rand 0.8.5",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "rusqlite",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "scopeguard",
- "serde",
- "signature 1.6.4",
- "strum",
- "thiserror",
- "time 0.3.25",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-consdiff 0.5.4 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-dirclient 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-guardmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "time 0.3.27",
+ "tor-basic-utils",
+ "tor-checkable",
+ "tor-circmgr",
+ "tor-config",
+ "tor-consdiff",
+ "tor-dirclient",
+ "tor-error",
+ "tor-guardmgr",
+ "tor-llcrypto",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-proto",
+ "tor-rtcompat",
  "tracing",
 ]
 
 [[package]]
 name = "tor-error"
 version = "0.5.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "backtrace",
  "derive_more",
  "futures",
  "once_cell",
  "paste",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "static_assertions",
- "strum",
- "thiserror",
- "tracing",
-]
-
-[[package]]
-name = "tor-error"
-version = "0.5.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "backtrace",
- "derive_more",
- "futures",
- "once_cell",
- "paste",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "retry-error",
  "static_assertions",
  "strum",
  "thiserror",
@@ -4576,19 +3943,19 @@ dependencies = [
 [[package]]
 name = "tor-geoip"
 version = "0.1.1"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "derive_more",
  "once_cell",
  "rangemap",
  "thiserror",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error",
 ]
 
 [[package]]
 name = "tor-guardmgr"
 version = "0.10.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "base64ct",
  "derive_builder_fork_arti",
@@ -4599,72 +3966,34 @@ dependencies = [
  "humantime 2.1.0",
  "humantime-serde",
  "itertools",
- "num_enum 0.7.0",
+ "num_enum",
  "pin-project",
  "postage",
  "rand 0.8.5",
  "retain_mut",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "serde",
  "strum",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-persist 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
-]
-
-[[package]]
-name = "tor-guardmgr"
-version = "0.10.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "base64ct",
- "derive_builder_fork_arti",
- "derive_more",
- "dyn-clone",
- "educe",
- "futures",
- "humantime 2.1.0",
- "humantime-serde",
- "itertools",
- "num_enum 0.6.1",
- "pin-project",
- "postage",
- "rand 0.8.5",
- "retain_mut",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "serde",
- "strum",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-persist 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-config",
+ "tor-error",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-persist",
+ "tor-proto",
+ "tor-protover",
+ "tor-rtcompat",
+ "tor-units",
  "tracing",
 ]
 
 [[package]]
 name = "tor-hsclient"
 version = "0.4.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "async-trait",
  "derive_more",
@@ -4675,72 +4004,34 @@ dependencies = [
  "postage",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "retry-error",
+ "safelog",
  "slotmap",
  "strum",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-dirclient 0.8.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-keymgr 0.2.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
-]
-
-[[package]]
-name = "tor-hsclient"
-version = "0.4.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "async-trait",
- "derive_more",
- "educe",
- "either",
- "futures",
- "itertools",
- "postage",
- "rand 0.8.5",
- "rand_core 0.6.4",
- "retry-error 0.5.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "slotmap",
- "strum",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-circmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-dirclient 0.8.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-keymgr 0.2.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdir 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-proto 0.12.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-cell",
+ "tor-checkable",
+ "tor-circmgr",
+ "tor-config",
+ "tor-dirclient",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-keymgr",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-proto",
+ "tor-rtcompat",
  "tracing",
 ]
 
 [[package]]
 name = "tor-hscrypto"
 version = "0.3.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "data-encoding",
  "derive_more",
@@ -4749,142 +4040,70 @@ dependencies = [
  "paste",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "serde",
  "signature 1.6.4",
  "subtle",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-hscrypto"
-version = "0.3.1"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "data-encoding",
- "derive_more",
- "digest 0.10.7",
- "itertools",
- "paste",
- "rand 0.8.5",
- "rand_core 0.6.4",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "serde",
- "signature 1.6.4",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-error",
+ "tor-llcrypto",
+ "tor-units",
 ]
 
 [[package]]
 name = "tor-keymgr"
 version = "0.2.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "derive_builder_fork_arti",
  "derive_more",
  "downcast-rs",
  "dyn-clone",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "itertools",
- "rand 0.8.5",
- "sec1 0.7.3",
- "serde",
- "ssh-key 0.6.1",
- "thiserror",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "zeroize",
-]
-
-[[package]]
-name = "tor-keymgr"
-version = "0.2.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "derive_builder_fork_arti",
- "derive_more",
- "downcast-rs",
- "dyn-clone",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "fs-mistrust",
  "itertools",
  "rand 0.8.5",
  "serde",
- "ssh-key 0.5.1",
+ "ssh-key",
  "thiserror",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-config",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-llcrypto",
  "zeroize",
 ]
 
 [[package]]
 name = "tor-linkspec"
 version = "0.8.2"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "base64ct",
  "by_address",
- "caret 0.4.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "caret",
  "cfg-if",
  "derive_builder_fork_arti",
  "derive_more",
  "educe",
  "hex",
  "itertools",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "serde",
  "serde_with",
  "strum",
  "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-linkspec"
-version = "0.8.2"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "base64ct",
- "by_address",
- "caret 0.4.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "cfg-if",
- "derive_builder_fork_arti",
- "derive_more",
- "educe",
- "hex",
- "itertools",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "serde",
- "serde_with",
- "strum",
- "thiserror",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-config",
+ "tor-llcrypto",
+ "tor-protover",
 ]
 
 [[package]]
 name = "tor-llcrypto"
 version = "0.5.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "aes",
  "base64ct",
@@ -4897,38 +4116,8 @@ dependencies = [
  "hex",
  "rand_core 0.5.1",
  "rand_core 0.6.4",
- "rsa 0.9.2",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "serde",
- "sha1",
- "sha2 0.10.7",
- "sha3",
- "signature 1.6.4",
- "simple_asn1",
- "subtle",
- "thiserror",
- "x25519-dalek",
- "zeroize",
-]
-
-[[package]]
-name = "tor-llcrypto"
-version = "0.5.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "aes",
- "base64ct",
- "ctr",
- "curve25519-dalek",
- "derive_more",
- "digest 0.10.7",
- "ed25519-dalek",
- "getrandom 0.2.10",
- "hex",
- "rand_core 0.5.1",
- "rand_core 0.6.4",
- "rsa 0.9.2",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "rsa",
+ "safelog",
  "serde",
  "sha1",
  "sha2 0.10.7",
@@ -4944,7 +4133,7 @@ dependencies = [
 [[package]]
 name = "tor-netdir"
 version = "0.9.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "bitflags 2.4.0",
  "derive_builder_fork_arti",
@@ -4954,60 +4143,25 @@ dependencies = [
  "hex",
  "humantime 2.1.0",
  "itertools",
- "num_enum 0.7.0",
+ "num_enum",
  "rand 0.8.5",
  "serde",
  "signature 1.6.4",
  "static_assertions",
  "strum",
  "thiserror",
- "time 0.3.25",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "typed-index-collections",
-]
-
-[[package]]
-name = "tor-netdir"
-version = "0.9.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "bitflags 2.4.0",
- "derive_builder_fork_arti",
- "derive_more",
- "digest 0.10.7",
- "futures",
- "hex",
- "humantime 2.1.0",
- "itertools",
- "num_enum 0.6.1",
- "rand 0.8.5",
- "serde",
- "signature 1.6.4",
- "static_assertions",
- "strum",
- "thiserror",
- "time 0.3.25",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "time 0.3.27",
+ "tor-basic-utils",
+ "tor-checkable",
+ "tor-config",
+ "tor-error",
  "tor-geoip",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-netdoc 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-hscrypto",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-netdoc",
+ "tor-protover",
+ "tor-units",
  "tracing",
  "typed-index-collections",
 ]
@@ -5015,7 +4169,7 @@ dependencies = [
 [[package]]
 name = "tor-netdoc"
 version = "0.8.2"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "amplify",
  "base64ct",
@@ -5038,62 +4192,18 @@ dependencies = [
  "smallvec",
  "subtle",
  "thiserror",
- "time 0.3.25",
+ "time 0.3.27",
  "tinystr",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cert 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "visibility",
- "visible",
- "weak-table",
- "zeroize",
-]
-
-[[package]]
-name = "tor-netdoc"
-version = "0.8.2"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "amplify",
- "base64ct",
- "bitflags 2.4.0",
- "cipher",
- "derive_builder_fork_arti",
- "derive_more",
- "digest 0.10.7",
- "educe",
- "hex",
- "hex-literal",
- "humantime 2.1.0",
- "itertools",
- "once_cell",
- "phf",
- "rand 0.8.5",
- "serde",
- "serde_with",
- "signature 1.6.4",
- "smallvec",
- "subtle",
- "thiserror",
- "time 0.3.25",
- "tinystr",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cert 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-cert",
+ "tor-checkable",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-protover",
+ "tor-units",
  "visibility",
  "visible",
  "weak-table",
@@ -5103,39 +4213,23 @@ dependencies = [
 [[package]]
 name = "tor-persist"
 version = "0.7.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "derive_more",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "fs-mistrust",
  "fslock",
  "sanitize-filename",
  "serde",
  "serde_json",
  "thiserror",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
-]
-
-[[package]]
-name = "tor-persist"
-version = "0.7.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "derive_more",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "fslock",
- "sanitize-filename",
- "serde",
- "serde_json",
- "thiserror",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-error",
  "tracing",
 ]
 
 [[package]]
 name = "tor-proto"
 version = "0.12.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "asynchronous-codec",
  "bytes",
@@ -5152,73 +4246,26 @@ dependencies = [
  "pin-project",
  "rand 0.8.5",
  "rand_core 0.6.4",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "safelog",
  "subtle",
  "thiserror",
  "tokio",
  "tokio-util",
- "tor-async-utils 0.1.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-cert 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtmock 0.9.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "typenum",
- "visibility",
- "void",
- "zeroize",
-]
-
-[[package]]
-name = "tor-proto"
-version = "0.12.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "asynchronous-codec",
- "bytes",
- "cipher",
- "coarsetime",
- "derive_builder_fork_arti",
- "derive_more",
- "digest 0.10.7",
- "educe",
- "futures",
- "generic-array",
- "hkdf",
- "hmac",
- "pin-project",
- "rand 0.8.5",
- "rand_core 0.6.4",
- "safelog 0.3.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "subtle",
- "thiserror",
- "tokio",
- "tokio-util",
- "tor-async-utils 0.1.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-basic-utils 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cell 0.12.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-cert 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-checkable 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-hscrypto 0.3.1 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-llcrypto 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-protover 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtmock 0.9.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-units 0.6.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-async-utils",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-cell",
+ "tor-cert",
+ "tor-checkable",
+ "tor-config",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-protover",
+ "tor-rtcompat",
+ "tor-rtmock",
+ "tor-units",
  "tracing",
  "typenum",
  "visibility",
@@ -5229,66 +4276,37 @@ dependencies = [
 [[package]]
 name = "tor-protover"
 version = "0.5.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
- "caret 0.4.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "thiserror",
-]
-
-[[package]]
-name = "tor-protover"
-version = "0.5.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "caret 0.4.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "caret",
  "thiserror",
 ]
 
 [[package]]
 name = "tor-ptmgr"
 version = "0.4.1"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "async-trait",
  "derive_builder_fork_arti",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "fs-mistrust",
  "futures",
  "serde",
  "thiserror",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-socksproto 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "tor-chanmgr",
+ "tor-config",
+ "tor-error",
+ "tor-linkspec",
+ "tor-rtcompat",
+ "tor-socksproto",
  "tracing",
  "visibility",
-]
-
-[[package]]
-name = "tor-ptmgr"
-version = "0.4.1"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "async-trait",
- "derive_builder_fork_arti",
- "fs-mistrust 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "futures",
- "serde",
- "thiserror",
- "tor-chanmgr 0.10.0 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-config 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-linkspec 0.8.2 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-socksproto 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tracing",
 ]
 
 [[package]]
 name = "tor-rpcbase"
 version = "0.1.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "downcast-rs",
  "erased-serde",
@@ -5300,52 +4318,15 @@ dependencies = [
  "serde",
  "serde_repr",
  "thiserror",
- "tor-async-utils 0.1.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "typetag",
-]
-
-[[package]]
-name = "tor-rpcbase"
-version = "0.1.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "downcast-rs",
- "erased-serde",
- "futures",
- "futures-await-test",
- "inventory",
- "once_cell",
- "paste",
- "serde",
- "serde_repr",
- "thiserror",
- "tor-async-utils 0.1.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-async-utils",
+ "tor-error",
  "typetag",
 ]
 
 [[package]]
 name = "tor-rtcompat"
 version = "0.9.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-dependencies = [
- "async-native-tls",
- "async-trait",
- "async_executors",
- "educe",
- "futures",
- "native-tls",
- "pin-project",
- "thiserror",
- "tokio",
- "tokio-util",
-]
-
-[[package]]
-name = "tor-rtcompat"
-version = "0.9.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "async-io",
  "async-native-tls",
@@ -5364,7 +4345,7 @@ dependencies = [
 [[package]]
 name = "tor-rtmock"
 version = "0.9.0"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "amplify",
  "async-trait",
@@ -5377,29 +4358,7 @@ dependencies = [
  "slotmap",
  "strum",
  "thiserror",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tracing",
- "tracing-test",
- "void",
-]
-
-[[package]]
-name = "tor-rtmock"
-version = "0.9.0"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "amplify",
- "async-trait",
- "derive-adhoc",
- "educe",
- "futures",
- "humantime 2.1.0",
- "itertools",
- "pin-project",
- "slotmap",
- "strum",
- "thiserror",
- "tor-rtcompat 0.9.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-rtcompat",
  "tracing",
  "tracing-test",
  "void",
@@ -5408,40 +4367,19 @@ dependencies = [
 [[package]]
 name = "tor-socksproto"
 version = "0.7.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
- "caret 0.4.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
+ "caret",
  "subtle",
  "thiserror",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy)",
-]
-
-[[package]]
-name = "tor-socksproto"
-version = "0.7.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
-dependencies = [
- "caret 0.4.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "subtle",
- "thiserror",
- "tor-bytes 0.7.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
- "tor-error 0.5.3 (git+https://gitlab.torproject.org/tpo/core/arti/)",
+ "tor-bytes",
+ "tor-error",
 ]
 
 [[package]]
 name = "tor-units"
 version = "0.6.3"
-source = "git+https://gitlab.torproject.org/gotlou/arti/?branch=pt-proxy#8d6dd70db246a5f9e991fb78c776eb27f7432741"
-dependencies = [
- "derive_more",
- "thiserror",
-]
-
-[[package]]
-name = "tor-units"
-version = "0.6.3"
-source = "git+https://gitlab.torproject.org/tpo/core/arti/#3fdadcc7509f60cfdfc51df2664aaf2f73bbd2f0"
+source = "git+https://gitlab.torproject.org/tpo/core/arti/#6316cf6fe96f5d1624be42c9a74a7fc8f7232de8"
 dependencies = [
  "derive_more",
  "thiserror",
@@ -5496,7 +4434,7 @@ checksum = "5f4f31f56159e98206da9efd823404b79b6ef3143b4a7ab76e67b1751b25a4ab"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -5613,9 +4551,9 @@ checksum = "497961ef93d974e23eb6f433eb5fe1b7930b659f06d12dec6fc44a8f554c0bba"
 
 [[package]]
 name = "typetag"
-version = "0.2.12"
+version = "0.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aec6850cc671cd0cfb3ab285465e48a3b927d9de155051c35797446b32f9169f"
+checksum = "80960fd143d4c96275c0e60b08f14b81fbb468e79bc0ef8fbda69fb0afafae43"
 dependencies = [
  "erased-serde",
  "inventory",
@@ -5626,13 +4564,13 @@ dependencies = [
 
 [[package]]
 name = "typetag-impl"
-version = "0.2.12"
+version = "0.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "30c49a6815b4f8379c36f06618bc1b80ca77aaf8a3fd4d8549dca6fdb016000f"
+checksum = "bfc13d450dc4a695200da3074dacf43d449b968baee95e341920e47f61a3b40f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
@@ -5800,7 +4738,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
  "wasm-bindgen-shared",
 ]
 
@@ -5834,7 +4772,7 @@ checksum = "54681b18a46765f095758388f2d0cf16eb8d4169b639ab575a8f5693af210c7b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -5922,9 +4860,9 @@ dependencies = [
 
 [[package]]
 name = "windows-targets"
-version = "0.48.1"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05d4b17490f70499f20b9e791dcf6a299785ce8af4d709018206dc5b4953e95f"
+checksum = "9a2fa6e2155d7247be68c096456083145c183cbbbc2764150dda45a87197940c"
 dependencies = [
  "windows_aarch64_gnullvm",
  "windows_aarch64_msvc",
@@ -5937,51 +4875,51 @@ dependencies = [
 
 [[package]]
 name = "windows_aarch64_gnullvm"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91ae572e1b79dba883e0d315474df7305d12f569b400fcf90581b06062f7e1bc"
+checksum = "2b38e32f0abccf9987a4e3079dfb67dcd799fb61361e53e2882c3cbaf0d905d8"
 
 [[package]]
 name = "windows_aarch64_msvc"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2ef27e0d7bdfcfc7b868b317c1d32c641a6fe4629c171b8928c7b08d98d7cf3"
+checksum = "dc35310971f3b2dbbf3f0690a219f40e2d9afcf64f9ab7cc1be722937c26b4bc"
 
 [[package]]
 name = "windows_i686_gnu"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "622a1962a7db830d6fd0a69683c80a18fda201879f0f447f065a3b7467daa241"
+checksum = "a75915e7def60c94dcef72200b9a8e58e5091744960da64ec734a6c6e9b3743e"
 
 [[package]]
 name = "windows_i686_msvc"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4542c6e364ce21bf45d69fdd2a8e455fa38d316158cfd43b3ac1c5b1b19f8e00"
+checksum = "8f55c233f70c4b27f66c523580f78f1004e8b5a8b659e05a4eb49d4166cca406"
 
 [[package]]
 name = "windows_x86_64_gnu"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca2b8a661f7628cbd23440e50b05d705db3686f894fc9580820623656af974b1"
+checksum = "53d40abd2583d23e4718fddf1ebec84dbff8381c07cae67ff7768bbf19c6718e"
 
 [[package]]
 name = "windows_x86_64_gnullvm"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7896dbc1f41e08872e9d5e8f8baa8fdd2677f29468c4e156210174edc7f7b953"
+checksum = "0b7b52767868a23d5bab768e390dc5f5c55825b6d30b86c844ff2dc7414044cc"
 
 [[package]]
 name = "windows_x86_64_msvc"
-version = "0.48.0"
+version = "0.48.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a515f5799fe4961cb532f983ce2b23082366b898e52ffbce459c86f67c8378a"
+checksum = "ed94fce61571a4006852b7389a063ab983c02eb1bb37b47f8272ce92d06d9538"
 
 [[package]]
 name = "winnow"
-version = "0.5.10"
+version = "0.5.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5504cc7644f4b593cbc05c4a55bf9bd4e94b867c3c0bd440934174d50482427d"
+checksum = "7c2e3184b9c4e92ad5167ca73039d0c42476302ab603e2fec4487511f38ccefc"
 dependencies = [
  "memchr",
 ]
@@ -6023,7 +4961,7 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.28",
+ "syn 2.0.29",
 ]
 
 [[package]]
