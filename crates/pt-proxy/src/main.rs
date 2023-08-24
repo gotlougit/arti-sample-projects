@@ -217,7 +217,7 @@ async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -
                 }
             }
             Err(e) => {
-                eprintln!("Couldn't connect to obfs4 client: \"{}\"", e.to_string());
+                eprintln!("Couldn't connect to obfs4 client: \"{}\"", e);
                 // Report "No authentication method was acceptable" to user
                 // For more info refer to RFC 1928
                 client.write_all(&[5, 0xFF]).await.unwrap();
