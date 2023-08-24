@@ -109,6 +109,30 @@ fn build_server_config(
     ))
 }
 
+/// Read cert info and relay it to the user
+fn read_cert_info() -> Result<String> {
+    let file_path = format!("{}/obfs4_bridgeline.txt", SERVER_STATE_LOCATION);
+    match std::fs::read_to_string(file_path) {
+        Ok(contents) => {
+            let line = contents
+                .lines()
+                .find(|line| line.contains("Bridge obfs4"))
+                .ok_or(BridgeLineParseError)?;
+            let cert = line
+                .split_whitespace()
+                .find(|part| part.starts_with("cert="))
+                .ok_or(BridgeLineParseError)?;
+            let iat = line
+                .split_whitespace()
+                .find(|part| part.starts_with("iat-mode="))
+                .ok_or(BridgeLineParseError)?;
+            let complete_config = format!("{};{}", cert, iat);
+            Ok(complete_config)
+        }
+        Err(e) => Err(e.into()),
+    }
+}
+
 /// Create the config to launch an obfs4 client process
 fn build_client_config(protocol: &str) -> Result<(PtCommonParameters, PtClientParameters)> {
     Ok((
@@ -271,7 +295,11 @@ async fn main() -> Result<()> {
                 common_params,
                 server_params,
             );
-            tokio::spawn(async move { server_pt.launch(cur_runtime).await.unwrap() });
+            tokio::spawn(async move {
+                server_pt.launch(cur_runtime).await.unwrap();
+                let auth_info = read_cert_info().unwrap();
+                println!("Authentication info is: {}", auth_info);
+            });
             // Need an endless loop here to not kill the server PT process
             loop {}
         }
