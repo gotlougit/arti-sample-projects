@@ -300,10 +300,10 @@ async fn main() -> Result<()> {
         } => {
             let final_socks5_endpoint = format!("127.0.0.1:{}", final_socks5_port);
             let exit_rx = run_socks5_server(&final_socks5_endpoint).await?;
-            let auth_info = read_cert_info().unwrap();
             println!();
             println!("Listening on: {}", listen_address);
             launch_obfs4_server(obfs4_path, listen_address, final_socks5_endpoint).await?;
+            let auth_info = read_cert_info().unwrap();
             println!();
             println!("Authentication info is: {}", auth_info);
             exit_rx.await.unwrap();
