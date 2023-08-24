@@ -9,7 +9,10 @@ use tokio::time::Duration;
 use tokio_stream::StreamExt;
 use tor_chanmgr::transport::proxied::{settings_to_protocol, Protocol};
 use tor_linkspec::PtTransportName;
-use tor_ptmgr::ipc::{PluggableTransport, PtParameters};
+use tor_ptmgr::ipc::{
+    PluggableClientTransport, PluggableServerTransport, PluggableTransport, PtClientParameters,
+    PtCommonParameters, PtServerParameters,
+};
 use tor_rtcompat::PreferredRuntime;
 use tor_socksproto::{SocksAuth, SocksVersion};
 
@@ -90,26 +93,33 @@ fn build_server_config(
     protocol: &str,
     bind_addr: &str,
     forwarding_server_addr: &str,
-) -> Result<PtParameters> {
+) -> Result<(PtCommonParameters, PtServerParameters)> {
     let bindaddr_formatted = format!("{}-{}", &protocol, bind_addr);
     let orport = forwarding_server_addr.to_string();
-    Ok(PtParameters::builder()
-        .state_location(SERVER_STATE_LOCATION.into())
-        .transports(vec![protocol.parse()?])
-        .timeout(Some(Duration::from_secs(1)))
-        .server_bindaddr(Some(bindaddr_formatted))
-        .server_orport(Some(orport))
-        .as_server(true)
-        .build()?)
+    Ok((
+        PtCommonParameters::builder()
+            .state_location(SERVER_STATE_LOCATION.into())
+            .timeout(Some(Duration::from_secs(1)))
+            .build()?,
+        PtServerParameters::builder()
+            .transports(vec![protocol.parse()?])
+            .server_bindaddr(bindaddr_formatted)
+            .server_orport(Some(orport))
+            .build()?,
+    ))
 }
 
 /// Create the config to launch an obfs4 client process
-fn build_client_config(protocol: &str) -> Result<PtParameters> {
-    Ok(PtParameters::builder()
-        .state_location(CLIENT_STATE_LOCATION.into())
-        .transports(vec![protocol.parse()?])
-        .timeout(Some(Duration::from_secs(1)))
-        .build()?)
+fn build_client_config(protocol: &str) -> Result<(PtCommonParameters, PtClientParameters)> {
+    Ok((
+        PtCommonParameters::builder()
+            .state_location(CLIENT_STATE_LOCATION.into())
+            .timeout(Some(Duration::from_secs(1)))
+            .build()?,
+        PtClientParameters::builder()
+            .transports(vec![protocol.parse()?])
+            .build()?,
+    ))
 }
 
 /// Create a SOCKS5 connection to the obfs4 client
@@ -197,8 +207,8 @@ async fn main() -> Result<()> {
         } => {
             let entry_addr = format!("127.0.0.1:{}", client_port);
 
-            let client_params = build_client_config("obfs4")?;
-            let mut client_pt = PluggableTransport::new(
+            let (common_params, client_params) = build_client_config("obfs4")?;
+            let mut client_pt = PluggableClientTransport::new(
                 obfs4_path.into(),
                 vec![
                     "-enableLogging".to_string(),
@@ -206,6 +216,7 @@ async fn main() -> Result<()> {
                     "DEBUG".to_string(),
                     "-unsafeLogging".to_string(),
                 ],
+                common_params,
                 client_params,
             );
             client_pt.launch(cur_runtime).await?;
@@ -246,10 +257,10 @@ async fn main() -> Result<()> {
         } => {
             let final_socks5_endpoint = format!("127.0.0.1:{}", final_socks5_port);
             run_socks5_server(&final_socks5_endpoint).await?;
-            let server_params =
+            let (common_params, server_params) =
                 build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
 
-            let mut server_pt = PluggableTransport::new(
+            let mut server_pt = PluggableServerTransport::new(
                 obfs4_path.into(),
                 vec![
                     "-enableLogging".to_string(),
@@ -257,6 +268,7 @@ async fn main() -> Result<()> {
                     "DEBUG".to_string(),
                     "-unsafeLogging".to_string(),
                 ],
+                common_params,
                 server_params,
             );
             tokio::spawn(async move { server_pt.launch(cur_runtime).await.unwrap() });
