@@ -297,14 +297,12 @@ async fn main() -> Result<()> {
                 common_params,
                 server_params,
             );
-            tokio::spawn(async move {
-                server_pt.launch(cur_runtime).await.unwrap();
-                let auth_info = read_cert_info().unwrap();
-                println!();
-                println!("Listening on: {}", listen_address);
-                println!();
-                println!("Authentication info is: {}", auth_info);
-            });
+            server_pt.launch(cur_runtime).await.unwrap();
+            let auth_info = read_cert_info().unwrap();
+            println!();
+            println!("Listening on: {}", listen_address);
+            println!();
+            println!("Authentication info is: {}", auth_info);
             // Need an endless loop here to not kill the server PT process
             loop {}
         }
