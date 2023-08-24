@@ -32,9 +32,6 @@ struct BridgeLineParseError;
 enum Command {
     /// Enable client mode
     Client {
-        /// Binary to use to launch obfs4 client
-        #[arg(required = true)]
-        obfs4_path: String,
         /// The local port that programs will point traffic to
         #[arg(short, long, default_value = "9050")]
         client_port: u16,
@@ -53,9 +50,6 @@ enum Command {
     },
     /// Enable server mode
     Server {
-        /// Binary to use to launch obfs4 server
-        #[arg(required = true)]
-        obfs4_path: String,
         /// Address on which the obfs4 server should listen in for
         /// incoming connections
         #[arg(required = true)]
@@ -75,6 +69,9 @@ enum Command {
 struct Args {
     #[command(subcommand)]
     command: Command,
+    /// Binary to use to launch obfs4 client
+    #[arg(required = true)]
+    obfs4_path: String,
 }
 
 /// Store the data we need to connect to the obfs4 client
@@ -212,9 +209,9 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
     let cur_runtime = PreferredRuntime::current()?;
     let args = Args::parse();
+    let obfs4_path = args.obfs4_path;
     match args.command {
         Command::Client {
-            obfs4_path,
             client_port,
             remote_obfs4_ip,
             remote_obfs4_port,
@@ -268,7 +265,6 @@ async fn main() -> Result<()> {
             }
         }
         Command::Server {
-            obfs4_path,
             listen_address,
             final_socks5_port,
         } => {
