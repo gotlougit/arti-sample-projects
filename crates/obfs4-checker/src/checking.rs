@@ -39,6 +39,19 @@ async fn is_bridge_online(
     chanmgr.build_unmanaged_channel(bridge_config).await
 }
 
+/// Waits for given channel to expire and sends this info through specified
+/// channel
+async fn is_bridge_still_online(
+    channel: Channel,
+    bridge_line: String,
+    expiry_tx: Sender<String>,
+) -> anyhow::Result<()> {
+    let _ = channel.wait_for_close().await;
+    // if we reached this statement, it means the channel has expired
+    expiry_tx.send(bridge_line).await?;
+    Ok(())
+}
+
 /// Return a [TorClientConfigBuilder] which is set to use a pluggable transport
 /// for all connections
 fn build_pt_bridge_config(
@@ -205,15 +218,24 @@ pub async fn detect_bridges_going_down(
     mut now_online_bridges_rx: Receiver<HashMap<String, Channel>>,
 ) {
     let mut channels = initial_channels;
+    let (expiry_tx, mut expiry_rx) = mpsc::channel::<String>(CHANNEL_SIZE);
     loop {
         let mut failed_bridges = Vec::new();
         let mut new_channels = HashMap::new();
-        for (bridgeline, channel) in channels.iter() {
-            if channel.is_closing() {
-                failed_bridges.push(bridgeline.to_string());
-            } else {
-                new_channels.insert(bridgeline.to_string(), channel.clone());
-            }
+        for (bridgeline, channel) in channels.into_iter() {
+            let new_expiry_tx = expiry_tx.clone();
+            tokio::spawn(async move {
+                if let Err(e) =
+                    is_bridge_still_online(channel.clone(), bridgeline.clone(), new_expiry_tx).await
+                {
+                    eprintln!("Error while waiting on close: {:#?}", e);
+                }
+            });
+        }
+        // detect any bridges failing
+        while let Ok(Some(bridgeline)) = timeout(RECEIVE_TIMEOUT, expiry_rx.recv()).await {
+            new_channels.remove(&bridgeline);
+            failed_bridges.push(bridgeline);
         }
         // report failures to the appropriate task
         once_online_bridges_tx.send(failed_bridges).await.unwrap();
