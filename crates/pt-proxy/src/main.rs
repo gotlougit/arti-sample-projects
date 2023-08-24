@@ -249,7 +249,6 @@ async fn run_socks5_server(endpoint: &str) -> Result<oneshot::Receiver<bool>> {
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let cur_runtime = PreferredRuntime::current()?;
     let args = Args::parse();
     let obfs4_path = args.obfs4_path;
     match args.command {
