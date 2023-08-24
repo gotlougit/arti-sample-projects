@@ -267,6 +267,8 @@ async fn main() -> Result<()> {
                             obfs4_server_ip: remote_obfs4_ip,
                             obfs4_server_port: remote_obfs4_port,
                         };
+                        println!();
+                        println!("Listening on: {}", entry_addr);
                         run_forwarding_server(&entry_addr, creds).await?;
                     }
                     _ => eprintln!("Unable to get credentials for obfs4 client process!"),
@@ -298,6 +300,9 @@ async fn main() -> Result<()> {
             tokio::spawn(async move {
                 server_pt.launch(cur_runtime).await.unwrap();
                 let auth_info = read_cert_info().unwrap();
+                println!();
+                println!("Listening on: {}", listen_address);
+                println!();
                 println!("Authentication info is: {}", auth_info);
             });
             // Need an endless loop here to not kill the server PT process
