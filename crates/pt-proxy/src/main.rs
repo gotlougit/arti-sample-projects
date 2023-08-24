@@ -149,19 +149,15 @@ fn build_client_config(protocol: &str) -> Result<(PtCommonParameters, PtClientPa
 
 /// Create a SOCKS5 connection to the obfs4 client
 async fn connect_to_obfs4_client(
-    proxy_server: &str,
-    username: &str,
-    password: &str,
-    destination: &str,
-    port: u16,
+    forward_creds: ForwardingCreds,
 ) -> Result<Socks5Stream<TcpStream>> {
     let config = Config::default();
     Ok(Socks5Stream::connect_with_password(
-        proxy_server.to_string(),
-        destination.to_string(),
-        port,
-        username.to_string(),
-        password.to_string(),
+        forward_creds.forward_endpoint,
+        forward_creds.obfs4_server_ip,
+        forward_creds.obfs4_server_port,
+        forward_creds.username,
+        forward_creds.password,
         config,
     )
     .await?)
@@ -175,15 +171,7 @@ async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -
     while let Ok((mut client, _)) = listener.accept().await {
         let forward_creds_clone = forward_creds.clone();
         tokio::spawn(async move {
-            if let Ok(mut relay_stream) = connect_to_obfs4_client(
-                &forward_creds_clone.forward_endpoint,
-                &forward_creds_clone.username,
-                &forward_creds_clone.password,
-                &forward_creds_clone.obfs4_server_ip,
-                forward_creds_clone.obfs4_server_port,
-            )
-            .await
-            {
+            if let Ok(mut relay_stream) = connect_to_obfs4_client(forward_creds_clone).await {
                 if let Err(e) = tokio::io::copy_bidirectional(&mut client, &mut relay_stream).await
                 {
                     eprintln!("{:#?}", e);
