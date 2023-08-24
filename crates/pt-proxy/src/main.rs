@@ -5,6 +5,7 @@ use fast_socks5::server::Socks5Server;
 use std::str::FromStr;
 use tokio::io::AsyncWriteExt;
 use tokio::net::{TcpListener, TcpStream};
+use tokio::sync::oneshot;
 use tokio::time::Duration;
 use tokio_stream::StreamExt;
 use tor_chanmgr::transport::proxied::{settings_to_protocol, Protocol};
@@ -31,9 +32,6 @@ struct BridgeLineParseError;
 enum Command {
     /// Enable client mode
     Client {
-        /// Binary to use to launch obfs4 client
-        #[arg(required = true)]
-        obfs4_path: String,
         /// The local port that programs will point traffic to
         #[arg(short, long, default_value = "9050")]
         client_port: u16,
@@ -52,9 +50,6 @@ enum Command {
     },
     /// Enable server mode
     Server {
-        /// Binary to use to launch obfs4 server
-        #[arg(required = true)]
-        obfs4_path: String,
         /// Address on which the obfs4 server should listen in for
         /// incoming connections
         #[arg(required = true)]
@@ -74,6 +69,9 @@ enum Command {
 struct Args {
     #[command(subcommand)]
     command: Command,
+    /// Binary to use to launch obfs4 client
+    #[arg(required = true)]
+    obfs4_path: String,
 }
 
 /// Store the data we need to connect to the obfs4 client
@@ -148,22 +146,60 @@ fn build_client_config(protocol: &str) -> Result<(PtCommonParameters, PtClientPa
 
 /// Create a SOCKS5 connection to the obfs4 client
 async fn connect_to_obfs4_client(
-    proxy_server: &str,
-    username: &str,
-    password: &str,
-    destination: &str,
-    port: u16,
+    forward_creds: ForwardingCreds,
 ) -> Result<Socks5Stream<TcpStream>> {
     let config = Config::default();
     Ok(Socks5Stream::connect_with_password(
-        proxy_server.to_string(),
-        destination.to_string(),
-        port,
-        username.to_string(),
-        password.to_string(),
+        forward_creds.forward_endpoint,
+        forward_creds.obfs4_server_ip,
+        forward_creds.obfs4_server_port,
+        forward_creds.username,
+        forward_creds.password,
         config,
     )
     .await?)
+}
+
+/// Create obfs4 client process
+async fn launch_obfs4_client(obfs4_path: String) -> anyhow::Result<PluggableClientTransport> {
+    let (common_params, client_params) = build_client_config("obfs4")?;
+    let mut client_pt = PluggableClientTransport::new(
+        obfs4_path.into(),
+        vec![
+            "-enableLogging".to_string(),
+            "-logLevel".to_string(),
+            "DEBUG".to_string(),
+            "-unsafeLogging".to_string(),
+        ],
+        common_params,
+        client_params,
+    );
+    client_pt.launch(PreferredRuntime::current()?).await?;
+    Ok(client_pt)
+}
+
+/// Create obfs4 server process
+async fn launch_obfs4_server(
+    obfs4_path: String,
+    listen_address: String,
+    final_socks5_endpoint: String,
+) -> anyhow::Result<PluggableServerTransport> {
+    let (common_params, server_params) =
+        build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
+
+    let mut server_pt = PluggableServerTransport::new(
+        obfs4_path.into(),
+        vec![
+            "-enableLogging".to_string(),
+            "-logLevel".to_string(),
+            "DEBUG".to_string(),
+            "-unsafeLogging".to_string(),
+        ],
+        common_params,
+        server_params,
+    );
+    server_pt.launch(PreferredRuntime::current()?).await?;
+    Ok(server_pt)
 }
 
 /// Launch the dumb TCP pipe, whose only job is to abstract away the obfs4 client
@@ -173,36 +209,29 @@ async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -
     let listener = TcpListener::bind(endpoint).await?;
     while let Ok((mut client, _)) = listener.accept().await {
         let forward_creds_clone = forward_creds.clone();
-        tokio::spawn(async move {
-            if let Ok(mut relay_stream) = connect_to_obfs4_client(
-                &forward_creds_clone.forward_endpoint,
-                &forward_creds_clone.username,
-                &forward_creds_clone.password,
-                &forward_creds_clone.obfs4_server_ip,
-                forward_creds_clone.obfs4_server_port,
-            )
-            .await
-            {
+        match connect_to_obfs4_client(forward_creds_clone).await {
+            Ok(mut relay_stream) => {
                 if let Err(e) = tokio::io::copy_bidirectional(&mut client, &mut relay_stream).await
                 {
                     eprintln!("{:#?}", e);
                 }
-            } else {
-                eprintln!("Couldn't connect to obfs4 client, is it running?");
-                client
-                    .write_all(&[5, 5, 0, 1, 0, 0, 0, 0, 0, 0])
-                    .await
-                    .unwrap();
             }
-        });
+            Err(e) => {
+                eprintln!("Couldn't connect to obfs4 client: \"{}\"", e);
+                // Report "No authentication method was acceptable" to user
+                // For more info refer to RFC 1928
+                client.write_all(&[5, 0xFF]).await.unwrap();
+            }
+        }
     }
     Ok(())
 }
 
 /// Run the final hop of the connection, which finally makes the actual
 /// network request to the intended host and relays it back
-async fn run_socks5_server(endpoint: &str) -> Result<()> {
+async fn run_socks5_server(endpoint: &str) -> Result<oneshot::Receiver<bool>> {
     let listener = Socks5Server::bind(endpoint).await?;
+    let (tx, rx) = oneshot::channel::<bool>();
     tokio::spawn(async move {
         while let Some(Ok(socks_socket)) = listener.incoming().next().await {
             tokio::spawn(async move {
@@ -211,19 +240,19 @@ async fn run_socks5_server(endpoint: &str) -> Result<()> {
                 }
             });
         }
+        tx.send(true).unwrap()
     });
-    Ok(())
+    Ok(rx)
 }
 
 /// Main function, ties everything together and parses arguments etc.
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_subscriber::fmt::init();
-    let cur_runtime = PreferredRuntime::current()?;
     let args = Args::parse();
+    let obfs4_path = args.obfs4_path;
     match args.command {
         Command::Client {
-            obfs4_path,
             client_port,
             remote_obfs4_ip,
             remote_obfs4_port,
@@ -231,19 +260,7 @@ async fn main() -> Result<()> {
         } => {
             let entry_addr = format!("127.0.0.1:{}", client_port);
 
-            let (common_params, client_params) = build_client_config("obfs4")?;
-            let mut client_pt = PluggableClientTransport::new(
-                obfs4_path.into(),
-                vec![
-                    "-enableLogging".to_string(),
-                    "-logLevel".to_string(),
-                    "DEBUG".to_string(),
-                    "-unsafeLogging".to_string(),
-                ],
-                common_params,
-                client_params,
-            );
-            client_pt.launch(cur_runtime).await?;
+            let client_pt = launch_obfs4_client(obfs4_path).await?;
             let client_endpoint = client_pt
                 .transport_methods()
                 .get(&PtTransportName::from_str("obfs4")?)
@@ -255,14 +272,14 @@ async fn main() -> Result<()> {
             match settings {
                 Protocol::Socks(_, auth) => match auth {
                     SocksAuth::Username(raw_username, raw_password) => {
-                        let username = std::str::from_utf8(&raw_username)?;
+                        let username = String::from_utf8(raw_username)?;
                         let password = match raw_password.is_empty() {
-                            true => "\0",
-                            false => std::str::from_utf8(&raw_password)?,
+                            true => String::from("\0"),
+                            false => String::from_utf8(raw_password)?,
                         };
                         let creds = ForwardingCreds {
-                            username: username.to_string(),
-                            password: password.to_string(),
+                            username,
+                            password,
                             forward_endpoint: client_endpoint,
                             obfs4_server_ip: remote_obfs4_ip,
                             obfs4_server_port: remote_obfs4_port,
@@ -277,36 +294,18 @@ async fn main() -> Result<()> {
             }
         }
         Command::Server {
-            obfs4_path,
             listen_address,
             final_socks5_port,
         } => {
             let final_socks5_endpoint = format!("127.0.0.1:{}", final_socks5_port);
-            run_socks5_server(&final_socks5_endpoint).await?;
-            let (common_params, server_params) =
-                build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
-
-            let mut server_pt = PluggableServerTransport::new(
-                obfs4_path.into(),
-                vec![
-                    "-enableLogging".to_string(),
-                    "-logLevel".to_string(),
-                    "DEBUG".to_string(),
-                    "-unsafeLogging".to_string(),
-                ],
-                common_params,
-                server_params,
-            );
-            tokio::spawn(async move {
-                server_pt.launch(cur_runtime).await.unwrap();
-                let auth_info = read_cert_info().unwrap();
-                println!();
-                println!("Listening on: {}", listen_address);
-                println!();
-                println!("Authentication info is: {}", auth_info);
-            });
-            // Need an endless loop here to not kill the server PT process
-            loop {}
+            let exit_rx = run_socks5_server(&final_socks5_endpoint).await?;
+            println!();
+            println!("Listening on: {}", listen_address);
+            launch_obfs4_server(obfs4_path, listen_address, final_socks5_endpoint).await?;
+            let auth_info = read_cert_info().unwrap();
+            println!();
+            println!("Authentication info is: {}", auth_info);
+            exit_rx.await.unwrap();
         }
     }
     Ok(())
