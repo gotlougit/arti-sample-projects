@@ -167,23 +167,20 @@ async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -
     let listener = TcpListener::bind(endpoint).await?;
     while let Ok((mut client, _)) = listener.accept().await {
         let forward_creds_clone = forward_creds.clone();
-        tokio::spawn(async move {
-            match connect_to_obfs4_client(forward_creds_clone).await {
-                Ok(mut relay_stream) => {
-                    if let Err(e) =
-                        tokio::io::copy_bidirectional(&mut client, &mut relay_stream).await
-                    {
-                        eprintln!("{:#?}", e);
-                    }
-                }
-                Err(e) => {
-                    eprintln!("Couldn't connect to obfs4 client: \"{}\"", e.to_string());
-                    // Report "No authentication method was acceptable" to user
-                    // For more info refer to RFC 1928
-                    client.write_all(&[5, 0xFF]).await.unwrap();
+        match connect_to_obfs4_client(forward_creds_clone).await {
+            Ok(mut relay_stream) => {
+                if let Err(e) = tokio::io::copy_bidirectional(&mut client, &mut relay_stream).await
+                {
+                    eprintln!("{:#?}", e);
                 }
             }
-        });
+            Err(e) => {
+                eprintln!("Couldn't connect to obfs4 client: \"{}\"", e.to_string());
+                // Report "No authentication method was acceptable" to user
+                // For more info refer to RFC 1928
+                client.write_all(&[5, 0xFF]).await.unwrap();
+            }
+        }
     }
     Ok(())
 }
