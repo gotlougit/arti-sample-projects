@@ -160,8 +160,10 @@ async fn connect_to_obfs4_client(
     .await?)
 }
 
-/// Create obfs4 client process
-async fn launch_obfs4_client(obfs4_path: String) -> anyhow::Result<PluggableClientTransport> {
+/// Launch obfs4 client process
+async fn launch_obfs4_client_process(
+    obfs4_path: String,
+) -> anyhow::Result<PluggableClientTransport> {
     let (common_params, client_params) = build_client_config("obfs4")?;
     let mut client_pt = PluggableClientTransport::new(
         obfs4_path.into(),
@@ -178,8 +180,8 @@ async fn launch_obfs4_client(obfs4_path: String) -> anyhow::Result<PluggableClie
     Ok(client_pt)
 }
 
-/// Create obfs4 server process
-async fn launch_obfs4_server(
+/// Launch obfs4 server process
+async fn launch_obfs4_server_process(
     obfs4_path: String,
     listen_address: String,
     final_socks5_endpoint: String,
@@ -260,7 +262,7 @@ async fn main() -> Result<()> {
         } => {
             let entry_addr = format!("127.0.0.1:{}", client_port);
 
-            let client_pt = launch_obfs4_client(obfs4_path).await?;
+            let client_pt = launch_obfs4_client_process(obfs4_path).await?;
             let client_endpoint = client_pt
                 .transport_methods()
                 .get(&PtTransportName::from_str("obfs4")?)
@@ -301,7 +303,7 @@ async fn main() -> Result<()> {
             let exit_rx = run_socks5_server(&final_socks5_endpoint).await?;
             println!();
             println!("Listening on: {}", listen_address);
-            launch_obfs4_server(obfs4_path, listen_address, final_socks5_endpoint).await?;
+            launch_obfs4_server_process(obfs4_path, listen_address, final_socks5_endpoint).await?;
             let auth_info = read_cert_info().unwrap();
             println!();
             println!("Authentication info is: {}", auth_info);
