@@ -160,6 +160,48 @@ async fn connect_to_obfs4_client(
     .await?)
 }
 
+/// Create obfs4 client process
+async fn launch_obfs4_client(obfs4_path: String) -> anyhow::Result<PluggableClientTransport> {
+    let (common_params, client_params) = build_client_config("obfs4")?;
+    let mut client_pt = PluggableClientTransport::new(
+        obfs4_path.into(),
+        vec![
+            "-enableLogging".to_string(),
+            "-logLevel".to_string(),
+            "DEBUG".to_string(),
+            "-unsafeLogging".to_string(),
+        ],
+        common_params,
+        client_params,
+    );
+    client_pt.launch(PreferredRuntime::current()?).await?;
+    Ok(client_pt)
+}
+
+/// Create obfs4 server process
+async fn launch_obfs4_server(
+    obfs4_path: String,
+    listen_address: String,
+    final_socks5_endpoint: String,
+) -> anyhow::Result<PluggableServerTransport> {
+    let (common_params, server_params) =
+        build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
+
+    let mut server_pt = PluggableServerTransport::new(
+        obfs4_path.into(),
+        vec![
+            "-enableLogging".to_string(),
+            "-logLevel".to_string(),
+            "DEBUG".to_string(),
+            "-unsafeLogging".to_string(),
+        ],
+        common_params,
+        server_params,
+    );
+    server_pt.launch(PreferredRuntime::current()?).await?;
+    Ok(server_pt)
+}
+
 /// Launch the dumb TCP pipe, whose only job is to abstract away the obfs4 client
 /// and its complicated setup, and just forward bytes between the obfs4 client
 /// and the client
@@ -219,19 +261,7 @@ async fn main() -> Result<()> {
         } => {
             let entry_addr = format!("127.0.0.1:{}", client_port);
 
-            let (common_params, client_params) = build_client_config("obfs4")?;
-            let mut client_pt = PluggableClientTransport::new(
-                obfs4_path.into(),
-                vec![
-                    "-enableLogging".to_string(),
-                    "-logLevel".to_string(),
-                    "DEBUG".to_string(),
-                    "-unsafeLogging".to_string(),
-                ],
-                common_params,
-                client_params,
-            );
-            client_pt.launch(cur_runtime).await?;
+            let client_pt = launch_obfs4_client(obfs4_path).await?;
             let client_endpoint = client_pt
                 .transport_methods()
                 .get(&PtTransportName::from_str("obfs4")?)
@@ -270,24 +300,10 @@ async fn main() -> Result<()> {
         } => {
             let final_socks5_endpoint = format!("127.0.0.1:{}", final_socks5_port);
             let exit_rx = run_socks5_server(&final_socks5_endpoint).await?;
-            let (common_params, server_params) =
-                build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
-
-            let mut server_pt = PluggableServerTransport::new(
-                obfs4_path.into(),
-                vec![
-                    "-enableLogging".to_string(),
-                    "-logLevel".to_string(),
-                    "DEBUG".to_string(),
-                    "-unsafeLogging".to_string(),
-                ],
-                common_params,
-                server_params,
-            );
-            server_pt.launch(cur_runtime).await.unwrap();
             let auth_info = read_cert_info().unwrap();
             println!();
             println!("Listening on: {}", listen_address);
+            launch_obfs4_server(obfs4_path, listen_address, final_socks5_endpoint).await?;
             println!();
             println!("Authentication info is: {}", auth_info);
             exit_rx.await.unwrap();
