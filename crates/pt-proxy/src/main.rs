@@ -5,6 +5,7 @@ use fast_socks5::server::Socks5Server;
 use std::str::FromStr;
 use tokio::io::AsyncWriteExt;
 use tokio::net::{TcpListener, TcpStream};
+use tokio::sync::oneshot;
 use tokio::time::Duration;
 use tokio_stream::StreamExt;
 use tor_chanmgr::transport::proxied::{settings_to_protocol, Protocol};
@@ -201,8 +202,9 @@ async fn run_forwarding_server(endpoint: &str, forward_creds: ForwardingCreds) -
 
 /// Run the final hop of the connection, which finally makes the actual
 /// network request to the intended host and relays it back
-async fn run_socks5_server(endpoint: &str) -> Result<()> {
+async fn run_socks5_server(endpoint: &str) -> Result<oneshot::Receiver<bool>> {
     let listener = Socks5Server::bind(endpoint).await?;
+    let (tx, rx) = oneshot::channel::<bool>();
     tokio::spawn(async move {
         while let Some(Ok(socks_socket)) = listener.incoming().next().await {
             tokio::spawn(async move {
@@ -211,8 +213,9 @@ async fn run_socks5_server(endpoint: &str) -> Result<()> {
                 }
             });
         }
+        tx.send(true).unwrap()
     });
-    Ok(())
+    Ok(rx)
 }
 
 /// Main function, ties everything together and parses arguments etc.
@@ -282,7 +285,7 @@ async fn main() -> Result<()> {
             final_socks5_port,
         } => {
             let final_socks5_endpoint = format!("127.0.0.1:{}", final_socks5_port);
-            run_socks5_server(&final_socks5_endpoint).await?;
+            let exit_rx = run_socks5_server(&final_socks5_endpoint).await?;
             let (common_params, server_params) =
                 build_server_config("obfs4", &listen_address, &final_socks5_endpoint)?;
 
@@ -303,8 +306,7 @@ async fn main() -> Result<()> {
             println!("Listening on: {}", listen_address);
             println!();
             println!("Authentication info is: {}", auth_info);
-            // Need an endless loop here to not kill the server PT process
-            loop {}
+            exit_rx.await.unwrap();
         }
     }
     Ok(())
