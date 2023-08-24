@@ -255,14 +255,14 @@ async fn main() -> Result<()> {
             match settings {
                 Protocol::Socks(_, auth) => match auth {
                     SocksAuth::Username(raw_username, raw_password) => {
-                        let username = std::str::from_utf8(&raw_username)?;
+                        let username = String::from_utf8(raw_username)?;
                         let password = match raw_password.is_empty() {
-                            true => "\0",
-                            false => std::str::from_utf8(&raw_password)?,
+                            true => String::from("\0"),
+                            false => String::from_utf8(raw_password)?,
                         };
                         let creds = ForwardingCreds {
-                            username: username.to_string(),
-                            password: password.to_string(),
+                            username,
+                            password,
                             forward_endpoint: client_endpoint,
                             obfs4_server_ip: remote_obfs4_ip,
                             obfs4_server_port: remote_obfs4_port,
